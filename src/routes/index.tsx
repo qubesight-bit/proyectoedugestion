@@ -13,7 +13,7 @@ function LandingPage() {
         <div className="container mx-auto flex h-20 max-w-7xl 3xl:max-w-screen-3xl tv:max-w-[3840px] tv:h-32 items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-4">
             <img 
-              src="/logo.jpg" 
+              src="/logo_cartago.png" 
               alt="Logo CEAC" 
               className="h-14 w-14 rounded-full object-cover shadow-sm"
             />
@@ -49,7 +49,7 @@ function LandingPage() {
       <section id="inicio" className="relative flex min-h-[85vh] items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            src="/hero_bg.jpg" 
+            src="/img2.jpg" 
             alt="Fondo estudiantes" 
             className="h-full w-full object-cover"
           />
@@ -124,8 +124,8 @@ function LandingPage() {
             <div className="relative">
               <div className="absolute -inset-4 tv:-inset-12 rounded-3xl tv:rounded-[4rem] bg-blue-50/50 transform rotate-3" />
               <img 
-                src="https://images.unsplash.com/photo-1577896851231-70ef18881754?q=80&w=2070&auto=format&fit=crop" 
-                alt="Estudiantes estudiando" 
+                src="/img3.jpg" 
+                alt="Instalaciones CEAC" 
                 className="relative rounded-2xl tv:rounded-[3rem] object-cover shadow-2xl h-[500px] tv:h-[1200px] w-full"
               />
             </div>
@@ -178,6 +178,26 @@ function LandingPage() {
         </div>
       </section>
 
+      {/* Vida Estudiantil Section */}
+      <section className="bg-slate-50 py-12 tv:py-24">
+        <div className="container mx-auto max-w-7xl 3xl:max-w-screen-3xl tv:max-w-[3840px] px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 tv:gap-16">
+            <div className="relative group overflow-hidden rounded-3xl tv:rounded-[4rem] shadow-xl">
+              <img src="/img1.jpg" alt="Niños jugando" className="w-full h-[400px] tv:h-[800px] object-cover transition-transform duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 to-transparent flex items-end p-8 tv:p-16">
+                <h3 className="text-white text-2xl tv:text-5xl font-bold">Aprender jugando</h3>
+              </div>
+            </div>
+            <div className="relative group overflow-hidden rounded-3xl tv:rounded-[4rem] shadow-xl">
+              <img src="/img5.jpg" alt="Estudiantes en el colegio" className="w-full h-[400px] tv:h-[800px] object-cover transition-transform duration-500 group-hover:scale-105" />
+              <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 to-transparent flex items-end p-8 tv:p-16">
+                <h3 className="text-white text-2xl tv:text-5xl font-bold">Formando amistades</h3>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* CTA / Admissions Section */}
       <section id="admisiones" className="relative py-24 tv:py-48 bg-blue-900 overflow-hidden">
         <div className="absolute inset-0 opacity-10">
@@ -191,22 +211,29 @@ function LandingPage() {
           </svg>
         </div>
         
-        <div className="container relative z-10 mx-auto max-w-4xl 3xl:max-w-6xl tv:max-w-[2800px] px-4 text-center sm:px-6 lg:px-8">
-          <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl tv:text-8xl">
-            ¿Listo para unirte a nuestra familia?
-          </h2>
-          <p className="mt-4 tv:mt-12 text-lg tv:text-4xl text-blue-200 tv:leading-relaxed">
-            El proceso de matrícula para el ciclo lectivo 2025 ya está abierto. Contáctanos hoy mismo para asegurar el cupo de tu hijo o solicitar una visita guiada a nuestras instalaciones.
-          </p>
-          <div className="mt-10 tv:mt-24 flex flex-col justify-center gap-4 tv:gap-12 sm:flex-row">
-            <Button className="h-14 tv:h-28 rounded-full bg-yellow-400 px-8 tv:px-16 text-lg tv:text-4xl font-bold text-blue-950 shadow-xl hover:bg-yellow-300">
-              Solicitar Información
-              <span className="material-symbols-outlined ml-2 tv:ml-6 tv:text-[40px]">mail</span>
-            </Button>
-            <Button variant="outline" className="h-14 tv:h-28 rounded-full border-2 border-blue-400 bg-blue-800/50 px-8 tv:px-16 text-lg tv:text-4xl font-bold text-white shadow-xl hover:bg-blue-800">
-              Llámanos: 2553-2617
-              <span className="material-symbols-outlined ml-2 tv:ml-6 tv:text-[40px]">call</span>
-            </Button>
+        <div className="container relative z-10 mx-auto max-w-6xl 3xl:max-w-7xl tv:max-w-[3200px] px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12 tv:gap-24 items-center">
+            <div className="text-left">
+              <h2 className="text-3xl font-bold tracking-tight text-white sm:text-4xl tv:text-8xl">
+                ¿Listo para unirte a nuestra familia?
+              </h2>
+              <p className="mt-4 tv:mt-12 text-lg tv:text-4xl text-blue-200 tv:leading-relaxed">
+                El proceso de matrícula para el ciclo lectivo 2025 ya está abierto. Contáctanos hoy mismo para asegurar el cupo de tu hijo o solicitar una visita guiada a nuestras instalaciones.
+              </p>
+              <div className="mt-10 tv:mt-24 flex flex-col gap-4 tv:gap-12 sm:flex-row">
+                <Button className="h-14 tv:h-28 rounded-full bg-yellow-400 px-8 tv:px-16 text-lg tv:text-4xl font-bold text-blue-950 shadow-xl hover:bg-yellow-300">
+                  Solicitar Información
+                  <span className="material-symbols-outlined ml-2 tv:ml-6 tv:text-[40px]">mail</span>
+                </Button>
+                <Button variant="outline" className="h-14 tv:h-28 rounded-full border-2 border-blue-400 bg-blue-800/50 px-8 tv:px-16 text-lg tv:text-4xl font-bold text-white shadow-xl hover:bg-blue-800">
+                  Llámanos: 2553-2617
+                  <span className="material-symbols-outlined ml-2 tv:ml-6 tv:text-[40px]">call</span>
+                </Button>
+              </div>
+            </div>
+            <div className="flex justify-center lg:justify-end">
+              <img src="/img4.jpg" alt="Matrícula Abierta" className="rounded-3xl tv:rounded-[4rem] shadow-2xl h-[500px] tv:h-[1200px] object-contain tv:object-cover transform rotate-2 hover:rotate-0 transition-transform duration-300 bg-blue-800/20" />
+            </div>
           </div>
         </div>
       </section>
@@ -218,7 +245,7 @@ function LandingPage() {
             
             <div className="lg:col-span-1">
               <div className="flex items-center gap-3 tv:gap-6 mb-6 tv:mb-12">
-                <img src="/logo.jpg" alt="Logo" className="h-10 w-10 tv:h-24 tv:w-24 rounded-full" />
+                <img src="/logo_cartago.png" alt="Logo" className="h-10 w-10 tv:h-24 tv:w-24 rounded-full" />
                 <span className="text-lg tv:text-4xl font-bold text-white">CEAC</span>
               </div>
               <p className="text-sm tv:text-2xl tv:leading-relaxed">
