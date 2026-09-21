@@ -212,7 +212,9 @@ function Index() {
           )}
           {view === "students" && <StudentsView onOpenStudent={() => setStudentModal(true)} />}
           {view === "assistant" && <SimplePanel icon="auto_awesome" title="Asistente IA" />}
-          {view === "profile" && <SimplePanel icon="account_circle" title="Perfil institucional" />}
+          {view === "profile" && (
+            <SimplePanel icon="account_circle" title="Perfil institucional" showSignOut />
+          )}
         </main>
 
         <BottomNav active={view} onNavigate={setView} />
@@ -1052,12 +1054,40 @@ function BottomNav({ active, onNavigate }: { active: View; onNavigate: (view: Vi
   );
 }
 
-function SimplePanel({ icon, title }: { icon: string; title: string }) {
+function SimplePanel({
+  icon,
+  title,
+  showSignOut = false,
+}: {
+  icon: string;
+  title: string;
+  showSignOut?: boolean;
+}) {
+  const [account, setAccount] = useState("");
+
+  useEffect(() => {
+    void supabase.auth.getUser().then(({ data }) => setAccount(data.user?.email ?? ""));
+  }, []);
+
   return (
     <section className="flex min-h-[calc(100vh-10rem)] flex-col items-center justify-center gap-3 px-8 text-center animate-edu-rise">
       <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-fixed text-on-primary-fixed"><Icon name={icon} className="text-[34px]" /></div>
       <h1 className="text-headline-md font-semibold">{title}</h1>
       <p className="text-body-md text-on-surface-variant">Módulo institucional conectado al panel principal.</p>
+      {showSignOut && (
+        <>
+          {account && <p className="text-body-sm text-on-surface-variant">Sesión activa: {account}</p>}
+          <Button
+            type="button"
+            variant="outline"
+            className="mt-2 h-11 rounded-xl"
+            onClick={() => void supabase.auth.signOut()}
+          >
+            <Icon name="logout" className="text-[20px]" />
+            Cerrar sesión
+          </Button>
+        </>
+      )}
     </section>
   );
 }
