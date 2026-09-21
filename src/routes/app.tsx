@@ -259,7 +259,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
         </div>
 
         <div className="grid grid-cols-3 gap-2 rounded-xl bg-surface-container p-1">
-          {["Administrador", "Docente", "Estudiante/Padre"].map((role, index) => (
+          {["Administrador", "Docente", "Estudiante"].map((role, index) => (
             <Button
               key={role}
               type="button"
