@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState, type ReactNode } from "react";
+import { useEffect, useMemo, useState, type FormEvent, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -159,6 +160,16 @@ function Index() {
   const [studentModal, setStudentModal] = useState(false);
   const [toast, setToast] = useState("");
 
+  useEffect(() => {
+    const { data: sub } = supabase.auth.onAuthStateChange((_event, session) => {
+      setView((current) => (session ? (current === "login" ? "home" : current) : "login"));
+    });
+    void supabase.auth.getSession().then(({ data }) => {
+      if (data.session) setView((current) => (current === "login" ? "home" : current));
+    });
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
   const filteredCourses = useMemo(
     () => courses.filter((course) => courseFilter === "all" || course.category === courseFilter),
     [courseFilter],
@@ -170,7 +181,7 @@ function Index() {
   };
 
   if (view === "login") {
-    return <LoginScreen onLogin={() => setView("home")} />;
+    return <LoginScreen />;
   }
 
   return (
@@ -201,7 +212,9 @@ function Index() {
           )}
           {view === "students" && <StudentsView onOpenStudent={() => setStudentModal(true)} />}
           {view === "assistant" && <SimplePanel icon="auto_awesome" title="Asistente IA" />}
-          {view === "profile" && <SimplePanel icon="account_circle" title="Perfil institucional" />}
+          {view === "profile" && (
+            <SimplePanel icon="account_circle" title="Perfil institucional" showSignOut />
+          )}
         </main>
 
         <BottomNav active={view} onNavigate={setView} />
@@ -234,7 +247,27 @@ function Icon({ name, className = "text-[24px]" }: { name: string; className?: s
   return <span className={`material-symbols-outlined ${className}`}>{name}</span>;
 }
 
-function LoginScreen({ onLogin }: { onLogin: () => void }) {
+function LoginScreen() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    setError("");
+    setLoading(true);
+    const { error: signInError } = await supabase.auth.signInWithPassword({
+      email: email.trim(),
+      password,
+    });
+    setLoading(false);
+    if (signInError) {
+      setError("Correo o contraseña incorrectos.");
+    }
+  };
+
   return (
     <main className="flex min-h-screen items-center justify-center bg-surface px-5 py-8 text-on-surface pt-safe pb-safe">
       <section className="flex w-full max-w-md flex-col gap-6 animate-edu-rise">
@@ -271,10 +304,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
 
         <form
           className="flex flex-col gap-4 rounded-2xl bg-surface-container-lowest p-5 shadow-sm"
-          onSubmit={(event) => {
-            event.preventDefault();
-            onLogin();
-          }}
+          onSubmit={handleSubmit}
         >
           <div className="flex gap-3 rounded-xl bg-primary-fixed p-3 text-on-primary-fixed">
             <Icon name="verified_user" className="text-[22px]" />
@@ -290,6 +320,10 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
                 className="min-w-0 flex-1 bg-transparent text-on-surface outline-none placeholder:text-muted-foreground"
                 placeholder="Dominio oficial"
                 type="email"
+                autoComplete="email"
+                required
+                value={email}
+                onChange={(event) => setEmail(event.target.value)}
               />
             </div>
           </label>
@@ -301,11 +335,25 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
               <input
                 aria-label="Contraseña"
                 className="min-w-0 flex-1 bg-transparent text-on-surface outline-none"
-                type="password"
+                type={showPassword ? "text" : "password"}
+                autoComplete="current-password"
+                required
+                value={password}
+                onChange={(event) => setPassword(event.target.value)}
               />
-              <Icon name="visibility" className="text-[20px]" />
+              <button
+                type="button"
+                aria-label="Mostrar contraseña"
+                onClick={() => setShowPassword((value) => !value)}
+              >
+                <Icon name={showPassword ? "visibility_off" : "visibility"} className="text-[20px]" />
+              </button>
             </div>
           </label>
+
+          {error && (
+            <p className="rounded-xl bg-destructive/10 px-3 py-2 text-body-sm text-destructive">{error}</p>
+          )}
 
           <div className="flex items-center justify-between text-body-sm">
             <label className="flex items-center gap-2 text-on-surface-variant">
@@ -317,8 +365,8 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
             </a>
           </div>
 
-          <Button type="submit" className="h-12 rounded-xl text-label-md">
-            Ingresar a la Plataforma
+          <Button type="submit" disabled={loading} className="h-12 rounded-xl text-label-md">
+            {loading ? "Ingresando..." : "Ingresar a la Plataforma"}
             <Icon name="arrow_forward" className="text-[20px]" />
           </Button>
         </form>
@@ -1006,12 +1054,40 @@ function BottomNav({ active, onNavigate }: { active: View; onNavigate: (view: Vi
   );
 }
 
-function SimplePanel({ icon, title }: { icon: string; title: string }) {
+function SimplePanel({
+  icon,
+  title,
+  showSignOut = false,
+}: {
+  icon: string;
+  title: string;
+  showSignOut?: boolean;
+}) {
+  const [account, setAccount] = useState("");
+
+  useEffect(() => {
+    void supabase.auth.getUser().then(({ data }) => setAccount(data.user?.email ?? ""));
+  }, []);
+
   return (
     <section className="flex min-h-[calc(100vh-10rem)] flex-col items-center justify-center gap-3 px-8 text-center animate-edu-rise">
       <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-fixed text-on-primary-fixed"><Icon name={icon} className="text-[34px]" /></div>
       <h1 className="text-headline-md font-semibold">{title}</h1>
       <p className="text-body-md text-on-surface-variant">Módulo institucional conectado al panel principal.</p>
+      {showSignOut && (
+        <>
+          {account && <p className="text-body-sm text-on-surface-variant">Sesión activa: {account}</p>}
+          <Button
+            type="button"
+            variant="outline"
+            className="mt-2 h-11 rounded-xl"
+            onClick={() => void supabase.auth.signOut()}
+          >
+            <Icon name="logout" className="text-[20px]" />
+            Cerrar sesión
+          </Button>
+        </>
+      )}
     </section>
   );
 }
