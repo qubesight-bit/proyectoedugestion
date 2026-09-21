@@ -38,18 +38,24 @@ const teacherFaces = [
   "https://lh3.googleusercontent.com/aida-public/AB6AXuAZrVRSRKciy9svwx4BfCusB5TJcLAgrVtx306N9zoz_eo0TEekE-wls7jpIowFKu-pRSEaEP17JYBpYQHeC4xXXotFvywPAzP_A2PHJUhOTuZqQU6wm8rZ_4x6bZaWP5d8dmLbLaMSza7rvOZJlUc4IJ48nLdkBVbw6WKae22PAcODFidKUC1-SiE5-dYoS5OhexG60NpXfntPbxqQf76obc0Yq8YPQL1zctzP5u4SihJqkmPhwuM7Qw",
   "https://lh3.googleusercontent.com/aida-public/AB6AXuD9cDdKgjVFhTkWyjyQ2ChcPqtAtsGBZRpUpz5Us1Zg9PmKr6QXGAKbxBJIOqEveCVVyzuT3Yah1NtqKCmZt3YzDmzu6RI8Tmt5xysBJNzx4YiJ6EnK1WIp3moaELMQDiYyUn1gONCM6WnYecVtTFuZvNHJNeyKqVfzeKjOSlCnMTeGB01gX2h8KMoiWkX99zmlwo1dpuqShwvigQD4J8If6pRV9uQJMEMHwYo7_Oqk4srAEWTpRnLPzw",
   "https://lh3.googleusercontent.com/aida-public/AB6AXuD0CX2QR1KQzWVBULqzW8F9MpV0PD3bbrTQgfD5u4HRy8dx744ZD6PWryZCbB_1WKWpvLLcXJRUA0IZdd_dtAxFF1sP4-IurHrcBgOKiJ8UtQo7rNglJe7nCNT94SvP7snIGStTgJOjnBR1b6QvaFA3DWt4oGvf03911f56_3g5ncIvQ0SsRaE-4IgCUIoqbGRnMzCELc_MEiO_Y_NOYJs89FPEZqI7v6f4g51PF-i8SHZEZZq83Ds5SQ",
-];
+] as const;
 
 const studentImages = [
   "https://lh3.googleusercontent.com/aida-public/AB6AXuAsPemPGMLES2DZjlzwpWVMjpQzFDpi8eN9Nf-Tb4TYjPOqEQkhZa7jKHUxb9K-OTQSeYfpbyLylT_OnfCF_6zVfMsVI2oP-1iTahMCZ-vMg8HcciPCEkjm3efrmqAAnEMVZWTCp24oHJ4t32Jqwqv7iErCEYSx8egT_lxrlXaktYOpg2QgB79i_SXRBd8q77MU6ALKMEI18YRBR7UvKme7i55UQhLmx2580fKkKetshLeUeXdwWq9EsA",
   "https://lh3.googleusercontent.com/aida-public/AB6AXuAc12AYzHjzUA3rgnlq0mhaSaCX6uhp81jBR8wGaQsdTqWeW34fbVv1oNlA2I-8x80qSzC5Fk-MTGXcDJxuc3b2cYGSToIuSspE8BYtORxneZnmR-EQoJTI95gMtNyd5ppxf-kc2ykXKihOM20GRfMEaVMjLeP2GClpK-_sp2Gfy7IhFWSqhRDle4eXexihy2963OtzczxsUqjp5U2htZkbJz1-Ynd1Pbx65dmKk5O6xy5uRv7ueU22mw",
   "https://lh3.googleusercontent.com/aida-public/AB6AXuB-y9nlIkFaqE6S34ovdXLj-IjOcSEwClIIHeKi56vktCy0vyyIOFYRV8T8nUgg23sQHiUsb9JCvsjcWDsmvReluDaOpOYRf2SA6KIcq-PBTlJ3DuA6QT2yXYgm5wE_Qg_C23Q80DtijfcMI5lw70loE5cNnnMuBexTj0tT6j9CBR8AjzrtqUeg7DSE4NFPToiRXJHjso3Sb_5cPzMvuoQcR2NbEc7Mp_4Pk2fKc0yCrXz21axY2mt-hg",
-];
+] as const;
 
 const announcementImages = [
   "https://lh3.googleusercontent.com/aida-public/AB6AXuCpIF5S-QJGInEvozN2tJMBXKVWr_l6AWyPp8yVQlmADxhdDNZRdhw-ZWzefi_W2UjCp4uRscFbpzXbGqZKPME-ux7TMR-PQCDpbXnghk2tjIIGzT8sHveipD4QFtZlo_xU5cmSpjVZxGqV1dRDGvfahKeLqQTR-UDrscphI_q0WG0ba4axfCL5rBnFeqN9ew3dBcVb9XE9897TwPqvviXVhth7qK-XIg6jlq8FjCA0ufwf9Z-1B87Yaw",
   "https://lh3.googleusercontent.com/aida-public/AB6AXuDBRqNTtxysBylX80C7orWPLY0v83r8TCCqy8ZlZ3TX5tj8F68Ad8P1dtSBvh1MUFh3u4J4r_LkrBiHltHkFU_5jeY_LqsFFwzX1R_34fJtCk6Cx15kQvFVkYwS1YES--8Gu3gc6wv6g-q8AbntFKgBOE0R9amnaqOMwFwMeoERRw-SnN61JdjgAWCk_xVzEQDtLjFtkfDFp0mblTn6o98Vvgzt1e_6BXbxok3wWIv4PDURfJm22XWlVQ",
   "https://lh3.googleusercontent.com/aida-public/AB6AXuAGkT9TgxkSdXUB0tjEVizcITJjIHgyGbZbFWBhBbFdLD3qiUsWtMinpzsu-o0JcoyY-tA_JBXl08fimAIJ6pW7QMb-meDftxQPB3BdNOUb9h856B_bETPjnQNeBGrsWEkHGGIy7N60h27ioKLSWkm1IEhd1Z1LV2jNFnwDJGx3cuN-fNB5oL926hjqCNDi5n4_HHzKL0sZblYig_1uhtGRoOb3lZmsMdlc2ejOgO22DGVyq9VCuEkDSA",
+] as const;
+
+const roleOptions: Array<[string, string, string]> = [
+  ["admin_panel_settings", "Administrador", "Acceso total institucional"],
+  ["school", "Docente", "Gestión de cursos y notas"],
+  ["person", "Estudiante", "Vista de clases y tareas"],
 ];
 
 const courses = [
@@ -365,7 +371,14 @@ function AppHeader({
           <Icon name="menu" />
         </Button>
         <div className="flex min-w-0 items-center gap-2">
-          <img alt="EduGestión Logo" className="h-8 w-auto object-contain" src={logoUrl} />
+          <img
+            alt=""
+            className="h-8 w-auto object-contain"
+            src={logoUrl}
+            onError={(event) => {
+              event.currentTarget.hidden = true;
+            }}
+          />
           <span className="text-headline-sm font-semibold">EduGestión</span>
           <span className="sr-only">{title}</span>
         </div>
@@ -381,11 +394,7 @@ function AppHeader({
       </div>
       {roleOpen && (
         <div className="absolute right-3 top-16 w-72 rounded-2xl bg-surface-container-lowest p-2 text-on-surface shadow-lg animate-edu-rise">
-          {[
-            ["admin_panel_settings", "Administrador", "Acceso total institucional"],
-            ["school", "Docente", "Gestión de cursos y notas"],
-            ["person", "Estudiante", "Vista de clases y tareas"],
-          ].map(([icon, label, desc]) => (
+          {roleOptions.map(([icon, label, desc]) => (
             <Button key={label} variant="ghost" className="h-auto w-full justify-start rounded-xl px-3 py-3 text-left" onClick={onCloseRole}>
               <Icon name={icon} className="text-[22px] text-primary" />
               <span className="flex flex-col">
