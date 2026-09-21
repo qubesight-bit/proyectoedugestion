@@ -49,7 +49,7 @@ function LandingPage() {
       <section id="inicio" className="relative flex min-h-[85vh] items-center justify-center overflow-hidden">
         <div className="absolute inset-0 z-0">
           <img 
-            src="/img2.jpg" 
+            src="/img2.png" 
             alt="Fondo estudiantes" 
             className="h-full w-full object-cover"
           />
@@ -124,7 +124,7 @@ function LandingPage() {
             <div className="relative">
               <div className="absolute -inset-4 tv:-inset-12 rounded-3xl tv:rounded-[4rem] bg-blue-50/50 transform rotate-3" />
               <img 
-                src="/img3.jpg" 
+                src="/img3.png" 
                 alt="Instalaciones CEAC" 
                 className="relative rounded-2xl tv:rounded-[3rem] object-cover shadow-2xl h-[500px] tv:h-[1200px] w-full"
               />
@@ -183,13 +183,13 @@ function LandingPage() {
         <div className="container mx-auto max-w-7xl 3xl:max-w-screen-3xl tv:max-w-[3840px] px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 tv:gap-16">
             <div className="relative group overflow-hidden rounded-3xl tv:rounded-[4rem] shadow-xl">
-              <img src="/img1.jpg" alt="Niños jugando" className="w-full h-[400px] tv:h-[800px] object-cover transition-transform duration-500 group-hover:scale-105" />
+              <img src="/img1.png" alt="Niños jugando" className="w-full h-[400px] tv:h-[800px] object-cover transition-transform duration-500 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 to-transparent flex items-end p-8 tv:p-16">
                 <h3 className="text-white text-2xl tv:text-5xl font-bold">Aprender jugando</h3>
               </div>
             </div>
             <div className="relative group overflow-hidden rounded-3xl tv:rounded-[4rem] shadow-xl">
-              <img src="/img5.jpg" alt="Estudiantes en el colegio" className="w-full h-[400px] tv:h-[800px] object-cover transition-transform duration-500 group-hover:scale-105" />
+              <img src="/img5.png" alt="Estudiantes en el colegio" className="w-full h-[400px] tv:h-[800px] object-cover transition-transform duration-500 group-hover:scale-105" />
               <div className="absolute inset-0 bg-gradient-to-t from-blue-900/80 to-transparent flex items-end p-8 tv:p-16">
                 <h3 className="text-white text-2xl tv:text-5xl font-bold">Formando amistades</h3>
               </div>
@@ -232,7 +232,7 @@ function LandingPage() {
               </div>
             </div>
             <div className="flex justify-center lg:justify-end">
-              <img src="/img4.jpg" alt="Matrícula Abierta" className="rounded-3xl tv:rounded-[4rem] shadow-2xl h-[500px] tv:h-[1200px] object-contain tv:object-cover transform rotate-2 hover:rotate-0 transition-transform duration-300 bg-blue-800/20" />
+              <img src="/img4.png" alt="Matrícula Abierta" className="rounded-3xl tv:rounded-[4rem] shadow-2xl h-[500px] tv:h-[1200px] object-contain tv:object-cover transform rotate-2 hover:rotate-0 transition-transform duration-300 bg-blue-800/20" />
             </div>
           </div>
         </div>
