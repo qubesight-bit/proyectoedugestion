@@ -46,6 +46,62 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
   --color-ring-offset-background: var(--background);
+  --color-surface: var(--surface);
+  --color-surface-bright: var(--surface-bright);
+  --color-surface-dim: var(--surface-dim);
+  --color-surface-container-lowest: var(--surface-container-lowest);
+  --color-surface-container-low: var(--surface-container-low);
+  --color-surface-container: var(--surface-container);
+  --color-surface-container-high: var(--surface-container-high);
+  --color-surface-container-highest: var(--surface-container-highest);
+  --color-surface-variant: var(--surface-variant);
+  --color-on-surface: var(--on-surface);
+  --color-on-surface-variant: var(--on-surface-variant);
+  --color-inverse-surface: var(--inverse-surface);
+  --color-inverse-on-surface: var(--inverse-on-surface);
+  --color-primary-container: var(--primary-container);
+  --color-primary-fixed: var(--primary-fixed);
+  --color-primary-fixed-dim: var(--primary-fixed-dim);
+  --color-on-primary-container: var(--on-primary-container);
+  --color-on-primary-fixed: var(--on-primary-fixed);
+  --color-on-primary-fixed-variant: var(--on-primary-fixed-variant);
+  --color-secondary-container: var(--secondary-container);
+  --color-secondary-fixed: var(--secondary-fixed);
+  --color-secondary-fixed-dim: var(--secondary-fixed-dim);
+  --color-on-secondary-container: var(--on-secondary-container);
+  --color-on-secondary-fixed: var(--on-secondary-fixed);
+  --color-on-secondary-fixed-variant: var(--on-secondary-fixed-variant);
+  --color-tertiary: var(--tertiary);
+  --color-tertiary-container: var(--tertiary-container);
+  --color-tertiary-fixed: var(--tertiary-fixed);
+  --color-tertiary-fixed-dim: var(--tertiary-fixed-dim);
+  --color-on-tertiary: var(--on-tertiary);
+  --color-on-tertiary-container: var(--on-tertiary-container);
+  --color-on-tertiary-fixed: var(--on-tertiary-fixed);
+  --color-on-tertiary-fixed-variant: var(--on-tertiary-fixed-variant);
+  --color-outline: var(--outline);
+  --color-outline-variant: var(--outline-variant);
+  --font-public: "Public Sans", sans-serif;
+  --text-body-sm: 0.75rem;
+  --text-body-sm--line-height: 1rem;
+  --text-body-md: 0.875rem;
+  --text-body-md--line-height: 1.25rem;
+  --text-body-lg: 1rem;
+  --text-body-lg--line-height: 1.5rem;
+  --text-label-sm: 0.75rem;
+  --text-label-sm--line-height: 1rem;
+  --text-label-md: 0.875rem;
+  --text-label-md--line-height: 1.25rem;
+  --text-headline-sm: 1rem;
+  --text-headline-sm--line-height: 1.5rem;
+  --text-headline-md: 1.25rem;
+  --text-headline-md--line-height: 1.75rem;
+  --text-headline-lg: 1.5rem;
+  --text-headline-lg--line-height: 2rem;
+  --text-display-lg: 2rem;
+  --text-display-lg--line-height: 2.5rem;
+  --text-metric-number: 1.75rem;
+  --text-metric-number--line-height: 2rem;
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
@@ -62,26 +118,61 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
+  --radius: 0.75rem;
+  --background: oklch(0.985 0.014 280);
+  --foreground: oklch(0.19 0.046 264);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
+  --card-foreground: oklch(0.19 0.046 264);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --popover-foreground: oklch(0.19 0.046 264);
+  --primary: oklch(0.52 0.234 263);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.59 0.046 260);
+  --secondary-foreground: oklch(1 0 0);
+  --muted: oklch(0.945 0.021 270);
+  --muted-foreground: oklch(0.48 0.035 263);
+  --accent: oklch(0.965 0.028 270);
+  --accent-foreground: oklch(0.21 0.05 264);
+  --destructive: oklch(0.56 0.22 29);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.87 0.023 270);
+  --input: oklch(0.93 0.022 270);
+  --ring: oklch(0.62 0.16 263);
+  --surface: oklch(0.985 0.014 280);
+  --surface-bright: oklch(0.985 0.014 280);
+  --surface-dim: oklch(0.88 0.03 270);
+  --surface-container-lowest: oklch(1 0 0);
+  --surface-container-low: oklch(0.96 0.02 270);
+  --surface-container: oklch(0.94 0.025 270);
+  --surface-container-high: oklch(0.92 0.035 270);
+  --surface-container-highest: oklch(0.895 0.042 270);
+  --surface-variant: oklch(0.91 0.04 270);
+  --on-surface: oklch(0.19 0.046 264);
+  --on-surface-variant: oklch(0.42 0.035 264);
+  --inverse-surface: oklch(0.27 0.048 264);
+  --inverse-on-surface: oklch(0.96 0.018 270);
+  --primary-container: oklch(0.58 0.22 263);
+  --primary-fixed: oklch(0.9 0.06 270);
+  --primary-fixed-dim: oklch(0.82 0.08 270);
+  --on-primary-container: oklch(0.96 0.018 270);
+  --on-primary-fixed: oklch(0.22 0.11 263);
+  --on-primary-fixed-variant: oklch(0.38 0.19 263);
+  --secondary-container: oklch(0.9 0.045 260);
+  --secondary-fixed: oklch(0.91 0.042 260);
+  --secondary-fixed-dim: oklch(0.83 0.052 260);
+  --on-secondary-container: oklch(0.43 0.045 260);
+  --on-secondary-fixed: oklch(0.22 0.04 260);
+  --on-secondary-fixed-variant: oklch(0.36 0.04 260);
+  --tertiary: oklch(0.45 0.15 150);
+  --tertiary-container: oklch(0.56 0.18 150);
+  --tertiary-fixed: oklch(0.9 0.18 145);
+  --tertiary-fixed-dim: oklch(0.8 0.18 145);
+  --on-tertiary: oklch(1 0 0);
+  --on-tertiary-container: oklch(0.93 0.12 145);
+  --on-tertiary-fixed: oklch(0.2 0.06 150);
+  --on-tertiary-fixed-variant: oklch(0.34 0.12 150);
+  --outline: oklch(0.58 0.025 265);
+  --outline-variant: oklch(0.82 0.028 270);
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
@@ -140,5 +231,67 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: var(--font-public);
+    overscroll-behavior: none;
+  }
+
+  button,
+  input,
+  select,
+  textarea {
+    font: inherit;
+  }
+}
+
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px;
+  line-height: 1;
+  display: inline-block;
+  text-transform: none;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  -webkit-font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "liga";
+}
+
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+.pt-safe {
+  padding-top: env(safe-area-inset-top, 0px);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  scrollbar-width: none;
+}
+
+@keyframes edu-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-edu-rise {
+  animation: edu-rise 260ms ease-out both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-edu-rise {
+    animation: none;
   }
 }
