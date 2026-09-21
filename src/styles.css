@@ -290,6 +290,22 @@
   animation: edu-rise 260ms ease-out both;
 }
 
+.form-input {
+  min-height: 2.5rem;
+  width: 100%;
+  border-radius: var(--radius);
+  border: 0;
+  background-color: var(--surface-container-low);
+  padding: 0.625rem 0.875rem;
+  color: var(--on-surface);
+  outline: none;
+}
+
+.form-input:focus-within,
+.form-input:focus {
+  box-shadow: 0 0 0 2px var(--ring);
+}
+
 @media (prefers-reduced-motion: reduce) {
   .animate-edu-rise {
     animation: none;

@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useMemo, useState } from "react";
+import { useMemo, useState, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
 
@@ -138,8 +138,8 @@ const students = [
 
 const chartBars = [
   { month: "May", value: "28", height: "h-14", kind: "real" },
-  { month: "Jun", value: "34", height: "h-18", kind: "real" },
-  { month: "Jul", value: "41", height: "h-22", kind: "real" },
+  { month: "Jun", value: "34", height: "h-[4.5rem]", kind: "real" },
+  { month: "Jul", value: "41", height: "h-[5.5rem]", kind: "real" },
   { month: "Ago", value: "52", height: "h-28", kind: "real" },
   { month: "Sep", value: "37", height: "h-20", kind: "real" },
   { month: "Oct", value: "45*", height: "h-24", kind: "estimate" },
@@ -947,7 +947,7 @@ function ModalShell({
   title: string;
   subtitle?: string;
   icon: string;
-  children: React.ReactNode;
+  children: ReactNode;
   onClose: () => void;
 }) {
   return (
@@ -966,7 +966,7 @@ function ModalShell({
   );
 }
 
-function Field({ label, children }: { label: string; children: React.ReactNode }) {
+function Field({ label, children }: { label: string; children: ReactNode }) {
   return (
     <label className="flex flex-col gap-2 text-label-md font-semibold">
       {label}
