@@ -25,7 +25,7 @@ export const Route = createFileRoute("/app")({
   component: Index,
 });
 
-type View = "login" | "home" | "courses" | "students" | "teachers" | "assistant" | "profile" | "teacher_home" | "teacher_courses" | "teacher_grades" | "teacher_attendance" | "teacher_resources";
+type View = "login" | "home" | "courses" | "students" | "teachers" | "assistant" | "profile" | "teacher_home" | "teacher_courses" | "teacher_grades" | "teacher_attendance" | "teacher_resources" | "admin_supervision";
 type Role = "Administrador" | "Docente";
 type CourseCategory = "all" | "ciencias" | "humanidades" | "artes" | "idiomas";
 
@@ -221,6 +221,7 @@ function Index() {
           {view === "students" && <StudentsView onOpenStudent={() => setStudentModal(true)} />}
           {view === "teachers" && <TeachersView />}
           {view === "teacher_home" && <TeacherDashboardView />}
+          {view === "admin_supervision" && <AdminSupervisionView />}
           {view === "assistant" && <SimplePanel icon="auto_awesome" title="Asistente IA" />}
           {view === "profile" && <SimplePanel icon="account_circle" title="Perfil institucional" />}
         </main>
@@ -426,6 +427,10 @@ function AppHeader({
               </span>
             </Button>
           ))}
+          <a href="/" className="mt-1 flex h-auto w-full items-center justify-start gap-3 rounded-xl px-3 py-3 text-left text-destructive hover:bg-surface-container-high">
+            <Icon name="logout" className="text-[22px]" />
+            <span className="font-semibold">Salir al Inicio</span>
+          </a>
         </div>
       )}
     </header>
@@ -1014,7 +1019,7 @@ function BottomNav({ active, onNavigate, role }: { active: View; onNavigate: (vi
     ["home", "dashboard", "Inicio"],
     ["courses", "school", "Cursos"],
     ["teachers", "group", "Profesores"],
-    ["assistant", "auto_awesome", "IA"],
+    ["admin_supervision", "visibility", "Supervisión"],
     ["profile", "account_circle", "Perfil"],
   ];
   const teacherNav: Array<[View, string, string]> = [
@@ -1045,7 +1050,7 @@ function Sidebar({ active, onNavigate, role }: { active: View; onNavigate: (view
     ["home", "dashboard", "Inicio"],
     ["courses", "school", "Cursos"],
     ["teachers", "group", "Profesores"],
-    ["assistant", "auto_awesome", "IA"],
+    ["admin_supervision", "visibility", "Supervisión"],
     ["profile", "account_circle", "Perfil"],
   ];
   const teacherNav: Array<[View, string, string]> = [
@@ -1075,11 +1080,15 @@ function Sidebar({ active, onNavigate, role }: { active: View; onNavigate: (view
           </Button>
         ))}
       </nav>
-      <div className="p-4">
+      <div className="flex flex-col gap-2 p-4">
         <Button variant="outline" className="w-full justify-start gap-3 h-14 rounded-xl" onClick={() => onNavigate("profile")}>
           <img src={profileUrl} alt="Profile" className="h-8 w-8 rounded-full" />
           <span className="text-sm font-semibold">Mi Cuenta</span>
         </Button>
+        <a href="/" className="flex w-full items-center justify-start gap-3 h-14 rounded-xl px-4 hover:bg-surface-container-high text-destructive">
+          <Icon name="logout" className="text-[24px]" />
+          <span className="text-sm font-semibold">Salir al Inicio</span>
+        </a>
       </div>
     </aside>
   );
@@ -1274,6 +1283,81 @@ function TeacherDashboardView() {
             <p className="text-body-md leading-relaxed">Acceso a métricas globales, nómina y configuración institucional. Acceso a métricas globales, nómina y configuración institucional.</p>
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+const recentTeacherUploads = [
+  {
+    id: "up-1",
+    teacherName: "Prof. Carlos Menéndez",
+    subject: "Matemáticas 4A",
+    fileType: "PDF",
+    fileName: "Examen Parcial 1.pdf",
+    time: "Hace 2 horas",
+    icon: "picture_as_pdf"
+  },
+  {
+    id: "up-2",
+    teacherName: "Prof. Ana García",
+    subject: "Química 3A",
+    fileType: "DOCX",
+    fileName: "Syllabus_2025.docx",
+    time: "Hace 5 horas",
+    icon: "description"
+  },
+  {
+    id: "up-3",
+    teacherName: "Dr. Roberto Salgado",
+    subject: "Biología 2B",
+    fileType: "XLSX",
+    fileName: "Registro_Notas_Q1.xlsx",
+    time: "Ayer",
+    icon: "table"
+  }
+];
+
+function AdminSupervisionView() {
+  return (
+    <section className="flex flex-col gap-5 px-4 py-4 animate-edu-rise">
+      <div className="flex flex-col md:flex-row md:items-start justify-between gap-3">
+        <div>
+          <h1 className="text-headline-md font-semibold">Supervisión Docente</h1>
+          <p className="mt-1 text-body-sm text-on-surface-variant">Registro de actividad reciente y material subido a la plataforma.</p>
+        </div>
+        <Button variant="secondary" className="h-10 rounded-xl px-4">
+          <Icon name="filter_list" className="text-[20px]" />
+          Filtros
+        </Button>
+      </div>
+
+      <div className="flex flex-col gap-4 mt-2 max-w-4xl">
+        {recentTeacherUploads.map((upload) => (
+          <div key={upload.id} className="flex flex-col md:flex-row md:items-center justify-between gap-4 rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
+            <div className="flex items-start gap-4">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-primary-fixed text-primary shadow-sm">
+                <Icon name={upload.icon} className="text-[24px]" />
+              </div>
+              <div className="min-w-0">
+                <h3 className="font-semibold text-body-lg">{upload.fileName}</h3>
+                <p className="text-body-sm text-on-surface-variant mt-1">
+                  Subido por <span className="font-medium text-on-surface">{upload.teacherName}</span> • {upload.subject}
+                </p>
+                <div className="flex items-center gap-2 mt-2">
+                  <span className="rounded-full bg-secondary-container px-2 py-0.5 text-label-sm font-semibold text-on-secondary-container">{upload.fileType}</span>
+                  <span className="text-label-sm text-primary">{upload.time}</span>
+                </div>
+              </div>
+            </div>
+            <div className="flex gap-2">
+               <Button variant="outline" className="h-10 rounded-xl px-4 text-sm w-full md:w-auto">
+                 <Icon name="visibility" className="text-[20px]" />
+                 Ver Documento
+               </Button>
+            </div>
+          </div>
+        ))}
       </div>
     </section>
   );
