@@ -25,7 +25,8 @@ export const Route = createFileRoute("/app")({
   component: Index,
 });
 
-type View = "login" | "home" | "courses" | "students" | "teachers" | "assistant" | "profile";
+type View = "login" | "home" | "courses" | "students" | "teachers" | "assistant" | "profile" | "teacher_home" | "teacher_courses" | "teacher_grades" | "teacher_attendance" | "teacher_resources";
+type Role = "Administrador" | "Docente";
 type CourseCategory = "all" | "ciencias" | "humanidades" | "artes" | "idiomas";
 
 const logoUrl =
@@ -164,6 +165,7 @@ const chartBars = [
 ] as const;
 
 function Index() {
+  const [role, setRole] = useState<Role>("Administrador");
   const [view, setView] = useState<View>("login");
   const [roleOpen, setRoleOpen] = useState(false);
   const [courseFilter, setCourseFilter] = useState<CourseCategory>("all");
@@ -182,14 +184,17 @@ function Index() {
   };
 
   if (view === "login") {
-    return <LoginScreen onLogin={() => setView("home")} />;
+    return <LoginScreen onLogin={(r) => {
+      setRole(r);
+      setView(r === "Administrador" ? "home" : "teacher_home");
+    }} />;
   }
 
   return (
     <div className="min-h-screen bg-background text-on-surface flex justify-center">
       <div className="mx-auto flex min-h-screen w-full flex-col md:flex-row bg-surface shadow-lg">
         {/* Desktop Sidebar */}
-        <Sidebar active={view} onNavigate={setView} />
+        <Sidebar active={view} onNavigate={setView} role={role} />
         <AppHeader
           title={view === "courses" ? "Cursos" : "Inicio"}
           roleOpen={roleOpen}
@@ -215,11 +220,12 @@ function Index() {
           )}
           {view === "students" && <StudentsView onOpenStudent={() => setStudentModal(true)} />}
           {view === "teachers" && <TeachersView />}
+          {view === "teacher_home" && <TeacherDashboardView />}
           {view === "assistant" && <SimplePanel icon="auto_awesome" title="Asistente IA" />}
           {view === "profile" && <SimplePanel icon="account_circle" title="Perfil institucional" />}
         </main>
 
-        <BottomNav active={view} onNavigate={setView} />
+        <BottomNav active={view} onNavigate={setView} role={role} />
       </div>
 
       {courseModal && (
@@ -249,7 +255,8 @@ function Icon({ name, className = "text-[24px]" }: { name: string; className?: s
   return <span className={`material-symbols-outlined ${className}`}>{name}</span>;
 }
 
-function LoginScreen({ onLogin }: { onLogin: () => void }) {
+function LoginScreen({ onLogin }: { onLogin: (role: Role) => void }) {
+  const [selectedRole, setSelectedRole] = useState<Role>("Administrador");
   return (
     <main className="flex min-h-screen w-full items-center justify-center bg-surface px-5 py-8 text-on-surface pt-safe pb-safe">
       <section className="flex w-full max-w-md md:max-w-lg tv:max-w-3xl flex-col gap-6 animate-edu-rise">
@@ -272,14 +279,15 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
         </div>
 
         <div className="grid grid-cols-2 gap-2 rounded-xl bg-surface-container p-1">
-          {["Administrador", "Docente"].map((role, index) => (
+          {(["Administrador", "Docente"] as Role[]).map((roleOption) => (
             <Button
-              key={role}
+              key={roleOption}
               type="button"
-              variant={index === 0 ? "default" : "ghost"}
+              variant={selectedRole === roleOption ? "default" : "ghost"}
               className="h-10 rounded-lg px-2 text-label-sm"
+              onClick={() => setSelectedRole(roleOption)}
             >
-              {role}
+              {roleOption}
             </Button>
           ))}
         </div>
@@ -288,7 +296,7 @@ function LoginScreen({ onLogin }: { onLogin: () => void }) {
           className="flex flex-col gap-4 rounded-2xl bg-surface-container-lowest p-5 shadow-sm"
           onSubmit={(event) => {
             event.preventDefault();
-            onLogin();
+            onLogin(selectedRole);
           }}
         >
           <div className="flex gap-3 rounded-xl bg-primary-fixed p-3 text-on-primary-fixed">
@@ -1001,14 +1009,22 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
-function BottomNav({ active, onNavigate }: { active: View; onNavigate: (view: View) => void }) {
-  const nav: Array<[View, string, string]> = [
+function BottomNav({ active, onNavigate, role }: { active: View; onNavigate: (view: View) => void, role: Role }) {
+  const adminNav: Array<[View, string, string]> = [
     ["home", "dashboard", "Inicio"],
     ["courses", "school", "Cursos"],
     ["teachers", "group", "Profesores"],
     ["assistant", "auto_awesome", "IA"],
     ["profile", "account_circle", "Perfil"],
   ];
+  const teacherNav: Array<[View, string, string]> = [
+    ["teacher_home", "home", "Inicio (Resumen)"],
+    ["teacher_courses", "school", "Mis Cursos"],
+    ["teacher_grades", "grading", "Calificaciones"],
+    ["teacher_attendance", "fact_check", "Asistencia"],
+    ["teacher_resources", "folder", "Recursos"],
+  ];
+  const nav = role === "Administrador" ? adminNav : teacherNav;
   return (
     <nav className="fixed bottom-0 z-50 w-full bg-surface-container-lowest/95 shadow-lg backdrop-blur-xl pb-safe md:hidden">
       <div className="grid h-20 grid-cols-5 px-2 pt-2">
@@ -1024,14 +1040,22 @@ function BottomNav({ active, onNavigate }: { active: View; onNavigate: (view: Vi
   );
 }
 
-function Sidebar({ active, onNavigate }: { active: View; onNavigate: (view: View) => void }) {
-  const nav: Array<[View, string, string]> = [
+function Sidebar({ active, onNavigate, role }: { active: View; onNavigate: (view: View) => void, role: Role }) {
+  const adminNav: Array<[View, string, string]> = [
     ["home", "dashboard", "Inicio"],
     ["courses", "school", "Cursos"],
     ["teachers", "group", "Profesores"],
     ["assistant", "auto_awesome", "IA"],
     ["profile", "account_circle", "Perfil"],
   ];
+  const teacherNav: Array<[View, string, string]> = [
+    ["teacher_home", "home", "Inicio (Resumen)"],
+    ["teacher_courses", "school", "Mis Cursos"],
+    ["teacher_grades", "grading", "Calificaciones"],
+    ["teacher_attendance", "fact_check", "Asistencia"],
+    ["teacher_resources", "folder", "Recursos"],
+  ];
+  const nav = role === "Administrador" ? adminNav : teacherNav;
   return (
     <aside className="hidden md:flex fixed left-0 top-0 z-40 h-screen w-64 flex-col bg-surface-container-lowest shadow-xl border-r">
       <div className="flex h-16 items-center gap-3 px-6 pt-4 mb-8">
@@ -1145,5 +1169,112 @@ function TeacherCard({ teacher }: { teacher: typeof teachersMock[number] }) {
         </div>
       </div>
     </article>
+  );
+}
+
+function TeacherDashboardView() {
+  return (
+    <section className="flex flex-col gap-5 px-4 py-4 animate-edu-rise">
+      <div className="flex items-start justify-between gap-3">
+        <div>
+          <div className="flex items-center gap-1 text-headline-md font-semibold">
+            Hola, Prof. Ana García <span aria-hidden="true">👋</span>
+          </div>
+          <div className="mt-2 text-headline-sm font-semibold">
+            Panel Principal
+          </div>
+        </div>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 tv:grid-cols-3 gap-4 tv:gap-6 mt-2">
+        {/* Mis Cursos Activos */}
+        <div className="flex flex-col gap-5 rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
+          <h2 className="text-headline-sm font-semibold">Mis Cursos Activos</h2>
+          <div className="flex flex-col gap-5">
+            <div>
+              <div className="flex justify-between text-body-md font-semibold mb-2">
+                <span>Matemáticas 4A</span>
+              </div>
+              <div className="h-2.5 w-full rounded-full bg-surface-container-high overflow-hidden">
+                <div className="h-full bg-primary w-[40%] rounded-full"></div>
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between text-body-md font-semibold mb-2">
+                <span>Física 5B</span>
+              </div>
+              <div className="h-2.5 w-full rounded-full bg-surface-container-high overflow-hidden">
+                <div className="h-full bg-primary w-[80%] rounded-full"></div>
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between text-body-md font-semibold mb-2">
+                <span>Física JC</span>
+              </div>
+              <div className="h-2.5 w-full rounded-full bg-surface-container-high overflow-hidden">
+                <div className="h-full bg-primary w-[35%] rounded-full"></div>
+              </div>
+            </div>
+            <div>
+              <div className="flex justify-between text-body-md font-semibold mb-2">
+                <span>Química 3A</span>
+              </div>
+              <div className="h-2.5 w-full rounded-full bg-surface-container-high overflow-hidden">
+                <div className="h-full bg-primary w-[65%] rounded-full"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-col gap-4">
+          {/* Próximas Clases */}
+          <div className="flex flex-col gap-4 rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
+            <h2 className="text-headline-sm font-semibold">Próximas Clases</h2>
+            <p className="text-body-md font-medium text-on-surface-variant">Hoy (Matemáticas 4A, Aula 102)</p>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="flex flex-col items-center justify-center rounded-xl bg-surface-container-high p-3">
+                <span className="text-body-sm text-on-surface-variant">Hoy</span>
+                <span className="font-semibold mt-1">10:00</span>
+              </div>
+              <div className="flex flex-col items-center justify-center rounded-xl bg-surface-container-high p-3">
+                <span className="text-body-sm text-on-surface-variant">Mar</span>
+                <span className="font-semibold mt-1">12:00</span>
+              </div>
+              <div className="flex flex-col items-center justify-center rounded-xl bg-surface-container-high p-3">
+                <span className="text-body-sm text-on-surface-variant">Mar</span>
+                <span className="font-semibold mt-1">13:00</span>
+              </div>
+            </div>
+            <p className="text-body-sm font-medium mt-1">Mañana (Matemáticas 4A, 16:00)</p>
+          </div>
+
+          {/* Alertas de Calificaciones Pendientes */}
+          <div className="flex flex-col gap-4 rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
+            <h2 className="text-headline-sm font-semibold">Alertas de Calificaciones Pendientes</h2>
+            <div className="flex flex-col gap-4">
+              <div className="flex items-start justify-between gap-3">
+                <p className="text-body-md flex-1">Revisión final de Química 3A lista para ser grabada</p>
+                <Icon name="warning" className="text-[24px] text-tertiary" />
+              </div>
+              <div className="flex items-start justify-between gap-3">
+                <p className="text-body-md flex-1">Trabajo de Física 5C listo para ser grabado</p>
+                <Icon name="warning" className="text-[24px] text-tertiary" />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Anuncios Institucionales */}
+      <div className="grid grid-cols-1 md:grid-cols-2 tv:grid-cols-3 mt-2">
+        <div className="rounded-2xl bg-surface-container-lowest p-5 shadow-sm col-span-1 md:col-span-2 tv:col-span-3">
+          <h2 className="text-headline-sm font-semibold mb-4">Anuncios Institucionales</h2>
+          <div className="flex items-center gap-3 rounded-xl bg-primary-container p-4 text-on-primary-container">
+            <Icon name="verified_user" className="text-[24px] shrink-0" />
+            <p className="text-body-md leading-relaxed">Acceso a métricas globales, nómina y configuración institucional. Acceso a métricas globales, nómina y configuración institucional.</p>
+          </div>
+        </div>
+      </div>
+    </section>
   );
 }
