@@ -2,6 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
+import {
+  TeacherDashboardView as TeacherDashboardFeature,
+  TeacherCoursesView,
+  TeacherGradesView,
+  TeacherAttendanceView,
+  TeacherResourcesView,
+} from "@/features/teacher";
 
 export const Route = createFileRoute("/app")({
   head: () => ({
@@ -219,7 +226,11 @@ function Index() {
           )}
           {view === "students" && <StudentsView onOpenStudent={() => setStudentModal(true)} />}
           {view === "teachers" && <TeachersView />}
-          {view === "teacher_home" && <TeacherDashboardView />}
+          {view === "teacher_home" && <TeacherDashboardFeature />}
+          {view === "teacher_courses" && <TeacherCoursesView />}
+          {view === "teacher_grades" && <TeacherGradesView />}
+          {view === "teacher_attendance" && <TeacherAttendanceView />}
+          {view === "teacher_resources" && <TeacherResourcesView />}
           {view === "admin_supervision" && <AdminSupervisionView />}
           {view === "assistant" && <SimplePanel icon="auto_awesome" title="Asistente IA" />}
           {view === "profile" && <SimplePanel icon="account_circle" title="Perfil institucional" />}
