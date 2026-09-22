@@ -1,63 +1,51 @@
-# Rama de trabajo — Ernesto
+# Rama Front End — Ernesto
 
-Esta rama contiene el trabajo asignado a **Ernesto** para el proyecto React del Centro Educativo Adventista de Cartago.
+Proyecto: Centro Educativo Adventista de Cartago
 
-## Responsabilidades principales
+> Alcance obligatorio: **100% Front End en React + TypeScript.**
+> No se requiere backend, base de datos, API real ni autenticación real.
 
-### 1. Autenticación y acceso
-Archivos/módulos bajo responsabilidad:
-- `src/features/auth/index.tsx`
-- Integración de login con Supabase.
-- Manejo de roles Administrador / Docente.
-- Protección de acceso y sesión.
+## Responsabilidad de Ernesto — Panel Administrador
 
-### 2. Dashboard administrativo
-Archivos/módulos:
-- `src/features/dashboard/index.tsx`
-- Métricas institucionales.
-- Acciones rápidas.
-- Resumen administrativo.
-
-### 3. Gestión de estudiantes
-Archivos/módulos:
-- `src/features/students/index.tsx`
-- `src/services/api/students.service.ts`
-- Registro, listado, búsqueda y edición de estudiantes.
-- Conexión de estos datos con Supabase.
-
-### 4. Gestión de cursos
-Archivos/módulos:
-- `src/features/courses/index.tsx`
-- `src/services/api/courses.service.ts`
-- Crear, editar, listar y filtrar cursos.
-- Persistencia de datos.
-
-### 5. Supervisión administrativa
-Archivos/módulos:
-- `src/features/admin/index.tsx`
-- Supervisión de actividad docente.
-- Documentos y registros visibles al administrador.
-
-### 6. Datos e integración
-Responsable principal de:
-- `src/integrations/supabase/**`
-- `supabase/**`
-- Integración final de datos reales.
-- Reemplazar mocks administrativos por consultas reales cuando corresponda.
-
-## Trabajo ya existente asignado a Ernesto
-
-Del código que ya estaba en `main`, se consideran parte de esta rama:
-- Login React.
+### Pantallas y funciones
+- Login visual y selección de rol.
 - Dashboard administrativo.
+- Gestión visual de estudiantes.
+- Gestión visual de cursos.
+- Supervisión de profesores.
+- Perfil institucional.
+- Formularios y modales.
+- Búsquedas, filtros, tarjetas, métricas y feedback visual.
+
+### Archivos principales
+- `src/features/auth/index.tsx`
+- `src/features/dashboard/index.tsx`
+- `src/features/students/index.tsx`
+- `src/features/courses/index.tsx`
+- `src/features/admin/index.tsx`
+
+### Funcionamiento Front End
+Las operaciones se simulan con:
+- `useState`
+- props
+- arreglos de datos mock
+- modales
+- filtros locales
+- mensajes/toasts
+
+No se deben agregar llamadas a API, Supabase ni servicios de backend.
+
+## Trabajo existente que corresponde a Ernesto
+- Login React.
+- Dashboard de administrador.
 - Cursos.
 - Estudiantes.
-- Supervisión.
-- Servicios API existentes.
-- Configuración e integración Supabase.
+- Supervisión docente.
+- Interacciones y formularios del administrador.
 
-## Regla para evitar conflictos
+## Archivos compartidos
+`src/routes/app.tsx`, tipos y componentes compartidos solo deben modificarse cuando sea necesario para conectar módulos del Front End.
 
-`src/routes/app.tsx` es un archivo de integración. Evitar convertirlo nuevamente en un archivo monolítico. Las funcionalidades nuevas deben implementarse primero en sus módulos dentro de `src/features` y luego conectarse al router.
-
-No modificar directamente módulos asignados a Caleb salvo que sea necesario para integrar un Pull Request previamente acordado.
+## Regla de trabajo
+Trabajar en la rama `ernesto`.
+No hacer push directo a `main`.
