@@ -2,6 +2,12 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
+import { LoginScreen as LoginFeature } from "@/features/auth";
+import { DashboardView as DashboardFeature } from "@/features/dashboard";
+import { CoursesView as CoursesFeature } from "@/features/courses";
+import { StudentsView as StudentsFeature } from "@/features/students";
+import { TeachersView as TeachersFeature } from "@/features/teachers";
+import { AdminSupervisionView as AdminSupervisionFeature } from "@/features/admin";
 
 export const Route = createFileRoute("/app")({
   head: () => ({
@@ -183,7 +189,7 @@ function Index() {
   };
 
   if (view === "login") {
-    return <LoginScreen onLogin={(r) => {
+    return <LoginFeature onLogin={(r) => {
       setRole(r);
       setView(r === "Administrador" ? "home" : "teacher_home");
     }} />;
@@ -203,24 +209,16 @@ function Index() {
 
         <main className="flex-1 bg-surface pt-16 pb-24 md:pt-20 md:pb-8 md:ml-64 w-full h-screen overflow-y-auto px-4 md:px-8 tv:px-24">
           {view === "home" && (
-            <DashboardView
+            <DashboardFeature
               onCourses={() => setView("courses")}
               onStudents={() => setView("students")}
             />
           )}
-          {view === "courses" && (
-            <CoursesView
-              filter={courseFilter}
-              filteredCourses={filteredCourses}
-              onFilter={setCourseFilter}
-              onOpenCourse={() => setCourseModal(true)}
-              onToast={showToast}
-            />
-          )}
-          {view === "students" && <StudentsView onOpenStudent={() => setStudentModal(true)} />}
-          {view === "teachers" && <TeachersView />}
+          {view === "courses" && <CoursesFeature />}
+          {view === "students" && <StudentsFeature />}
+          {view === "teachers" && <TeachersFeature />}
           {view === "teacher_home" && <TeacherDashboardView />}
-          {view === "admin_supervision" && <AdminSupervisionView />}
+          {view === "admin_supervision" && <AdminSupervisionFeature />}
           {view === "assistant" && <SimplePanel icon="auto_awesome" title="Asistente IA" />}
           {view === "profile" && <SimplePanel icon="account_circle" title="Perfil institucional" />}
         </main>
