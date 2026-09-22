@@ -7,6 +7,20 @@ import { Student } from "../../types";
 export function StudentsView() {
   const [modalOpen, setModalOpen] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [statusFilter, setStatusFilter] = useState<"Todos" | "Activo" | "Pendiente">("Todos");
+
+  const filteredStudents = students.filter((student) => {
+    const matchesQuery =
+      student.name.toLowerCase().includes(query.toLowerCase()) ||
+      student.id.toLowerCase().includes(query.toLowerCase()) ||
+      student.grade.toLowerCase().includes(query.toLowerCase());
+    const matchesStatus =
+      statusFilter === "Todos" ||
+      (statusFilter === "Activo" && student.status === "Activo") ||
+      (statusFilter === "Pendiente" && student.status !== "Activo");
+    return matchesQuery && matchesStatus;
+  });
 
   return (
     <section className="flex flex-col gap-4 px-4 py-4 animate-edu-rise">
@@ -28,7 +42,13 @@ export function StudentsView() {
       <div className="flex gap-2">
         <div className="flex h-11 flex-1 items-center gap-2 rounded-xl bg-surface-container-low px-3 text-on-surface-variant">
           <Icon name="search" className="text-[20px]" />
-          <input aria-label="Buscar estudiantes" className="min-w-0 flex-1 bg-transparent text-on-surface outline-none" />
+          <input
+            aria-label="Buscar estudiantes"
+            className="min-w-0 flex-1 bg-transparent text-on-surface outline-none"
+            placeholder="Nombre, ID o grado"
+            value={query}
+            onChange={(event) => setQuery(event.target.value)}
+          />
         </div>
         <Button aria-label="Filtros" variant="secondary" size="icon" className="h-11 w-11 rounded-xl">
           <Icon name="tune" className="text-[20px]" />
@@ -36,9 +56,18 @@ export function StudentsView() {
       </div>
 
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4 no-scrollbar">
-        {["Todos (482)", "Primaria", "Secundaria", "Al día", "Pendiente pago"].map((chip, index) => (
-          <Button key={chip} variant={index === 0 ? "default" : "secondary"} className="h-8 flex-shrink-0 rounded-full px-4 text-label-sm">
-            {chip}
+        {[
+          ["Todos", "Todos"],
+          ["Activos", "Activo"],
+          ["Pendientes", "Pendiente"],
+        ].map(([label, value]) => (
+          <Button
+            key={label}
+            variant={statusFilter === value ? "default" : "secondary"}
+            className="h-8 flex-shrink-0 rounded-full px-4 text-label-sm"
+            onClick={() => setStatusFilter(value as "Todos" | "Activo" | "Pendiente")}
+          >
+            {label}
           </Button>
         ))}
       </div>
@@ -49,13 +78,13 @@ export function StudentsView() {
       </div>
 
       <div className="flex flex-col md:grid md:grid-cols-2 tv:grid-cols-4 gap-3 tv:gap-8">
-        {students.map((student) => (
+        {filteredStudents.map((student) => (
           <StudentCard key={student.id} student={student} />
         ))}
       </div>
 
       <div className="flex items-center justify-between rounded-2xl bg-surface-container-lowest p-3 shadow-sm">
-        <span className="text-body-sm text-on-surface-variant">Mostrando 3 de 482 registros</span>
+        <span className="text-body-sm text-on-surface-variant">Mostrando {filteredStudents.length} registros</span>
         <div className="flex items-center gap-2">
           <Button aria-label="Página anterior" variant="secondary" size="icon" className="h-8 w-8 rounded-lg"><Icon name="chevron_left" className="text-[18px]" /></Button>
           <span className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-label-sm font-semibold text-primary-foreground">1</span>
