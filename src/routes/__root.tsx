@@ -77,13 +77,13 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "EduGestión" },
+      { title: "Centro Educativo Adventista de Cartago" },
       {
         name: "description",
         content: "Plataforma móvil para gestión académica, estudiantes, cursos y anuncios.",
       },
-      { name: "author", content: "EduGestión" },
-      { property: "og:title", content: "EduGestión" },
+      { name: "author", content: "CEAC" },
+      { property: "og:title", content: "Centro Educativo Adventista de Cartago" },
       {
         property: "og:description",
         content: "Plataforma móvil para gestión académica, estudiantes, cursos y anuncios.",

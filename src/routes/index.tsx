@@ -9,34 +9,26 @@ function LandingPage() {
   return (
     <div className="min-h-screen bg-slate-50 font-sans text-slate-900">
       {/* Navbar */}
-      <header className="sticky top-0 z-50 w-full border-b bg-white/80 backdrop-blur-md">
-        <div className="container mx-auto flex h-20 max-w-7xl 3xl:max-w-screen-3xl tv:max-w-[3840px] tv:h-32 items-center justify-between px-4 sm:px-6 lg:px-8">
+      <header className="sticky top-0 z-50 w-full border-b border-transparent bg-[#0d3958] shadow-lg">
+        <div className="container mx-auto flex h-24 tv:h-40 max-w-7xl 3xl:max-w-screen-3xl tv:max-w-[3840px] items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-4">
             <img 
               src="/logo_cartago.png" 
-              alt="Logo CEAC" 
-              className="h-14 w-14 rounded-full object-cover shadow-sm"
+              alt="Centro Educativo Adventista de Cartago" 
+              className="h-16 tv:h-28 w-auto object-contain drop-shadow-sm"
             />
-            <div className="hidden flex-col sm:flex">
-              <span className="text-lg tv:text-3xl font-bold leading-tight text-blue-900">
-                Centro Educativo Adventista
-              </span>
-              <span className="text-sm tv:text-xl font-medium text-slate-500">
-                de Cartago
-              </span>
-            </div>
           </div>
           
           <nav className="hidden items-center gap-8 md:flex">
-            <a href="#inicio" className="text-sm tv:text-2xl font-semibold text-slate-600 hover:text-blue-900 transition-colors">Inicio</a>
-            <a href="#nosotros" className="text-sm tv:text-2xl font-semibold text-slate-600 hover:text-blue-900 transition-colors">Nosotros</a>
-            <a href="#academico" className="text-sm tv:text-2xl font-semibold text-slate-600 hover:text-blue-900 transition-colors">Académico</a>
-            <a href="#contacto" className="text-sm tv:text-2xl font-semibold text-slate-600 hover:text-blue-900 transition-colors">Contacto</a>
+            <a href="#inicio" className="text-sm tv:text-2xl font-semibold text-white/90 hover:text-white hover:scale-105 transition-all">Inicio</a>
+            <a href="#nosotros" className="text-sm tv:text-2xl font-semibold text-white/90 hover:text-white hover:scale-105 transition-all">Nosotros</a>
+            <a href="#academico" className="text-sm tv:text-2xl font-semibold text-white/90 hover:text-white hover:scale-105 transition-all">Académico</a>
+            <a href="#contacto" className="text-sm tv:text-2xl font-semibold text-white/90 hover:text-white hover:scale-105 transition-all">Contacto</a>
           </nav>
 
           <div className="flex items-center">
             <Link to="/app">
-              <Button className="rounded-full bg-blue-900 px-6 py-5 tv:px-12 tv:py-10 text-sm tv:text-2xl font-bold text-white shadow-lg hover:bg-blue-800 transition-all hover:scale-105">
+              <Button className="rounded-full bg-yellow-400 px-6 py-5 tv:px-12 tv:py-10 text-sm tv:text-2xl font-bold text-blue-950 shadow-xl hover:bg-yellow-300 transition-all hover:scale-105">
                 Iniciar sesión
                 <span className="material-symbols-outlined ml-2 text-[20px] tv:text-[32px]">login</span>
               </Button>
@@ -100,21 +92,21 @@ function LandingPage() {
               </p>
               
               <div className="mt-8 tv:mt-16 grid gap-6 tv:gap-16 sm:grid-cols-2">
-                <div className="rounded-2xl tv:rounded-[3rem] bg-white p-6 tv:p-12 shadow-xl shadow-slate-200/50 border border-slate-100 transition-all hover:-translate-y-1">
-                  <div className="mb-4 tv:mb-8 flex h-12 w-12 tv:h-24 tv:w-24 items-center justify-center rounded-full bg-blue-100 text-blue-900">
-                    <span className="material-symbols-outlined text-[24px] tv:text-[48px]">visibility</span>
+                <div className="rounded-2xl tv:rounded-[3rem] bg-white p-6 tv:p-12 shadow-lg hover:shadow-xl border border-slate-200 transition-all hover:-translate-y-1">
+                  <div className="mb-4 tv:mb-8 flex h-14 w-14 tv:h-24 tv:w-24 items-center justify-center rounded-2xl bg-[#0d3958]/5 text-[#0d3958] border border-[#0d3958]/10">
+                    <span className="material-symbols-outlined text-[28px] tv:text-[48px] font-light">explore</span>
                   </div>
-                  <h3 className="mb-2 tv:mb-6 text-xl tv:text-5xl font-bold text-slate-900">Visión</h3>
+                  <h3 className="mb-2 tv:mb-6 text-xl tv:text-5xl font-bold text-[#0d3958]">Visión</h3>
                   <p className="text-sm tv:text-3xl text-slate-600 tv:leading-relaxed">
                     Ser una institución educativa líder en Costa Rica, reconocida por su excelencia académica y la firmeza de sus valores éticos y cristianos.
                   </p>
                 </div>
                 
-                <div className="rounded-2xl tv:rounded-[3rem] bg-white p-6 tv:p-12 shadow-xl shadow-slate-200/50 border border-slate-100 transition-all hover:-translate-y-1">
-                  <div className="mb-4 tv:mb-8 flex h-12 w-12 tv:h-24 tv:w-24 items-center justify-center rounded-full bg-yellow-100 text-yellow-700">
-                    <span className="material-symbols-outlined text-[24px] tv:text-[48px]">flag</span>
+                <div className="rounded-2xl tv:rounded-[3rem] bg-white p-6 tv:p-12 shadow-lg hover:shadow-xl border border-slate-200 transition-all hover:-translate-y-1">
+                  <div className="mb-4 tv:mb-8 flex h-14 w-14 tv:h-24 tv:w-24 items-center justify-center rounded-2xl bg-[#0d3958]/5 text-[#0d3958] border border-[#0d3958]/10">
+                    <span className="material-symbols-outlined text-[28px] tv:text-[48px] font-light">track_changes</span>
                   </div>
-                  <h3 className="mb-2 tv:mb-6 text-xl tv:text-5xl font-bold text-slate-900">Misión</h3>
+                  <h3 className="mb-2 tv:mb-6 text-xl tv:text-5xl font-bold text-[#0d3958]">Misión</h3>
                   <p className="text-sm tv:text-3xl text-slate-600 tv:leading-relaxed">
                     Proveer una educación de calidad que inspire a los estudiantes a alcanzar su máximo potencial, servir a Dios y a su comunidad.
                   </p>
@@ -129,6 +121,28 @@ function LandingPage() {
                 className="relative rounded-2xl tv:rounded-[3rem] object-cover shadow-2xl h-[500px] tv:h-[1200px] w-full"
               />
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Video Informativo */}
+      <section className="bg-slate-900 py-16 tv:py-32 relative overflow-hidden">
+        <div className="absolute inset-0 bg-blue-950/80 z-0"></div>
+        <div className="container relative z-10 mx-auto max-w-5xl 3xl:max-w-screen-2xl tv:max-w-[3000px] px-4 sm:px-6 lg:px-8 text-center">
+          <span className="inline-block rounded-full bg-blue-100/10 px-4 py-1.5 tv:px-8 tv:py-3 text-sm tv:text-3xl font-medium tracking-wide text-blue-100 backdrop-blur-sm mb-6 border border-blue-100/20">
+            Experiencia CEAC
+          </span>
+          <h2 className="mb-8 tv:mb-16 text-3xl font-bold tracking-tight text-white sm:text-4xl tv:text-8xl">
+            Conoce nuestras instalaciones y actividades
+          </h2>
+          <div className="relative w-full overflow-hidden rounded-2xl tv:rounded-[3rem] shadow-2xl border-4 border-white/10" style={{ paddingTop: '56.25%' }}>
+            <iframe 
+              className="absolute top-0 left-0 w-full h-full"
+              src="https://www.youtube.com/embed/n7QTjc-2I0k?autoplay=1&mute=1&loop=1&playlist=n7QTjc-2I0k" 
+              title="Video Informativo CEAC" 
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+              allowFullScreen
+            ></iframe>
           </div>
         </div>
       </section>
@@ -148,27 +162,27 @@ function LandingPage() {
               {
                 title: "Preescolar",
                 desc: "Un ambiente seguro y amoroso donde los más pequeños aprenden a través del juego, la música y principios bíblicos.",
-                icon: "child_care",
-                color: "bg-pink-100 text-pink-700"
+                icon: "extension",
+                color: "bg-[#0d3958]/10 text-[#0d3958]"
               },
               {
                 title: "Primaria",
                 desc: "Bases sólidas en lectura, escritura, matemáticas y ciencias, complementadas con educación física y musical.",
-                icon: "school",
-                color: "bg-blue-100 text-blue-700"
+                icon: "local_library",
+                color: "bg-[#0d3958]/10 text-[#0d3958]"
               },
               {
                 title: "Secundaria",
                 desc: "Preparación académica rigurosa para el éxito universitario, con énfasis en el liderazgo y servicio comunitario.",
-                icon: "menu_book",
-                color: "bg-green-100 text-green-700"
+                icon: "architecture",
+                color: "bg-[#0d3958]/10 text-[#0d3958]"
               }
             ].map((level, i) => (
-              <div key={i} className="group relative overflow-hidden rounded-3xl tv:rounded-[4rem] bg-slate-50 p-8 tv:p-16 transition-all hover:bg-blue-900 hover:text-white hover:shadow-2xl hover:-translate-y-2 tv:hover:-translate-y-6 border border-slate-100">
+              <div key={i} className="group relative overflow-hidden rounded-3xl tv:rounded-[4rem] bg-white p-8 tv:p-16 transition-all hover:bg-[#0d3958] hover:text-white shadow-lg hover:shadow-2xl hover:-translate-y-2 tv:hover:-translate-y-6 border border-slate-200">
                 <div className={`mb-6 tv:mb-12 flex h-16 w-16 tv:h-32 tv:w-32 items-center justify-center rounded-2xl tv:rounded-[2.5rem] ${level.color} transition-colors group-hover:bg-white/20 group-hover:text-white`}>
-                  <span className="material-symbols-outlined text-[32px] tv:text-[80px]">{level.icon}</span>
+                  <span className="material-symbols-outlined text-[32px] tv:text-[80px] font-light">{level.icon}</span>
                 </div>
-                <h3 className="mb-4 tv:mb-8 text-2xl tv:text-6xl font-bold text-slate-900 group-hover:text-white">{level.title}</h3>
+                <h3 className="mb-4 tv:mb-8 text-2xl tv:text-6xl font-bold text-[#0d3958] group-hover:text-white">{level.title}</h3>
                 <p className="text-slate-600 tv:text-3xl group-hover:text-blue-100 leading-relaxed tv:leading-relaxed">
                   {level.desc}
                 </p>
@@ -221,13 +235,13 @@ function LandingPage() {
                 El proceso de matrícula para el ciclo lectivo 2025 ya está abierto. Contáctanos hoy mismo para asegurar el cupo de tu hijo o solicitar una visita guiada a nuestras instalaciones.
               </p>
               <div className="mt-10 tv:mt-24 flex flex-col gap-4 tv:gap-12 sm:flex-row">
-                <Button className="h-14 tv:h-28 rounded-full bg-yellow-400 px-8 tv:px-16 text-lg tv:text-4xl font-bold text-blue-950 shadow-xl hover:bg-yellow-300">
+                <Button className="h-14 tv:h-28 rounded-full bg-yellow-400 px-8 tv:px-16 text-lg tv:text-4xl font-bold text-[#0d3958] shadow-xl hover:bg-yellow-300 transition-all hover:-translate-y-1">
                   Solicitar Información
-                  <span className="material-symbols-outlined ml-2 tv:ml-6 tv:text-[40px]">mail</span>
+                  <span className="material-symbols-outlined ml-2 tv:ml-6 tv:text-[40px] font-light">contact_mail</span>
                 </Button>
-                <Button variant="outline" className="h-14 tv:h-28 rounded-full border-2 border-blue-400 bg-blue-800/50 px-8 tv:px-16 text-lg tv:text-4xl font-bold text-white shadow-xl hover:bg-blue-800">
+                <Button variant="outline" className="h-14 tv:h-28 rounded-full border-2 border-white bg-transparent px-8 tv:px-16 text-lg tv:text-4xl font-bold text-white shadow-xl hover:bg-white/10 transition-all hover:-translate-y-1">
                   Llámanos: 2553-2617
-                  <span className="material-symbols-outlined ml-2 tv:ml-6 tv:text-[40px]">call</span>
+                  <span className="material-symbols-outlined ml-2 tv:ml-6 tv:text-[40px] font-light">support_agent</span>
                 </Button>
               </div>
             </div>
@@ -267,15 +281,15 @@ function LandingPage() {
               <h3 className="mb-4 tv:mb-10 text-sm tv:text-2xl font-semibold uppercase tracking-wider text-slate-300">Contacto</h3>
               <ul className="space-y-3 tv:space-y-6 text-sm tv:text-2xl">
                 <li className="flex items-center gap-2 tv:gap-4">
-                  <span className="material-symbols-outlined text-[18px] tv:text-[32px]">location_on</span>
+                  <span className="material-symbols-outlined text-[18px] tv:text-[32px] font-light">location_on</span>
                   Cartago, Costa Rica
                 </li>
                 <li className="flex items-center gap-2 tv:gap-4">
-                  <span className="material-symbols-outlined text-[18px] tv:text-[32px]">call</span>
+                  <span className="material-symbols-outlined text-[18px] tv:text-[32px] font-light">support_agent</span>
                   2553-2617
                 </li>
                 <li className="flex items-center gap-2 tv:gap-4">
-                  <span className="material-symbols-outlined text-[18px] tv:text-[32px]">mail</span>
+                  <span className="material-symbols-outlined text-[18px] tv:text-[32px] font-light">contact_mail</span>
                   ceacartago@gmail.com
                 </li>
               </ul>
@@ -288,7 +302,7 @@ function LandingPage() {
               </p>
               <Link to="/app">
                 <Button variant="outline" className="w-full h-auto py-3 tv:py-6 text-sm tv:text-3xl border-slate-700 bg-slate-900 text-slate-300 hover:bg-slate-800 hover:text-white">
-                  Plataforma EduGestión
+                  Plataforma Institucional
                 </Button>
               </Link>
             </div>

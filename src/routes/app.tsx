@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/app")({
   head: () => ({
     meta: [
-      { title: "EduGestión | Plataforma académica" },
+      { title: "Plataforma CEAC" },
       {
         name: "description",
         content:
           "Acceso móvil para administrar estudiantes, cursos, matrículas y anuncios institucionales.",
       },
-      { property: "og:title", content: "EduGestión | Plataforma académica" },
+      { property: "og:title", content: "Plataforma CEAC" },
       {
         property: "og:description",
         content:
@@ -252,7 +252,7 @@ function Index() {
 }
 
 function Icon({ name, className = "text-[24px]" }: { name: string; className?: string }) {
-  return <span className={`material-symbols-outlined ${className}`}>{name}</span>;
+  return <span className={`material-symbols-outlined font-light ${className}`}>{name}</span>;
 }
 
 function LoginScreen({ onLogin }: { onLogin: (role: Role) => void }) {
@@ -271,7 +271,7 @@ function LoginScreen({ onLogin }: { onLogin: (role: Role) => void }) {
             <Icon name="school" className="text-[34px]" />
           </div>
           <div>
-            <h1 className="text-display-lg font-bold">EduGestión</h1>
+            <h1 className="text-display-lg font-bold">CEAC</h1>
             <p className="mt-1 text-body-md text-on-surface-variant">
               Plataforma de Gestión Académica e Institucional
             </p>
@@ -402,7 +402,7 @@ function AppHeader({
               event.currentTarget.hidden = true;
             }}
           />
-          <span className="text-headline-sm font-semibold">EduGestión</span>
+          <span className="text-headline-sm font-semibold">CEAC</span>
           <span className="sr-only">{title}</span>
         </div>
         <div className="flex items-center gap-1">
@@ -1063,8 +1063,10 @@ function Sidebar({ active, onNavigate, role }: { active: View; onNavigate: (view
   return (
     <aside className="hidden md:flex fixed left-0 top-0 z-40 h-screen w-64 flex-col bg-surface-container-lowest shadow-xl border-r">
       <div className="flex h-16 items-center gap-3 px-6 pt-4 mb-8">
-        <img src={logoUrl} alt="Logo" className="h-10 w-10 object-contain" />
-        <span className="text-xl font-bold text-primary">EduGestión</span>
+        <div className="flex min-w-0 items-center gap-2">
+          <Icon name="school" className="text-[28px] text-primary" />
+          <span className="text-xl font-bold text-primary">CEAC</span>
+        </div>
       </div>
       <nav className="flex flex-col gap-2 px-4 flex-1">
         {nav.map(([target, icon, label]) => (
