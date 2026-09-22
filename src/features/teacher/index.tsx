@@ -193,14 +193,38 @@ export function TeacherAttendanceView() {
 
 export function TeacherResourcesView() {
   const [query, setQuery] = useState("");
-  const filtered = resources.filter((resource) => resource.title.toLowerCase().includes(query.toLowerCase()));
+  const [items, setItems] = useState(resources);
+  const [notice, setNotice] = useState("");
+  const filtered = items.filter((resource) => resource.title.toLowerCase().includes(query.toLowerCase()));
+
+  const addDemoResource = () => {
+    const nextId = Math.max(...items.map((item) => item.id)) + 1;
+    setItems((current) => [
+      { id: nextId, title: `Nuevo material ${nextId}`, type: "PDF", date: "Hoy" },
+      ...current,
+    ]);
+    setNotice("Recurso agregado localmente");
+    window.setTimeout(() => setNotice(""), 2200);
+  };
 
   return (
     <section className="flex flex-col gap-5 px-4 py-4 animate-edu-rise">
-      <div>
-        <h1 className="text-headline-md font-semibold">Recursos</h1>
-        <p className="text-body-sm text-on-surface-variant">Materiales simulados almacenados en el Front End.</p>
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+        <div>
+          <h1 className="text-headline-md font-semibold">Recursos</h1>
+          <p className="text-body-sm text-on-surface-variant">Materiales simulados almacenados en el Front End.</p>
+        </div>
+        <Button className="rounded-xl" onClick={addDemoResource}>
+          <Icon name="upload_file" className="text-[20px]" />
+          Agregar recurso demo
+        </Button>
       </div>
+
+      {notice && (
+        <div className="rounded-xl bg-tertiary-fixed px-4 py-3 text-sm font-semibold text-on-tertiary-fixed">
+          {notice}
+        </div>
+      )}
 
       <div className="flex h-11 items-center gap-2 rounded-xl bg-surface-container-low px-3">
         <Icon name="search" className="text-[20px]" />
