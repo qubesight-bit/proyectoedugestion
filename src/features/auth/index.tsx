@@ -20,7 +20,7 @@ export function LoginScreen({ onLogin }: { onLogin: (role: Role) => void }) {
             <Icon name="school" className="text-[34px]" />
           </div>
           <div>
-            <h1 className="text-display-lg font-bold">CEAC</h1>
+            <h1 className="text-display-lg font-bold text-center">Centro Educativo Adventista de Cartago</h1>
             <p className="mt-1 text-body-md text-on-surface-variant">
               Plataforma de Gestión Académica e Institucional
             </p>

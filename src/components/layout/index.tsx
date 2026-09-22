@@ -35,7 +35,7 @@ export function AppHeader({
               event.currentTarget.hidden = true;
             }}
           />
-          <span className="text-headline-sm font-semibold">CEAC</span>
+          <span className="text-headline-sm font-semibold truncate max-w-[200px]">Centro Educativo Adventista de Cartago</span>
           <span className="sr-only">{title}</span>
         </div>
         <div className="flex items-center gap-1">
@@ -89,8 +89,8 @@ export function Sidebar({ active, onNavigate, role }: { active: View | string; o
     <aside className="hidden md:flex fixed left-0 top-0 z-40 h-screen w-64 flex-col bg-surface-container-lowest shadow-xl border-r">
       <div className="flex h-16 items-center gap-3 px-6 pt-4 mb-8">
         <div className="flex min-w-0 items-center gap-2">
-          <Icon name="school" className="text-[28px] text-primary" />
-          <span className="text-xl font-bold text-primary">CEAC</span>
+          <Icon name="school" className="text-[28px] text-primary shrink-0" />
+          <span className="text-sm font-bold text-primary leading-tight">Centro Educativo Adventista de Cartago</span>
         </div>
       </div>
       <nav className="flex flex-col gap-2 px-4 flex-1">

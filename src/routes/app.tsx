@@ -6,13 +6,13 @@ import { Button } from "@/components/ui/button";
 export const Route = createFileRoute("/app")({
   head: () => ({
     meta: [
-      { title: "Plataforma CEAC" },
+      { title: "Plataforma Centro Educativo Adventista de Cartago" },
       {
         name: "description",
         content:
           "Acceso móvil para administrar estudiantes, cursos, matrículas y anuncios institucionales.",
       },
-      { property: "og:title", content: "Plataforma CEAC" },
+      { property: "og:title", content: "Plataforma Centro Educativo Adventista de Cartago" },
       {
         property: "og:description",
         content:
@@ -271,7 +271,7 @@ function LoginScreen({ onLogin }: { onLogin: (role: Role) => void }) {
             <Icon name="school" className="text-[34px]" />
           </div>
           <div>
-            <h1 className="text-display-lg font-bold">CEAC</h1>
+            <h1 className="text-display-lg font-bold">Centro Educativo Adventista de Cartago</h1>
             <p className="mt-1 text-body-md text-on-surface-variant">
               Plataforma de Gestión Académica e Institucional
             </p>
@@ -402,7 +402,7 @@ function AppHeader({
               event.currentTarget.hidden = true;
             }}
           />
-          <span className="text-headline-sm font-semibold">CEAC</span>
+          <span className="text-headline-sm font-semibold whitespace-nowrap overflow-hidden text-ellipsis w-48">Centro Educativo Adventista de Cartago</span>
           <span className="sr-only">{title}</span>
         </div>
         <div className="flex items-center gap-1">
@@ -1065,7 +1065,7 @@ function Sidebar({ active, onNavigate, role }: { active: View; onNavigate: (view
       <div className="flex h-16 items-center gap-3 px-6 pt-4 mb-8">
         <div className="flex min-w-0 items-center gap-2">
           <Icon name="school" className="text-[28px] text-primary" />
-          <span className="text-xl font-bold text-primary">CEAC</span>
+          <span className="text-sm md:text-lg font-bold text-primary">Centro Educativo Adventista de Cartago</span>
         </div>
       </div>
       <nav className="flex flex-col gap-2 px-4 flex-1">

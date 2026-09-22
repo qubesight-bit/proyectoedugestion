@@ -116,8 +116,8 @@ function LandingPage() {
             <div className="relative">
               <div className="absolute -inset-4 tv:-inset-12 rounded-3xl tv:rounded-[4rem] bg-blue-50/50 transform rotate-3" />
               <img 
-                src="/img3.png" 
-                alt="Instalaciones CEAC" 
+                src="https://images.unsplash.com/photo-1523050854058-8df90110c9f1?ixlib=rb-4.0.3&auto=format&fit=crop&w=1000&q=80" 
+                alt="Instalaciones Centro Educativo Adventista de Cartago" 
                 className="relative rounded-2xl tv:rounded-[3rem] object-cover shadow-2xl h-[500px] tv:h-[1200px] w-full"
               />
             </div>
@@ -138,8 +138,9 @@ function LandingPage() {
           <div className="relative w-full overflow-hidden rounded-2xl tv:rounded-[3rem] shadow-2xl border-4 border-white/10" style={{ paddingTop: '56.25%' }}>
             <iframe 
               className="absolute top-0 left-0 w-full h-full"
-              src="https://www.youtube.com/embed/n7QTjc-2I0k?autoplay=1&mute=1&loop=1&playlist=n7QTjc-2I0k" 
-              title="Video Informativo CEAC" 
+              src="https://www.youtube.com/embed/n7QTjc-2I0k?si=qzns5uvfRh3rHM" 
+              title="Video Informativo Centro Educativo Adventista de Cartago" 
+              frameBorder="0" 
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
               allowFullScreen
             ></iframe>
@@ -150,8 +151,10 @@ function LandingPage() {
       {/* Academics Section */}
       <section id="academico" className="bg-white py-24 tv:py-48">
         <div className="container mx-auto max-w-7xl 3xl:max-w-screen-3xl tv:max-w-[3840px] px-4 sm:px-6 lg:px-8">
-          <div className="mb-16 tv:mb-32 text-center">
-            <h2 className="text-3xl font-bold tracking-tight text-blue-900 sm:text-4xl tv:text-8xl">Oferta Académica</h2>
+          <div className="mt-8 tv:mt-24 text-center">
+            <h3 className="text-2xl tv:text-5xl font-bold text-slate-800 mb-6 tv:mb-12">
+              Experiencia Centro Educativo Adventista de Cartago
+            </h3>
             <p className="mx-auto mt-4 tv:mt-8 max-w-2xl tv:max-w-6xl text-lg tv:text-4xl text-slate-600 tv:leading-relaxed">
               Contamos con programas diseñados para acompañar a tu hijo desde sus primeros pasos hasta su graduación, con un currículo que integra la fe y la enseñanza.
             </p>
@@ -258,9 +261,9 @@ function LandingPage() {
           <div className="grid gap-8 tv:gap-24 md:grid-cols-2 lg:grid-cols-4">
             
             <div className="lg:col-span-1">
-              <div className="flex items-center gap-3 tv:gap-6 mb-6 tv:mb-12">
-                <img src="/logo_cartago.png" alt="Logo" className="h-10 w-10 tv:h-24 tv:w-24 rounded-full" />
-                <span className="text-lg tv:text-4xl font-bold text-white">CEAC</span>
+              <div className="flex items-center gap-3 tv:gap-6 mb-6 tv:mb-10">
+                <img src="/logo_cartago.png" alt="Logo" className="w-12 h-12 tv:w-20 tv:h-20 object-contain" />
+                <span className="text-lg tv:text-4xl font-bold text-white">Centro Educativo Adventista de Cartago</span>
               </div>
               <p className="text-sm tv:text-2xl tv:leading-relaxed">
                 Formando líderes con excelencia académica y valores cristianos para el servicio de Dios y la humanidad.
