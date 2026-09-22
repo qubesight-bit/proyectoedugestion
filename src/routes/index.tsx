@@ -297,9 +297,6 @@ function LandingPage() {
 
             <div>
               <h3 className="mb-4 tv:mb-10 text-sm tv:text-2xl font-semibold uppercase tracking-wider text-slate-300">Administración</h3>
-              <p className="text-sm tv:text-2xl mb-4 tv:mb-8 tv:leading-relaxed">
-                Acceso exclusivo para personal docente, administrativo y estudiantes matriculados.
-              </p>
               <Link to="/app">
                 <Button variant="outline" className="w-full h-auto py-3 tv:py-6 text-sm tv:text-3xl border-slate-700 bg-slate-900 text-slate-300 hover:bg-slate-800 hover:text-white">
                   Plataforma Institucional
