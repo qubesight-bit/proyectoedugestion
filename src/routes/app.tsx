@@ -8,6 +8,13 @@ import { CoursesView as CoursesFeature } from "@/features/courses";
 import { StudentsView as StudentsFeature } from "@/features/students";
 import { TeachersView as TeachersFeature } from "@/features/teachers";
 import { AdminSupervisionView as AdminSupervisionFeature } from "@/features/admin";
+import {
+  TeacherDashboardView as TeacherDashboardFeature,
+  TeacherCoursesView,
+  TeacherGradesView,
+  TeacherAttendanceView,
+  TeacherResourcesView,
+} from "@/features/teacher";
 
 export const Route = createFileRoute("/app")({
   head: () => ({
@@ -217,7 +224,11 @@ function Index() {
           {view === "courses" && <CoursesFeature />}
           {view === "students" && <StudentsFeature />}
           {view === "teachers" && <TeachersFeature />}
-          {view === "teacher_home" && <TeacherDashboardView />}
+          {view === "teacher_home" && <TeacherDashboardFeature />}
+          {view === "teacher_courses" && <TeacherCoursesView />}
+          {view === "teacher_grades" && <TeacherGradesView />}
+          {view === "teacher_attendance" && <TeacherAttendanceView />}
+          {view === "teacher_resources" && <TeacherResourcesView />}
           {view === "admin_supervision" && <AdminSupervisionFeature />}
           {view === "assistant" && <SimplePanel icon="auto_awesome" title="Asistente IA" />}
           {view === "profile" && <SimplePanel icon="account_circle" title="Perfil institucional" />}
