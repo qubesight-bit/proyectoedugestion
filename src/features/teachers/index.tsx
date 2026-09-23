@@ -1,9 +1,18 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Icon } from "../../components/shared";
 import { teachersMock } from "../../services/mockData";
 import { Teacher } from "../../types";
 
 export function TeachersView() {
+  const [query, setQuery] = useState("");
+  const filteredTeachers = teachersMock.filter((teacher) =>
+    [teacher.name, teacher.subject, teacher.id]
+      .join(" ")
+      .toLowerCase()
+      .includes(query.toLowerCase()),
+  );
+
   return (
     <section className="flex flex-col gap-4 px-4 py-4 animate-edu-rise">
       <div className="flex items-start justify-between gap-3">
@@ -21,8 +30,19 @@ export function TeachersView() {
         </Button>
       </div>
 
+      <div className="flex h-11 items-center gap-2 rounded-xl bg-surface-container-low px-3 text-on-surface-variant">
+        <Icon name="search" className="text-[20px]" />
+        <input
+          aria-label="Buscar profesores"
+          className="min-w-0 flex-1 bg-transparent text-on-surface outline-none"
+          placeholder="Buscar por nombre, especialidad o ID"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+        />
+      </div>
+
       <div className="flex flex-col md:grid md:grid-cols-2 tv:grid-cols-4 gap-3 tv:gap-8 mt-4">
-        {teachersMock.map((teacher) => (
+        {filteredTeachers.map((teacher) => (
           <TeacherCard key={teacher.id} teacher={teacher} />
         ))}
       </div>
