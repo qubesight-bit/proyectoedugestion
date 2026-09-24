@@ -8,10 +8,10 @@ import {
   TeacherGradesView,
   TeacherAttendanceView,
   TeacherResourcesView,
-} from "@/features/teacher";
-import { TeachersView } from "../features/teachers";
-import { AdminSupervisionView } from "../features/admin";
-import { TeacherDashboardView } from "../features/dashboard";
+} from "@/pages/teacher";
+import { TeachersView } from "../pages/teachers";
+import { AdminSupervisionView } from "../pages/admin";
+import { TeacherDashboardView } from "../pages/dashboard";
 
 export const Route = createFileRoute("/app")({
   head: () => ({
