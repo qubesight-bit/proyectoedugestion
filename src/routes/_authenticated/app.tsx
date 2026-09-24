@@ -13,7 +13,7 @@ import { TeachersView } from "../pages/teachers";
 import { AdminSupervisionView } from "../pages/admin";
 import { TeacherDashboardView } from "../pages/dashboard";
 
-export const Route = createFileRoute("/app")({
+export const Route = createFileRoute("/_authenticated/app")({
   head: () => ({
     meta: [
       { title: "Plataforma Centro Educativo Adventista de Cartago" },

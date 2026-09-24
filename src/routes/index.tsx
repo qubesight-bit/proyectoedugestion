@@ -27,7 +27,7 @@ function LandingPage() {
           </nav>
 
           <div className="flex items-center">
-            <Link to="/app">
+            <Link to="/auth">
               <Button className="rounded-full bg-yellow-400 px-6 py-5 tv:px-12 tv:py-10 text-sm tv:text-2xl font-bold text-blue-950 shadow-xl hover:bg-yellow-300 transition-all hover:scale-105">
                 Iniciar sesión
                 <span className="material-symbols-outlined ml-2 text-[20px] tv:text-[32px]">login</span>
@@ -300,7 +300,7 @@ function LandingPage() {
 
             <div>
               <h3 className="mb-4 tv:mb-10 text-sm tv:text-2xl font-semibold uppercase tracking-wider text-slate-300">Administración</h3>
-              <Link to="/app">
+              <Link to="/auth">
                 <Button variant="outline" className="w-full h-auto py-3 tv:py-6 text-sm tv:text-3xl border-slate-700 bg-slate-900 text-slate-300 hover:bg-slate-800 hover:text-white">
                   Plataforma Institucional
                 </Button>
