@@ -2,6 +2,13 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useMemo, useState, type ReactNode } from "react";
 
 import { Button } from "@/components/ui/button";
+import { useEffect } from "react";
+import { useAccount } from "@/components/app/useAccount";
+import { CoursesManager } from "@/components/app/CoursesManager";
+import { StudentsManager } from "@/components/app/StudentsManager";
+import { AnnouncementsManager } from "@/components/app/AnnouncementsManager";
+import { AssistantChat } from "@/components/app/AssistantChat";
+import { ProfilePanel } from "@/components/app/ProfilePanel";
 import {
   TeacherDashboardView as TeacherDashboardFeature,
   TeacherCoursesView,
@@ -9,11 +16,11 @@ import {
   TeacherAttendanceView,
   TeacherResourcesView,
 } from "@/pages/teacher";
-import { TeachersView } from "../pages/teachers";
-import { AdminSupervisionView } from "../pages/admin";
-import { TeacherDashboardView } from "../pages/dashboard";
+import { TeachersView } from "@/pages/teachers";
+import { AdminSupervisionView } from "@/pages/admin";
+import { TeacherDashboardView } from "@/pages/dashboard";
 
-export const Route = createFileRoute("/app")({
+export const Route = createFileRoute("/_authenticated/app")({
   head: () => ({
     meta: [
       { title: "Plataforma Centro Educativo Adventista de Cartago" },
@@ -206,16 +213,29 @@ function Index() {
     window.setTimeout(() => setToast(""), 2600);
   };
 
-  if (view === "login") {
+  const account = useAccount();
+  useEffect(() => {
+    if (!account.label) return;
+    const r: Role = account.label === "Administrador" ? "Administrador" : "Docente";
+    setRole(r);
+    setView((v) => (v === "login" ? (r === "Administrador" ? "home" : "teacher_home") : v));
+  }, [account.label]);
+
+  if (account.isLoading || view === "login") {
     return (
-      <LoginScreen
-        onLogin={(r) => {
-          setRole(r);
-          setView(r === "Administrador" ? "home" : "teacher_home");
-        }}
-      />
+      <main className="flex min-h-screen items-center justify-center bg-surface" role="status">
+        Cargando tu cuenta…
+      </main>
     );
   }
+  if (account.error || !account.label) {
+    return (
+      <main className="flex min-h-screen items-center justify-center bg-surface p-6 text-center" role="alert">
+        Tu cuenta no tiene un rol asignado. Contacta a la administración.
+      </main>
+    );
+  }
+  const isAdmin = account.isAdmin;
 
   return (
     <div className="min-h-screen bg-background text-on-surface flex justify-center">
@@ -229,27 +249,20 @@ function Index() {
           onCloseRole={() => setRoleOpen(false)}
         />
 
-        <main className="flex-1 bg-surface pt-16 pb-24 md:pt-20 md:pb-8 md:ml-64 w-full h-screen overflow-y-auto px-4 md:px-8 tv:px-24">
+        <main id="contenido" tabIndex={-1} className="flex-1 bg-surface pt-16 pb-24 md:pt-20 md:pb-8 md:ml-64 w-full h-screen overflow-y-auto px-4 md:px-8 tv:px-24">
           {view === "home" && (
-            <DashboardView
-              onCourses={() => setView("courses")}
-              onStudents={() => setView("students")}
-            />
+            <>
+              <DashboardView
+                onCourses={() => setView("courses")}
+                onStudents={() => setView("students")}
+              />
+              <AnnouncementsManager isAdmin={isAdmin} />
+            </>
           )}
 
-          {view === "courses" && (
-            <CoursesView
-              filter={courseFilter}
-              filteredCourses={filteredCourses}
-              onFilter={setCourseFilter}
-              onOpenCourse={() => setCourseModal(true)}
-              onToast={showToast}
-            />
-          )}
+          {view === "courses" && <CoursesManager isAdmin={isAdmin} />}
 
-          {view === "students" && (
-            <StudentsView onOpenStudent={() => setStudentModal(true)} />
-          )}
+          {view === "students" && <StudentsManager isAdmin={isAdmin} />}
 
           {view === "teachers" && <TeachersView />}
 
@@ -265,16 +278,9 @@ function Index() {
 
           {view === "admin_supervision" && <AdminSupervisionView />}
 
-          {view === "assistant" && (
-            <SimplePanel icon="auto_awesome" title="Asistente IA" />
-          )}
+          {view === "assistant" && <AssistantChat />}
 
-          {view === "profile" && (
-            <SimplePanel
-              icon="account_circle"
-              title="Perfil institucional"
-            />
-          )}
+          {view === "profile" && <ProfilePanel />}
         </main>
 
         <BottomNav active={view} onNavigate={setView} role={role} />

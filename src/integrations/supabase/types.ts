@@ -14,6 +14,93 @@ export type Database = {
   }
   public: {
     Tables: {
+      announcements: {
+        Row: {
+          author_name: string
+          content: string
+          created_at: string
+          created_by: string | null
+          id: string
+          source: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          author_name?: string
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          source?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          author_name?: string
+          content?: string
+          created_at?: string
+          created_by?: string | null
+          id?: string
+          source?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      courses: {
+        Row: {
+          capacity: number
+          category: string
+          created_at: string
+          created_by: string | null
+          enrolled: number
+          face: string
+          id: string
+          level: string
+          note: string
+          room: string
+          schedule: string
+          tag: string
+          teacher: string
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          capacity?: number
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          enrolled?: number
+          face?: string
+          id?: string
+          level?: string
+          note?: string
+          room?: string
+          schedule?: string
+          tag?: string
+          teacher?: string
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          capacity?: number
+          category?: string
+          created_at?: string
+          created_by?: string | null
+          enrolled?: number
+          face?: string
+          id?: string
+          level?: string
+          note?: string
+          room?: string
+          schedule?: string
+          tag?: string
+          teacher?: string
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string
@@ -32,6 +119,57 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+        }
+        Relationships: []
+      }
+      students: {
+        Row: {
+          alert: string
+          code: string
+          created_at: string
+          created_by: string | null
+          email: string
+          grade: string
+          id: string
+          image: string
+          name: string
+          phone: string
+          score: number | null
+          status: string
+          tutor: string
+          updated_at: string
+        }
+        Insert: {
+          alert?: string
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          grade?: string
+          id?: string
+          image?: string
+          name: string
+          phone?: string
+          score?: number | null
+          status?: string
+          tutor?: string
+          updated_at?: string
+        }
+        Update: {
+          alert?: string
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          grade?: string
+          id?: string
+          image?: string
+          name?: string
+          phone?: string
+          score?: number | null
+          status?: string
+          tutor?: string
+          updated_at?: string
         }
         Relationships: []
       }
@@ -65,6 +203,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_staff: { Args: { _user_id: string }; Returns: boolean }
     }
     Enums: {
       app_role: "admin" | "docente" | "estudiante"
