@@ -161,35 +161,35 @@ function CourseForm({
   return (
     <CrudDialog title={course ? "Editar curso" : "Nuevo curso"} onClose={onClose}>
       <form noValidate className="flex flex-col gap-3" onSubmit={submit}>
-        <FormField id="c-title" label="Nombre de la asignatura *" error={errors?.title}>
+        <FormField id="c-title" label="Nombre de la asignatura *" error={errors?.["title"]}>
           <input {...f("title")} defaultValue={course?.title} />
         </FormField>
         <div className="grid gap-3 sm:grid-cols-2">
-          <FormField id="c-level" label="Nivel *" error={errors?.level}>
+          <FormField id="c-level" label="Nivel *" error={errors?.["level"]}>
             <select {...f("level")} defaultValue={course?.level ?? LEVELS[0]}>
               {LEVELS.map((l) => <option key={l}>{l}</option>)}
             </select>
           </FormField>
-          <FormField id="c-category" label="Área *" error={errors?.category}>
+          <FormField id="c-category" label="Área *" error={errors?.["category"]}>
             <select {...f("category")} defaultValue={course?.category ?? "ciencias"}>
               {COURSE_CATEGORIES.map((c) => <option key={c} value={c}>{CAT_LABEL[c]}</option>)}
             </select>
           </FormField>
         </div>
-        <FormField id="c-teacher" label="Docente titular *" error={errors?.teacher}>
+        <FormField id="c-teacher" label="Docente titular *" error={errors?.["teacher"]}>
           <input {...f("teacher")} defaultValue={course?.teacher} />
         </FormField>
-        <FormField id="c-schedule" label="Días y horario" error={errors?.schedule}>
+        <FormField id="c-schedule" label="Días y horario" error={errors?.["schedule"]}>
           <input {...f("schedule")} defaultValue={course?.schedule} />
         </FormField>
-        <FormField id="c-room" label="Aula" error={errors?.room}>
+        <FormField id="c-room" label="Aula" error={errors?.["room"]}>
           <input {...f("room")} defaultValue={course?.room} />
         </FormField>
         <div className="grid gap-3 sm:grid-cols-2">
-          <FormField id="c-capacity" label="Cupo máximo *" error={errors?.capacity}>
+          <FormField id="c-capacity" label="Cupo máximo *" error={errors?.["capacity"]}>
             <input {...f("capacity")} type="number" min={1} defaultValue={course?.capacity ?? 30} />
           </FormField>
-          <FormField id="c-enrolled" label="Matriculados" error={errors?.enrolled}>
+          <FormField id="c-enrolled" label="Matriculados" error={errors?.["enrolled"]}>
             <input {...f("enrolled")} type="number" min={0} defaultValue={course?.enrolled ?? 0} />
           </FormField>
         </div>

@@ -52,7 +52,7 @@ export function FormField({
 }: {
   id: string;
   label: string;
-  error?: string;
+  error?: string | undefined;
   children: ReactNode;
 }) {
   return (

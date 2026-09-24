@@ -121,7 +121,7 @@ function StudentForm({ student, onClose, onSave }: { student: Student | null; on
   async function submit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const raw = Object.fromEntries(new FormData(e.currentTarget)) as Record<string, unknown>;
-    const values = { ...raw, score: raw.score === "" ? null : raw.score };
+    const values = { ...raw, score: raw["score"] === "" ? null : raw["score"] };
     const errs = fieldErrors(studentSchema, values);
     setErrors(errs);
     if (errs) return;
@@ -139,38 +139,38 @@ function StudentForm({ student, onClose, onSave }: { student: Student | null; on
   return (
     <CrudDialog title={student ? "Editar estudiante" : "Nuevo estudiante"} onClose={onClose}>
       <form noValidate className="flex flex-col gap-3" onSubmit={submit}>
-        <FormField id="s-name" label="Nombre completo *" error={errors?.name}>
+        <FormField id="s-name" label="Nombre completo *" error={errors?.["name"]}>
           <input {...f("name")} defaultValue={student?.name} />
         </FormField>
         <div className="grid gap-3 sm:grid-cols-2">
-          <FormField id="s-grade" label="Grado *" error={errors?.grade}>
+          <FormField id="s-grade" label="Grado *" error={errors?.["grade"]}>
             <select {...f("grade")} defaultValue={student?.grade ?? GRADES[0]}>
               {GRADES.map((g) => <option key={g}>{g}</option>)}
             </select>
           </FormField>
-          <FormField id="s-status" label="Estado *" error={errors?.status}>
+          <FormField id="s-status" label="Estado *" error={errors?.["status"]}>
             <select {...f("status")} defaultValue={student?.status ?? "Activo"}>
               {STATUSES.map((g) => <option key={g}>{g}</option>)}
             </select>
           </FormField>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
-          <FormField id="s-tutor" label="Encargado" error={errors?.tutor}>
+          <FormField id="s-tutor" label="Encargado" error={errors?.["tutor"]}>
             <input {...f("tutor")} defaultValue={student?.tutor} />
           </FormField>
-          <FormField id="s-phone" label="Teléfono" error={errors?.phone}>
+          <FormField id="s-phone" label="Teléfono" error={errors?.["phone"]}>
             <input {...f("phone")} type="tel" defaultValue={student?.phone} />
           </FormField>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
-          <FormField id="s-email" label="Correo" error={errors?.email}>
+          <FormField id="s-email" label="Correo" error={errors?.["email"]}>
             <input {...f("email")} type="email" defaultValue={student?.email} />
           </FormField>
-          <FormField id="s-score" label="Promedio (0-10)" error={errors?.score}>
+          <FormField id="s-score" label="Promedio (0-10)" error={errors?.["score"]}>
             <input {...f("score")} type="number" step="0.1" min={0} max={10} defaultValue={student?.score ?? ""} />
           </FormField>
         </div>
-        <FormField id="s-alert" label="Observación / alerta" error={errors?.alert}>
+        <FormField id="s-alert" label="Observación / alerta" error={errors?.["alert"]}>
           <input {...f("alert")} defaultValue={student?.alert} />
         </FormField>
         <div className="flex justify-end gap-2 pt-2">

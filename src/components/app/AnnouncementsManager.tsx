@@ -87,11 +87,11 @@ export function AnnouncementsManager({ isAdmin }: { isAdmin: boolean }) {
       {editing && (
         <CrudDialog title={current ? "Editar anuncio" : "Nuevo anuncio"} onClose={() => setEditing(null)}>
           <form noValidate className="flex flex-col gap-3" onSubmit={submit}>
-            <FormField id="a-title" label="Título *" error={errors?.title}>
-              <input id="a-title" name="title" className="form-input" defaultValue={current?.title} aria-invalid={!!errors?.title} />
+            <FormField id="a-title" label="Título *" error={errors?.["title"]}>
+              <input id="a-title" name="title" className="form-input" defaultValue={current?.title} aria-invalid={!!errors?.["title"]} />
             </FormField>
-            <FormField id="a-content" label="Contenido *" error={errors?.content}>
-              <textarea id="a-content" name="content" rows={4} className="form-input" defaultValue={current?.content} aria-invalid={!!errors?.content} />
+            <FormField id="a-content" label="Contenido *" error={errors?.["content"]}>
+              <textarea id="a-content" name="content" rows={4} className="form-input" defaultValue={current?.content} aria-invalid={!!errors?.["content"]} />
             </FormField>
             <FormField id="a-author" label="Autor">
               <input id="a-author" name="author_name" className="form-input" defaultValue={current?.author_name ?? "Dirección"} />
