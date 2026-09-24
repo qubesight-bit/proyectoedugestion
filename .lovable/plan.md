@@ -1,28 +1,42 @@
-# Fully responsive EduGestión layout
+# Cumplir criterios del proyecto (base de datos, CRUD, rutas, IA, n8n, pruebas)
 
-## Goal
-Keep the current mobile experience intact while adding purposeful tablet and desktop layouts across sign-in, dashboard, courses, students, profile, dialogs, and navigation.
+La base de datos (Lovable Cloud) ya está activa con usuarios, perfiles y roles. Falta conectarla a la app y completar los criterios.
 
-## Changes
-- Replace the phone-width application wrapper with a responsive shell:
-  - existing compact top bar and bottom navigation on mobile
-  - persistent left navigation and full-width top bar on desktop
-  - centered content with readable maximum widths on wide screens
-- Adapt each screen for available space:
-  - dashboard metrics and announcements use multi-column desktop grids
-  - courses and students display cards in balanced responsive grids
-  - headings, filters, search, and actions wrap safely on narrow screens
-  - profile and assistant panels fill the available workspace cleanly
-- Improve the sign-in screen for desktop with a branded information panel beside the form, while retaining the current single-column mobile screen.
-- Present forms as bottom sheets on mobile and centered dialogs on larger screens.
-- Preserve all authentication, filters, buttons, modals, and current Spanish content.
+## 1. Almacenamiento (base de datos)
+Nuevas tablas con reglas de acceso por rol:
+- **cursos**: nombre, categoría, docente, descripción, horario, cupo
+- **estudiantes**: nombre, grado, correo, encargado, estado, notas médicas
+- **anuncios**: título, contenido, autor, fecha
+- Admin: crear/editar/eliminar todo. Docente: ver todo y editar sus cursos. Datos de ejemplo actuales cargados como filas iniciales.
 
-## Validation
-- Check signed-out and signed-in layouts at mobile, tablet, and desktop widths.
-- Verify navigation, course/student dialogs, overflow, and text wrapping.
-- Confirm the preview has no build, console, or runtime errors.
+## 2. CRUDs
+Reemplazar los datos de ejemplo por datos reales en Cursos, Estudiantes y Anuncios: listar, crear, editar y eliminar (con confirmación y avisos de éxito/error).
 
-## Technical details
-- Use existing design tokens and Button components.
-- Apply responsive Tailwind breakpoints without changing backend or authentication behavior.
-- Keep fixed navigation dimensions stable so content never sits underneath it.
+## 3. Rutas públicas y privadas + protección
+- Públicas: `/` (inicio institucional), `/auth` (iniciar sesión).
+- Privadas: `/app/...` (panel, cursos, estudiantes, anuncios, IA, perfil) — si no hay sesión redirige a `/auth`.
+- Secciones de administración solo visibles para rol admin; el servidor también valida el rol en cada operación.
+
+## 4. Persistencia de la sesión
+La sesión se guarda y se restaura al recargar; cerrar sesión limpia datos y regresa a `/auth`. Opción "Recordar sesión" funcional.
+
+## 5. Integración de IA
+Asistente en la pestaña IA (chat en español con respuestas en tiempo real) que conoce el contexto institucional y puede resumir datos de cursos/estudiantes. Sin claves adicionales.
+
+## 6. n8n
+- Endpoint público seguro que n8n puede llamar (ej. crear anuncio automáticamente), validado con una clave secreta compartida.
+- Envío de eventos a n8n (nuevo estudiante, nuevo anuncio) a una URL de webhook de n8n. Necesitaré que me proporciones esa URL y crees una clave secreta al final.
+
+## 7. Accesibilidad
+Etiquetas en campos y botones con íconos, navegación con teclado, foco visible, contraste, `lang="es"`, textos alternativos, anuncios de errores para lectores de pantalla.
+
+## 8. Pruebas unitarias
+Configurar Vitest + Testing Library con pruebas para: validaciones de formularios, utilidades, formulario de inicio de sesión, protección por rol y componentes de listas. Comando `bun run test`.
+
+## Detalles técnicos
+- Migración: tablas `courses`, `students`, `announcements` con GRANTs, RLS usando `has_role`, triggers `updated_at`, INSERTs de ejemplo.
+- Rutas TanStack: `src/routes/auth.tsx`, `src/routes/_authenticated/route.tsx` (gestionado), `src/routes/_authenticated/app/*`; `onAuthStateChange` en `__root`.
+- Server functions con `requireSupabaseAuth` para CRUD; validación con zod.
+- IA: server route de streaming usando Lovable AI Gateway (`google/gemini-3-flash-preview`).
+- n8n: `src/routes/api/public/n8n.ts` con verificación de secreto `N8N_WEBHOOK_SECRET`; salida vía `N8N_WEBHOOK_URL`.
+- Vitest + jsdom + @testing-library/react; tests en `src/**/*.test.ts(x)`.
