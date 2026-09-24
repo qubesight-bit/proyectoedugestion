@@ -34,7 +34,7 @@ const recentTeacherUploads = [
 export function AdminSupervisionView() {
   const groupedUploads = recentTeacherUploads.reduce((acc, upload) => {
     if (!acc[upload.subject]) acc[upload.subject] = [];
-    acc[upload.subject].push(upload);
+    acc[upload.subject]!.push(upload);
     return acc;
   }, {} as Record<string, typeof recentTeacherUploads>);
 
