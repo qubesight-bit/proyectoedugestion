@@ -18,31 +18,31 @@ describe("courseSchema", () => {
   });
   it("rechaza título corto y categoría inválida", () => {
     const errs = fieldErrors(courseSchema, { ...valid, title: "Q", category: "deportes" });
-    expect(errs?.title).toMatch(/al menos 3/);
-    expect(errs?.category).toBeDefined();
+    expect(errs?.["title"]).toMatch(/al menos 3/);
+    expect(errs?.["category"]).toBeDefined();
   });
   it("rechaza cupo 0", () => {
-    expect(fieldErrors(courseSchema, { ...valid, capacity: 0 })?.capacity).toBeDefined();
+    expect(fieldErrors(courseSchema, { ...valid, capacity: 0 })?.["capacity"]).toBeDefined();
   });
 });
 
 describe("studentSchema", () => {
   it("valida correo y teléfono", () => {
     const errs = fieldErrors(studentSchema, { name: "Ana Pérez", grade: "1°", status: "Activo", email: "malo", phone: "abc" });
-    expect(errs?.email).toBe("Correo inválido");
-    expect(errs?.phone).toBe("Teléfono inválido");
+    expect(errs?.["email"]).toBe("Correo inválido");
+    expect(errs?.["phone"]).toBe("Teléfono inválido");
   });
   it("permite correo vacío y promedio nulo", () => {
     expect(fieldErrors(studentSchema, { name: "Ana Pérez", grade: "1°", status: "Activo", email: "", score: null })).toBeNull();
   });
   it("rechaza promedio mayor a 10", () => {
-    expect(fieldErrors(studentSchema, { name: "Ana Pérez", grade: "1°", status: "Activo", score: 11 })?.score).toBeDefined();
+    expect(fieldErrors(studentSchema, { name: "Ana Pérez", grade: "1°", status: "Activo", score: 11 })?.["score"]).toBeDefined();
   });
 });
 
 describe("announcementSchema", () => {
   it("requiere contenido", () => {
-    expect(fieldErrors(announcementSchema, { title: "Hola mundo", content: "" })?.content).toBeDefined();
+    expect(fieldErrors(announcementSchema, { title: "Hola mundo", content: "" })?.["content"]).toBeDefined();
   });
 });
 
