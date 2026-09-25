@@ -16,15 +16,26 @@ const cloudPublishableKey =
   process.env["VITE_SUPABASE_ANON_KEY"] ??
   "sb_publishable_wZsh3a4N4U61Tc5J3fg-fQ_haCzhl3g";
 
+const cloudClientEnvPlugin = {
+  name: "cloud-client-env",
+  enforce: "pre" as const,
+  transform(code: string, id: string) {
+    if (!id.includes("/src/integrations/supabase/client.ts")) return null;
+
+    return code
+      .replace("import.meta.env['VITE_SUPABASE_URL']", JSON.stringify(cloudUrl))
+      .replace(
+        "import.meta.env['VITE_SUPABASE_PUBLISHABLE_KEY']",
+        JSON.stringify(cloudPublishableKey),
+      );
+  },
+};
+
 export default defineConfig({
   vite: {
-    // Lovable Cloud exposes both server and browser names. Explicitly bridge
-    // the public values so production browser bundles cannot lose them. The
-    // generated client uses bracket access, so define that exact expression.
-    define: {
-      "import.meta.env['VITE_SUPABASE_URL']": JSON.stringify(cloudUrl),
-      "import.meta.env['VITE_SUPABASE_PUBLISHABLE_KEY']": JSON.stringify(cloudPublishableKey),
-    },
+    // The generated client uses bracket access, which Vite's define option
+    // does not replace. Substitute only its two public values before compile.
+    plugins: [cloudClientEnvPlugin],
   },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).

@@ -9,4 +9,4 @@
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
 
-- Keep exact bracket-access build-time fallbacks for the Lovable Cloud URL and publishable key in `vite.config.ts` because the generated client uses bracket syntax and preview aliases may be absent.
+- Keep the pre-build client transform for the Lovable Cloud URL and publishable key because the generated client uses bracket syntax and preview aliases may be absent.
