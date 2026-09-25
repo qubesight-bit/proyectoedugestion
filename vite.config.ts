@@ -19,10 +19,11 @@ const cloudPublishableKey =
 export default defineConfig({
   vite: {
     // Lovable Cloud exposes both server and browser names. Explicitly bridge
-    // the public values so production browser bundles cannot lose them.
+    // the public values so production browser bundles cannot lose them. The
+    // generated client uses bracket access, so define that exact expression.
     define: {
-      "import.meta.env.VITE_SUPABASE_URL": JSON.stringify(cloudUrl),
-      "import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY": JSON.stringify(cloudPublishableKey),
+      "import.meta.env['VITE_SUPABASE_URL']": JSON.stringify(cloudUrl),
+      "import.meta.env['VITE_SUPABASE_PUBLISHABLE_KEY']": JSON.stringify(cloudPublishableKey),
     },
   },
   tanstackStart: {
