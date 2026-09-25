@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep the pre-build client transform for the Lovable Cloud URL and publishable key because the generated client uses bracket syntax and preview aliases may be absent.
