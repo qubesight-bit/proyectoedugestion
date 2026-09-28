@@ -9,14 +9,14 @@ import { CrudDialog, FormField } from "./CrudDialog";
 
 type Ann = Awaited<ReturnType<typeof listAnnouncements>>[number];
 
-export function AnnouncementsManager({ isAdmin, openNew = false }: { isAdmin: boolean; openNew?: boolean }) {
+export function AnnouncementsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; openNew?: number }) {
   const qc = useQueryClient();
   const list = useServerFn(listAnnouncements);
   const save = useServerFn(saveAnnouncement);
   const del = useServerFn(deleteAnnouncement);
   const { data = [], isLoading } = useQuery({ queryKey: ["announcements"], queryFn: () => list() });
   const [editing, setEditing] = useState<Ann | "new" | null>(null);
-  useEffect(() => { if (openNew && isAdmin) setEditing("new"); }, [openNew, isAdmin]);
+  useEffect(() => { if (openNew > 0 && isAdmin) setEditing("new"); }, [openNew, isAdmin]);
   const [errors, setErrors] = useState<Record<string, string> | null>(null);
 
   const remove = useMutation({
