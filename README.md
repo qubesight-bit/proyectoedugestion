@@ -21,6 +21,17 @@ Continue developing this project in the [Lovable editor](https://lovable.dev/pro
 
 ## Development
 
+### Chatbot público con Groq
+
+El endpoint `/api/chat` usa la variable secreta de servidor `GROQ_API_KEY`.
+Configurala en los secretos o variables de servidor del proyecto de Lovable y
+volvé a publicar. Para desarrollo local, añadila a un archivo `.env` no versionado.
+No uses una variable `VITE_` ni publiques la clave en GitHub: el navegador solo
+envía la conversación al endpoint propio del sitio.
+
+Se solicita `llama-3.1-8b-instant` a Groq y, si la cuenta ya no tiene acceso a
+ese modelo, se intenta `openai/gpt-oss-20b`.
+
 Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 
 ```sh

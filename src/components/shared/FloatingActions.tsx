@@ -9,7 +9,7 @@ export function FloatingActions() {
   const [chatOpen, setChatOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useSimpleChat({ api: '/api/chat', greeting: '¡Hola! Soy el asistente virtual oficial del CEAC. Conozco todo sobre nuestras admisiones, costos, historia y más. ¿En qué te puedo ayudar hoy?' });
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useSimpleChat({ api: '/api/chat', greeting: '¡Hola! Soy el asistente virtual del CEAC. Puedo ayudarte con información general sobre el colegio. ¿En qué te ayudo?' });
 
   // Handle Theme
   useEffect(() => {
@@ -120,6 +120,7 @@ export function FloatingActions() {
                 </div>
               </div>
             )}
+            {error && <p role="alert" className="rounded-lg bg-red-50 p-2 text-sm text-red-700">{error}</p>}
             <div ref={messagesEndRef} />
           </div>
 

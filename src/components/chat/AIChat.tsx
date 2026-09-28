@@ -7,7 +7,7 @@ import { useState } from 'react';
 
 export function AIChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useSimpleChat({ api: '/api/chat', greeting: '¡Hola! Soy el asistente virtual del CEAC. ¿En qué te puedo ayudar hoy?' });
+  const { messages, input, handleInputChange, handleSubmit, isLoading, error } = useSimpleChat({ api: '/api/chat', greeting: '¡Hola! Soy el asistente virtual del CEAC. ¿En qué te puedo ayudar hoy?' });
 
   if (!isOpen) {
     return (
@@ -53,6 +53,7 @@ export function AIChatWidget() {
               </div>
             </div>
           )}
+          {error && <p role="alert" className="rounded-lg bg-red-50 p-2 text-sm text-red-700">{error}</p>}
         </div>
 
         <form onSubmit={handleSubmit} className="p-3 bg-white border-t border-slate-100 flex gap-2">
