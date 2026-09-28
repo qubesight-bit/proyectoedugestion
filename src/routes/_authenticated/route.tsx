@@ -4,12 +4,15 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/_authenticated")({
   ssr: false,
   beforeLoad: async () => {
-    // Permitir acceso si es una cuenta de demostración
-    const isDemo = typeof window !== 'undefined' && localStorage.getItem('demo_role');
-    if (isDemo) return { user: { id: 'demo-user', email: 'demo@ceac.ed.cr' } };
-
     const { data, error } = await supabase.auth.getUser();
     if (error || !data.user) throw redirect({ to: "/auth" });
+    const { data: roles, error: roleError } = await supabase
+      .from("user_roles")
+      .select("role")
+      .eq("user_id", data.user.id);
+    if (roleError || !roles?.some(({ role }) => role === "admin" || role === "docente")) {
+      throw redirect({ to: "/auth" });
+    }
     return { user: data.user };
   },
   component: () => <Outlet />,

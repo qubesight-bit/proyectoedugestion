@@ -225,9 +225,9 @@ function Index() {
       .from("user_roles")
       .select("role")
       .eq("user_id", userId)
-      .single();
+      .in("role", ["admin", "docente"]);
     
-    const dbRole = data?.role;
+    const dbRole = data?.some(({ role }) => role === "admin") ? "admin" : "docente";
     let appRole: Role = "Docente";
     if (dbRole === "admin") appRole = "Administrador";
     
@@ -251,12 +251,9 @@ function Index() {
 
   if (view === "login") {
     return (
-      <AuthScreen
-        onLogin={(r) => {
-          setRole(r);
-          setView(r === "Administrador" ? "home" : "teacher_home");
-        }}
-      />
+      <AuthScreen onLogin={() => { void supabase.auth.getUser().then(({ data }) => {
+        if (data.user) void handleRoleAndLogin(data.user.id);
+      }); }} />
     );
   }
   const isAdmin = role === "Administrador";

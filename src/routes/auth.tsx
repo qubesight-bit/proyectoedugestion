@@ -21,14 +21,12 @@ function AuthPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    // Limpiar sesión demo si entra a esta página
-    if (typeof window !== 'undefined') {
-      localStorage.removeItem('demo_role');
-    }
-
-    // Si ya tiene sesión real, mandarlo a /app
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) navigate({ to: "/app", replace: true });
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!data.user) return;
+      const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", data.user.id);
+      if (roles?.some(({ role }) => role === "admin" || role === "docente")) {
+        navigate({ to: "/app", replace: true });
+      }
     });
   }, [navigate]);
 

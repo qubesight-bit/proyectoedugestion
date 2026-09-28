@@ -1,11 +1,10 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Icon } from "../../components/shared";
-import { Role } from "../../types";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "sonner";
 
-export function AuthScreen({ onLogin }: { onLogin: (role: Role) => void }) {
+export function AuthScreen({ onLogin }: { onLogin: () => void }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -14,17 +13,21 @@ export function AuthScreen({ onLogin }: { onLogin: (role: Role) => void }) {
     event.preventDefault();
     setLoading(true);
 
-    // Mock Login Demo
-    if (email === "admin@ceac.ed.cr" && password === "admin123") {
-      localStorage.setItem("demo_role", "Administrador");
-      toast.success("¡Bienvenido al panel de Administración!");
-      setTimeout(() => onLogin("Administrador"), 1000);
-    } else if (email === "profesor@ceac.ed.cr" && password === "profe123") {
-      localStorage.setItem("demo_role", "Docente");
-      toast.success("¡Bienvenido al panel Docente!");
-      setTimeout(() => onLogin("Docente"), 1000);
-    } else {
-      toast.error("Correo o contraseña incorrectos. Utiliza las cuentas de prueba.");
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
+      if (error) throw error;
+      const { data: roles, error: roleError } = await supabase
+        .from("user_roles")
+        .select("role")
+        .eq("user_id", data.user.id);
+      if (roleError) throw roleError;
+      if (!roles?.some(({ role }) => role === "admin" || role === "docente")) {
+        await supabase.auth.signOut();
+        throw new Error("Tu cuenta todavía no tiene un rol de administrador o docente.");
+      }
+      onLogin();
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "No se pudo iniciar sesión.");
       setLoading(false);
     }
   };
@@ -72,7 +75,7 @@ export function AuthScreen({ onLogin }: { onLogin: (role: Role) => void }) {
                 onChange={(e) => setEmail(e.target.value)}
                 aria-label="Correo institucional"
                 className="min-w-0 flex-1 bg-transparent text-on-surface outline-none placeholder:text-muted-foreground"
-                placeholder="admin@ceac.ed.cr o profesor@ceac.ed.cr"
+                placeholder="correo@ceac.ed.cr"
                 type="email"
               />
             </div>
@@ -140,13 +143,6 @@ export function AuthScreen({ onLogin }: { onLogin: (role: Role) => void }) {
             </svg>
             <span className="font-medium">Acceder con Google</span>
           </Button>
-          <div className="mt-4 p-4 bg-amber-50 rounded-lg border border-amber-200">
-            <h4 className="text-sm font-bold text-amber-800 mb-2">Cuentas de Demostración:</h4>
-            <div className="text-xs text-amber-900 space-y-1">
-              <p><strong>Administrador:</strong> admin@ceac.ed.cr / admin123</p>
-              <p><strong>Profesor:</strong> profesor@ceac.ed.cr / profe123</p>
-            </div>
-          </div>
         </form>
 
         <div className="flex flex-col items-center gap-2 text-center text-body-sm text-on-surface-variant mt-4">
