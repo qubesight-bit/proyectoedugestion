@@ -1,27 +1,31 @@
 import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { deleteStudent, listStudents, saveStudent } from "@/lib/data.functions";
+import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { fieldErrors, studentSchema } from "@/lib/validation";
 import { CrudDialog, FormField } from "./CrudDialog";
 
-type Student = Awaited<ReturnType<typeof listStudents>>[number];
+type Student = Database["public"]["Tables"]["students"]["Row"];
 const GRADES = ["1° Primaria 'A'", "2° Primaria 'A'", "3° Primaria 'B'", "4° Primaria 'A'", "1° Secundaria 'A'", "1° Secundaria 'C'", "2° Secundaria 'B'"];
 const STATUSES = ["Activo", "Doc. Pendiente", "En Observación", "Retirado Temporal"];
 
-export function StudentsManager({ isAdmin }: { isAdmin: boolean }) {
+export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; openNew?: number }) {
   const qc = useQueryClient();
-  const list = useServerFn(listStudents);
-  const save = useServerFn(saveStudent);
-  const del = useServerFn(deleteStudent);
-  const { data = [], isLoading, error } = useQuery({ queryKey: ["students"], queryFn: () => list() });
+  const { data = [], isLoading, error } = useQuery({ queryKey: ["students"], queryFn: async () => {
+    const { data, error } = await supabase.from("students").select("*").order("created_at");
+    if (error) throw error;
+    return data;
+  } });
   const [q, setQ] = useState("");
-  const [editing, setEditing] = useState<Student | "new" | null>(null);
+  const [editing, setEditing] = useState<Student | "new" | null>(openNew > 0 && isAdmin ? "new" : null);
 
   const remove = useMutation({
-    mutationFn: (id: string) => del({ data: { id } }),
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("students").delete().eq("id", id).select("id").single();
+      if (error) throw error;
+    },
     onSuccess: () => {
       toast.success("Estudiante eliminado");
       qc.invalidateQueries({ queryKey: ["students"] });
@@ -103,7 +107,11 @@ export function StudentsManager({ isAdmin }: { isAdmin: boolean }) {
           student={editing === "new" ? null : editing}
           onClose={() => setEditing(null)}
           onSave={async (v) => {
-            await save({ data: v });
+            const { data: auth } = await supabase.auth.getUser();
+            const { error } = editing === "new"
+              ? await supabase.from("students").insert({ ...(v as Database["public"]["Tables"]["students"]["Insert"]), created_by: auth.user?.id ?? null }).select("id").single()
+              : await supabase.from("students").update(v as Database["public"]["Tables"]["students"]["Update"]).eq("id", editing.id).select("id").single();
+            if (error) throw error;
             toast.success(editing === "new" ? "Estudiante registrado" : "Estudiante actualizado");
             qc.invalidateQueries({ queryKey: ["students"] });
             setEditing(null);

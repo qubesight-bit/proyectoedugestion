@@ -1,26 +1,30 @@
 import { useEffect, useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { deleteAnnouncement, listAnnouncements, saveAnnouncement } from "@/lib/data.functions";
+import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { announcementSchema, fieldErrors } from "@/lib/validation";
 import { CrudDialog, FormField } from "./CrudDialog";
 
-type Ann = Awaited<ReturnType<typeof listAnnouncements>>[number];
+type Ann = Database["public"]["Tables"]["announcements"]["Row"];
 
 export function AnnouncementsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; openNew?: number }) {
   const qc = useQueryClient();
-  const list = useServerFn(listAnnouncements);
-  const save = useServerFn(saveAnnouncement);
-  const del = useServerFn(deleteAnnouncement);
-  const { data = [], isLoading } = useQuery({ queryKey: ["announcements"], queryFn: () => list() });
+  const { data = [], isLoading, error } = useQuery({ queryKey: ["announcements"], queryFn: async () => {
+    const { data, error } = await supabase.from("announcements").select("*").order("created_at", { ascending: false });
+    if (error) throw error;
+    return data;
+  } });
   const [editing, setEditing] = useState<Ann | "new" | null>(null);
   useEffect(() => { if (openNew > 0 && isAdmin) setEditing("new"); }, [openNew, isAdmin]);
   const [errors, setErrors] = useState<Record<string, string> | null>(null);
 
   const remove = useMutation({
-    mutationFn: (id: string) => del({ data: { id } }),
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("announcements").delete().eq("id", id).select("id").single();
+      if (error) throw error;
+    },
     onSuccess: () => {
       toast.success("Anuncio eliminado");
       qc.invalidateQueries({ queryKey: ["announcements"] });
@@ -35,7 +39,12 @@ export function AnnouncementsManager({ isAdmin, openNew = 0 }: { isAdmin: boolea
     setErrors(errs);
     if (errs) return;
     try {
-      await save({ data: { ...announcementSchema.parse(values), ...(editing && editing !== "new" ? { id: editing.id } : {}) } });
+      const parsed = announcementSchema.parse(values);
+      const { data: auth } = await supabase.auth.getUser();
+      const { error } = editing && editing !== "new"
+        ? await supabase.from("announcements").update(parsed).eq("id", editing.id).select("id").single()
+        : await supabase.from("announcements").insert({ ...parsed, created_by: auth.user?.id ?? null }).select("id").single();
+      if (error) throw error;
       toast.success("Anuncio guardado");
       qc.invalidateQueries({ queryKey: ["announcements"] });
       setEditing(null);
@@ -58,6 +67,7 @@ export function AnnouncementsManager({ isAdmin, openNew = 0 }: { isAdmin: boolea
         )}
       </div>
       {isLoading && <p role="status">Cargando anuncios…</p>}
+      {error && <p role="alert" className="text-destructive">{(error as Error).message}</p>}
       {!isLoading && data.length === 0 && <p className="text-on-surface-variant">Aún no hay anuncios.</p>}
       <ul className="grid gap-3 md:grid-cols-2">
         {data.map((a) => (

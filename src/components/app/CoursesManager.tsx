@@ -1,27 +1,31 @@
 import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { deleteCourse, listCourses, saveCourse } from "@/lib/data.functions";
+import { supabase } from "@/integrations/supabase/client";
+import type { Database } from "@/integrations/supabase/types";
 import { COURSE_CATEGORIES, courseSchema, fieldErrors, occupancyPercent } from "@/lib/validation";
 import { CrudDialog, FormField } from "./CrudDialog";
 
-type Course = Awaited<ReturnType<typeof listCourses>>[number];
+type Course = Database["public"]["Tables"]["courses"]["Row"];
 const LEVELS = ["1° de Secundaria", "2° de Secundaria", "3° de Secundaria", "4° de Secundaria", "5° de Secundaria"];
 const CAT_LABEL: Record<string, string> = { ciencias: "Ciencias", humanidades: "Humanidades", artes: "Artes", idiomas: "Idiomas" };
 
 export function CoursesManager({ isAdmin }: { isAdmin: boolean }) {
   const qc = useQueryClient();
-  const list = useServerFn(listCourses);
-  const save = useServerFn(saveCourse);
-  const del = useServerFn(deleteCourse);
-  const { data = [], isLoading, error } = useQuery({ queryKey: ["courses"], queryFn: () => list() });
+  const { data = [], isLoading, error } = useQuery({ queryKey: ["courses"], queryFn: async () => {
+    const { data, error } = await supabase.from("courses").select("*").order("created_at");
+    if (error) throw error;
+    return data;
+  } });
   const [filter, setFilter] = useState<string>("all");
   const [editing, setEditing] = useState<Course | "new" | null>(null);
 
   const remove = useMutation({
-    mutationFn: (id: string) => del({ data: { id } }),
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("courses").delete().eq("id", id).select("id").single();
+      if (error) throw error;
+    },
     onSuccess: () => {
       toast.success("Curso eliminado");
       qc.invalidateQueries({ queryKey: ["courses"] });
@@ -117,7 +121,11 @@ export function CoursesManager({ isAdmin }: { isAdmin: boolean }) {
           course={editing === "new" ? null : editing}
           onClose={() => setEditing(null)}
           onSave={async (values) => {
-            await save({ data: values });
+            const { data: auth } = await supabase.auth.getUser();
+            const { error } = editing === "new"
+              ? await supabase.from("courses").insert({ ...(values as Database["public"]["Tables"]["courses"]["Insert"]), created_by: auth.user?.id ?? null }).select("id").single()
+              : await supabase.from("courses").update(values as Database["public"]["Tables"]["courses"]["Update"]).eq("id", editing.id).select("id").single();
+            if (error) throw error;
             toast.success(editing === "new" ? "Curso creado" : "Curso actualizado");
             qc.invalidateQueries({ queryKey: ["courses"] });
             setEditing(null);
