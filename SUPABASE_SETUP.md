@@ -4,6 +4,8 @@ El proyecto usa el proyecto Supabase indicado en `supabase/config.toml`. Para ej
 
 La migración en `supabase/migrations/` crea `profiles`, `user_roles`, `courses`, `students` y `announcements`. Verifique que esté aplicada en el proyecto Supabase conectado. Los usuarios se autentican con correo y contraseña o con Google si el proveedor está habilitado en Supabase. Configure las URL de redirección de Supabase para `/app` en el dominio publicado y en el entorno local.
 
+Para el proyecto EduGestion `zwyccbuegzomgtsclcxh`, donde ya existen `profiles` y `user_roles` pero faltan las otras tablas, ejecute **una vez** `supabase/manual/complete_edugestion.sql` en SQL Editor. La transacción crea las tablas vacías y sus políticas RLS; no carga datos de ejemplo. No ejecute de nuevo la primera migración sobre las tablas existentes.
+
 Un usuario autenticado necesita un registro en `public.user_roles` con rol `admin` o `docente` para acceder al panel. Ese registro debe asignarlo un administrador del proyecto desde un entorno confiable; la aplicación no concede roles al registrarse. El rol `estudiante` aún no tiene un panel habilitado. Las operaciones de lectura y escritura siguen las políticas RLS de la base de datos.
 
 Las vistas de cursos, estudiantes y anuncios del panel usan funciones de servidor con el token de la sesión. Algunas vistas antiguas del dashboard todavía muestran datos de ejemplo; su migración queda pendiente.
