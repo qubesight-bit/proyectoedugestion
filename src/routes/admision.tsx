@@ -27,9 +27,9 @@ function Admision() {
     try {
       const formData = new FormData(e.currentTarget);
       const data = Object.fromEntries(formData.entries());
-      data.tipo_ingreso = tipoIngreso;
+      data['tipo_ingreso'] = tipoIngreso;
       
-      const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL;
+      const webhookUrl = import.meta.env['VITE_N8N_WEBHOOK_URL'];
       
       if (webhookUrl) {
         await fetch(webhookUrl, {

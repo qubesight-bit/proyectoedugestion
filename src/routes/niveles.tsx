@@ -10,9 +10,9 @@ import { useState } from 'react';
 
 export const Route = createFileRoute('/niveles')({
   component: Niveles,
-  validateSearch: (search: Record<string, unknown>) => {
+  validateSearch: (search: Record<string, unknown>): { nivel?: 'primaria' | 'preescolar' } => {
     return {
-      nivel: search.nivel === 'primaria' ? 'primaria' : 'preescolar',
+      nivel: search['nivel'] === 'primaria' ? 'primaria' : 'preescolar',
     };
   },
 });
