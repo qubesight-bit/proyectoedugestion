@@ -1,4 +1,4 @@
-import { useChat } from '@ai-sdk/react';
+import { useSimpleChat } from '@/hooks/use-simple-chat';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -7,16 +7,7 @@ import { useState } from 'react';
 
 export function AIChatWidget() {
   const [isOpen, setIsOpen] = useState(false);
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-    api: '/api/chat',
-    initialMessages: [
-      {
-        id: 'initial',
-        role: 'assistant',
-        content: '¡Hola! Soy el asistente virtual del CEAC. ¿En qué te puedo ayudar hoy?',
-      }
-    ]
-  });
+  const { messages, input, handleInputChange, handleSubmit, isLoading } = useSimpleChat({ api: '/api/chat', greeting: '¡Hola! Soy el asistente virtual del CEAC. ¿En qué te puedo ayudar hoy?' });
 
   if (!isOpen) {
     return (

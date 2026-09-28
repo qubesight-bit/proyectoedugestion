@@ -106,7 +106,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 bg-white/95 backdrop-blur-md">
                 <DropdownMenuItem asChild><Link to="/estudiantes" hash="clubes" className="cursor-pointer w-full">Clubes</Link></DropdownMenuItem>
-                <DropdownMenuItem asChild><Link to="/blog" className="cursor-pointer w-full">Actividades / Blog</Link></DropdownMenuItem>
+                <DropdownMenuItem asChild><Link to="/blog" search={{}} className="cursor-pointer w-full">Actividades / Blog</Link></DropdownMenuItem>
                 <DropdownMenuItem asChild><Link to="/uniformes" className="cursor-pointer w-full">Venta de Uniformes</Link></DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
@@ -171,7 +171,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               <h3 className="text-white font-semibold mb-6 uppercase tracking-wider text-sm">Enlaces Rápidos</h3>
               <ul className="space-y-3 text-sm">
                 <li><Link to="/nosotros" className="hover:text-blue-400 transition-colors">Nosotros</Link></li>
-                <li><Link to="/niveles" className="hover:text-blue-400 transition-colors">Niveles Académicos</Link></li>
+                <li><Link to="/niveles" search={{}} className="hover:text-blue-400 transition-colors">Niveles Académicos</Link></li>
                 <li><Link to="/admision" className="hover:text-blue-400 transition-colors">Admisión</Link></li>
                 <li><Link to="/uniformes" className="hover:text-blue-400 transition-colors">Uniformes</Link></li>
                 <li><Link to="/anuncios" className="hover:text-blue-400 transition-colors">Anuncios</Link></li>

@@ -211,7 +211,6 @@ function Niveles() {
 function Badge({ children, color = 'blue' }: { children: React.ReactNode, color?: 'blue' | 'blue' }) {
   const colors = {
     blue: 'bg-blue-100 text-blue-800 border-blue-200',
-    blue: 'bg-blue-100 text-blue-800 border-blue-200',
   };
   return (
     <span className={`px-3 py-1 rounded-full text-sm font-medium border ${colors[color]}`}>
