@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { LoginForm } from "./LoginForm";
+import { LoginForm } from '@/components/auth/LoginForm';
 
 describe("LoginForm", () => {
   it("muestra error accesible con correo inválido y no envía", async () => {

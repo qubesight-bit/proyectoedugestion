@@ -76,6 +76,7 @@ export function Sidebar({ active, onNavigate, role }: { active: View | string; o
     ["teachers", "group", "Profesores"],
     ["admin_supervision", "visibility", "Supervisión"],
     ["profile", "account_circle", "Perfil"],
+    ["settings", "settings", "Configuraciones"],
   ];
   const teacherNav: Array<[View, string, string]> = [
     ["teacher_home", "home", "Inicio (Resumen)"],
@@ -83,6 +84,7 @@ export function Sidebar({ active, onNavigate, role }: { active: View | string; o
     ["teacher_grades", "grading", "Calificaciones"],
     ["teacher_attendance", "fact_check", "Asistencia"],
     ["teacher_resources", "folder", "Recursos"],
+    ["settings", "settings", "Configuraciones"],
   ];
   const nav = role === "Administrador" ? adminNav : teacherNav;
   return (
@@ -127,6 +129,7 @@ export function BottomNav({ active, onNavigate, role }: { active: View | string;
     ["teachers", "group", "Profesores"],
     ["admin_supervision", "visibility", "Supervisión"],
     ["profile", "account_circle", "Perfil"],
+    ["settings", "settings", "Configuraciones"],
   ];
   const teacherNav: Array<[View, string, string]> = [
     ["teacher_home", "home", "Inicio (Resumen)"],
@@ -134,11 +137,12 @@ export function BottomNav({ active, onNavigate, role }: { active: View | string;
     ["teacher_grades", "grading", "Calificaciones"],
     ["teacher_attendance", "fact_check", "Asistencia"],
     ["teacher_resources", "folder", "Recursos"],
+    ["settings", "settings", "Configuraciones"],
   ];
   const nav = role === "Administrador" ? adminNav : teacherNav;
   return (
     <nav className="fixed bottom-0 z-50 w-full bg-surface-container-lowest/95 shadow-lg backdrop-blur-xl pb-safe md:hidden">
-      <div className="grid h-20 grid-cols-5 px-2 pt-2">
+      <div className="grid h-20 grid-cols-6 px-2 pt-2">
         {nav.map(([target, icon, label]) => (
           <Button key={target} variant="ghost" className={`h-16 flex-col rounded-xl gap-1 ${active === target ? "text-primary" : "text-on-surface-variant"}`} onClick={() => onNavigate(target)}>
             <Icon name={icon} className="text-[24px]" />

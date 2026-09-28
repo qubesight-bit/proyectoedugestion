@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from "vitest";
-import { clearSessionMarks, markSession, shouldDropSession } from "./session";
+import { clearSessionMarks, markSession, shouldDropSession } from '@/lib/session';
 
 describe("persistencia de sesión", () => {
   beforeEach(() => {

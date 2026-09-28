@@ -7,7 +7,7 @@ import {
   occupancyPercent,
   roleLabel,
   studentSchema,
-} from "./validation";
+} from '@/lib/validation';
 
 describe("courseSchema", () => {
   const valid = { title: "Química", category: "ciencias", level: "1° de Secundaria", teacher: "Prof. X", capacity: "25" };

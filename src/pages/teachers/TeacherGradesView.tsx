@@ -47,7 +47,7 @@ export function TeacherGradesView() {
             <Icon name="trending_up" className="text-[16px] text-[#165BDB]" />
           </div>
           <div className="mt-2 text-2xl font-bold text-slate-800">84.2</div>
-          <div className="text-[10px] font-semibold text-emerald-600 mt-1">+2.4 vs P1</div>
+          <div className="text-[10px] font-semibold text-blue-600 mt-1">+2.4 vs P1</div>
         </div>
         
         <div className="flex flex-col rounded-2xl bg-white p-3 shadow-sm border border-slate-100">

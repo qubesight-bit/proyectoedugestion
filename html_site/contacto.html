@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contacto | CEAC</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+      body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 font-sans flex flex-col min-h-screen">
+
+      <!-- Top Bar -->
+      <div class="bg-emerald-900 text-white py-2 px-4 hidden md:flex justify-between items-center text-sm">
+        <div class="flex space-x-6">
+          <a href="mailto:info@ceac.ed.cr" class="flex items-center hover:text-emerald-200 transition-colors">
+            <i data-lucide="mail" class="w-4 h-4 mr-2"></i> info@ceac.ed.cr
+          </a>
+          <a href="https://wa.me/50683069777" class="flex items-center hover:text-emerald-200 transition-colors">
+            <i data-lucide="phone" class="w-4 h-4 mr-2"></i> +506 8306-9777
+          </a>
+        </div>
+        <div class="flex space-x-4">
+          <a href="https://facebook.com/ceacartagocr" target="_blank" class="hover:text-emerald-200 transition-colors">
+            <i data-lucide="facebook" class="w-4 h-4"></i>
+          </a>
+          <a href="https://instagram.com/adventistacartago" target="_blank" class="hover:text-emerald-200 transition-colors">
+            <i data-lucide="instagram" class="w-4 h-4"></i>
+          </a>
+        </div>
+      </div>
+
+      <!-- Navbar -->
+      <header class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+          <a href="index.html" class="flex items-center space-x-2">
+            <div class="w-12 h-12 bg-emerald-700 rounded-full flex items-center justify-center text-white font-bold text-xl">C</div>
+            <div class="flex flex-col">
+              <span class="font-bold text-xl leading-tight text-emerald-950">CEAC</span>
+              <span class="text-xs text-slate-500 hidden md:block">Centro Educativo Adventista</span>
+            </div>
+          </a>
+
+          <nav class="hidden lg:flex items-center space-x-6 text-sm font-medium text-slate-700">
+            <a href="index.html" class="hover:text-emerald-600 transition-colors">Inicio</a>
+            <a href="nosotros.html" class="hover:text-emerald-600 transition-colors">Nosotros</a>
+            
+            <div class="relative group">
+              <button class="flex items-center hover:text-emerald-600 transition-colors outline-none cursor-pointer">
+                Niveles Académicos <i data-lucide="chevron-down" class="ml-1 w-4 h-4"></i>
+              </button>
+              <div class="absolute left-0 mt-2 w-48 bg-white border border-slate-200 rounded-md shadow-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all">
+                <a href="niveles.html?nivel=preescolar" class="block px-4 py-2 hover:bg-emerald-50 hover:text-emerald-700">Preescolar</a>
+                <a href="niveles.html?nivel=primaria" class="block px-4 py-2 hover:bg-emerald-50 hover:text-emerald-700">Primaria</a>
+              </div>
+            </div>
+
+            <a href="anuncios.html" class="hover:text-emerald-600 transition-colors">Anuncios</a>
+            <a href="uniformes.html" class="hover:text-emerald-600 transition-colors">Uniformes</a>
+            <a href="blog.html" class="hover:text-emerald-600 transition-colors">Blog</a>
+            <a href="contacto.html" class="hover:text-emerald-600 transition-colors">Contacto</a>
+          </nav>
+
+          <div class="flex items-center space-x-4">
+            <a href="admision.html" class="bg-emerald-600 hover:bg-emerald-700 text-white rounded-full px-6 py-2 font-medium shadow-md hover:shadow-lg transition-all hidden md:flex">
+              ADMISIÓN
+            </a>
+            <button class="lg:hidden text-slate-700">
+              <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+          </div>
+        </div>
+      </header>
+
+<main class="flex-grow">
+
+      <div class="bg-emerald-900 py-12 text-white text-center">
+        <h1 class="text-4xl font-bold mb-4">Contacto</h1>
+      </div>
+      <section class="py-16 bg-slate-50 min-h-screen">
+        <div class="container mx-auto px-4 max-w-6xl grid lg:grid-cols-2 gap-12">
+          <div class="bg-white p-8 rounded-xl shadow-md">
+             <h2 class="text-2xl font-bold mb-4">Envíenos un mensaje</h2>
+             <form onsubmit="event.preventDefault(); alert('Mensaje enviado')">
+                <input type="text" placeholder="Nombre" class="w-full border rounded p-2 mb-4" required>
+                <input type="email" placeholder="Correo" class="w-full border rounded p-2 mb-4" required>
+                <textarea placeholder="Mensaje" class="w-full border rounded p-2 mb-4 h-32" required></textarea>
+                <button class="w-full bg-emerald-600 text-white rounded py-3">Enviar</button>
+             </form>
+          </div>
+          <div class="space-y-6">
+             <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="font-bold">Teléfono / WhatsApp</h3>
+                <p>+506 8306-9777</p>
+             </div>
+             <div class="bg-white p-6 rounded-xl shadow-md">
+                <h3 class="font-bold">Dirección</h3>
+                <p>Cartago, Costa Rica.</p>
+             </div>
+          </div>
+        </div>
+      </section>
+    
+</main>
+
+      <footer class="bg-slate-900 text-slate-300 pt-16 pb-8 mt-auto">
+        <div class="container mx-auto px-4">
+          <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+            <div class="col-span-1 md:col-span-1">
+              <div class="flex items-center space-x-2 mb-6">
+                <div class="w-10 h-10 bg-emerald-600 rounded-full flex items-center justify-center text-white font-bold text-lg">C</div>
+                <span class="font-bold text-xl text-white">CEAC</span>
+              </div>
+              <p class="text-sm mb-6 text-slate-400">Educamos hoy la generación del mañana. Formación integral para cuerpo, mente y espíritu.</p>
+              <div class="flex space-x-4">
+                <a href="https://facebook.com/ceacartagocr" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-emerald-600 transition-colors text-white"><i data-lucide="facebook" class="w-5 h-5"></i></a>
+                <a href="https://instagram.com/adventistacartago" class="w-10 h-10 rounded-full bg-slate-800 flex items-center justify-center hover:bg-emerald-600 transition-colors text-white"><i data-lucide="instagram" class="w-5 h-5"></i></a>
+              </div>
+            </div>
+            <div>
+              <h3 class="text-white font-semibold mb-6 uppercase tracking-wider text-sm">Enlaces Rápidos</h3>
+              <ul class="space-y-3 text-sm">
+                <li><a href="nosotros.html" class="hover:text-emerald-400 transition-colors">Nosotros</a></li>
+                <li><a href="niveles.html" class="hover:text-emerald-400 transition-colors">Niveles Académicos</a></li>
+                <li><a href="admision.html" class="hover:text-emerald-400 transition-colors">Admisión</a></li>
+                <li><a href="uniformes.html" class="hover:text-emerald-400 transition-colors">Uniformes</a></li>
+                <li><a href="anuncios.html" class="hover:text-emerald-400 transition-colors">Anuncios</a></li>
+              </ul>
+            </div>
+            <div>
+              <h3 class="text-white font-semibold mb-6 uppercase tracking-wider text-sm">Contacto</h3>
+              <ul class="space-y-4 text-sm">
+                <li class="flex items-start">
+                  <i data-lucide="map-pin" class="w-5 h-5 mr-3 text-emerald-500 shrink-0"></i>
+                  <span>De los Tribunales de Justicia, 700 m norte y 50 m este, Cartago.</span>
+                </li>
+                <li class="flex items-center">
+                  <i data-lucide="phone" class="w-5 h-5 mr-3 text-emerald-500 shrink-0"></i>
+                  <span>WhatsApp: +506 8306-9777</span>
+                </li>
+                <li class="flex items-center">
+                  <i data-lucide="mail" class="w-5 h-5 mr-3 text-emerald-500 shrink-0"></i>
+                  <span>info@ceac.ed.cr</span>
+                </li>
+              </ul>
+            </div>
+            <div>
+              <h3 class="text-white font-semibold mb-6 uppercase tracking-wider text-sm">Ubicación</h3>
+              <div class="h-32 bg-slate-800 rounded-lg overflow-hidden border border-slate-700">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15721.439006900654!2d-83.9213193!3d9.8622116!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x8fa0e342c50d15c5%3A0x73b22ed1c7b80a13!2sCartago!5e0!3m2!1sen!2scr!4v1700000000000!5m2!1sen!2scr" width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+              </div>
+            </div>
+          </div>
+          <div class="pt-8 border-t border-slate-800 text-center text-xs text-slate-500">
+            <p>&copy; 2026 Centro Educativo Adventista de Cartago. Todos los derechos reservados.</p>
+          </div>
+        </div>
+      </footer>
+
+<script>
+  lucide.createIcons();
+  
+</script>
+</body>
+</html>

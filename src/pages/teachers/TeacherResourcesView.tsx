@@ -47,7 +47,7 @@ export function TeacherResourcesView() {
         </div>
         <div className="flex justify-between text-[10px] font-medium mt-1">
           <span className="text-slate-500">14.2 GB de 50 GB utilizados</span>
-          <span className="text-emerald-600">35.8 GB libres</span>
+          <span className="text-blue-600">35.8 GB libres</span>
         </div>
       </div>
 
@@ -158,7 +158,7 @@ export function TeacherResourcesView() {
               </div>
             </div>
             <div className="flex items-center justify-between mt-1">
-              <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-600">
+              <span className="flex items-center gap-1 text-[10px] font-semibold text-blue-600">
                 <Icon name="verified_user" className="text-[14px]" /> Visible para alumnos
               </span>
               <div className="flex gap-1">
@@ -210,7 +210,7 @@ export function TeacherResourcesView() {
               </div>
             </div>
             <div className="flex items-center justify-between mt-1">
-              <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-600">
+              <span className="flex items-center gap-1 text-[10px] font-semibold text-blue-600">
                 <Icon name="verified_user" className="text-[14px]" /> Visible para alumnos
               </span>
               <div className="flex gap-1">
@@ -236,7 +236,7 @@ export function TeacherResourcesView() {
               </div>
             </div>
             <div className="flex items-center justify-between mt-1">
-              <span className="flex items-center gap-1 text-[10px] font-semibold text-emerald-600">
+              <span className="flex items-center gap-1 text-[10px] font-semibold text-blue-600">
                 <Icon name="verified_user" className="text-[14px]" /> Visible para alumnos
               </span>
               <div className="flex gap-1">

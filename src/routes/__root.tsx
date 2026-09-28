@@ -11,6 +11,10 @@ import { useEffect, type ReactNode } from "react";
 import { Toaster } from "@/components/ui/sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { shouldDropSession } from "@/lib/session";
+import { AccessibilityProvider } from "@/components/shared/AccessibilityContext";
+import { AccessibilityWidget } from "@/components/shared/AccessibilityWidget";
+import { SplashScreen } from "@/components/shared/SplashScreen";
+import { FloatingActions } from "@/components/shared/FloatingActions";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -124,8 +128,26 @@ function RootShell({ children }: { children: ReactNode }) {
     <html lang="es">
       <head>
         <HeadContent />
+        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
+        <script type="text/javascript" dangerouslySetInnerHTML={{
+          __html: `
+            function googleTranslateElementInit() {
+              new google.translate.TranslateElement({pageLanguage: 'es', includedLanguages: 'es,en', autoDisplay: false}, 'google_translate_element');
+            }
+          `
+        }} />
+        <style dangerouslySetInnerHTML={{
+          __html: `
+            .goog-te-banner-frame.skiptranslate { display: none !important; } 
+            body { top: 0px !important; }
+            #goog-gt-tt { display: none !important; }
+            .goog-tooltip { display: none !important; }
+            .goog-tooltip:hover { display: none !important; }
+          `
+        }} />
       </head>
       <body>
+        <div id="google_translate_element" style={{ display: 'none' }}></div>
         {children}
         <Scripts />
       </body>
@@ -149,12 +171,19 @@ function RootComponent() {
 
   return (
     <QueryClientProvider client={queryClient}>
+      <SplashScreen />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <a href="#contenido" className="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-[100] focus:rounded-md focus:bg-primary focus:px-3 focus:py-2 focus:text-primary-foreground">
         Saltar al contenido
       </a>
-      <Outlet />
-      <Toaster richColors position="top-center" />
+      <AccessibilityProvider>
+        <div id="contenido">
+          <Outlet />
+        </div>
+        <FloatingActions />
+        <AccessibilityWidget />
+        <Toaster richColors position="top-center" />
+      </AccessibilityProvider>
     </QueryClientProvider>
   );
 }

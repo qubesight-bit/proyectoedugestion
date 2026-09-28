@@ -11,7 +11,18 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AdmisionRouteImport } from './routes/admision'
+import { Route as AnunciosRouteImport } from './routes/anuncios'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as BlogRouteImport } from './routes/blog'
+import { Route as ContactoRouteImport } from './routes/contacto'
+import { Route as EspiritualidadRouteImport } from './routes/espiritualidad'
+import { Route as EstudiantesRouteImport } from './routes/estudiantes'
+import { Route as NivelesRouteImport } from './routes/niveles'
+import { Route as NosotrosRouteImport } from './routes/nosotros'
+import { Route as OfertaRouteImport } from './routes/oferta'
+import { Route as PagosRouteImport } from './routes/pagos'
+import { Route as UniformesRouteImport } from './routes/uniformes'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
 import { Route as ApiPublicN8nRouteImport } from './routes/api/public/n8n'
@@ -25,9 +36,64 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdmisionRoute = AdmisionRouteImport.update({
+  id: '/admision',
+  path: '/admision',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnunciosRoute = AnunciosRouteImport.update({
+  id: '/anuncios',
+  path: '/anuncios',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BlogRoute = BlogRouteImport.update({
+  id: '/blog',
+  path: '/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ContactoRoute = ContactoRouteImport.update({
+  id: '/contacto',
+  path: '/contacto',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EspiritualidadRoute = EspiritualidadRouteImport.update({
+  id: '/espiritualidad',
+  path: '/espiritualidad',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EstudiantesRoute = EstudiantesRouteImport.update({
+  id: '/estudiantes',
+  path: '/estudiantes',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NivelesRoute = NivelesRouteImport.update({
+  id: '/niveles',
+  path: '/niveles',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const NosotrosRoute = NosotrosRouteImport.update({
+  id: '/nosotros',
+  path: '/nosotros',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OfertaRoute = OfertaRouteImport.update({
+  id: '/oferta',
+  path: '/oferta',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PagosRoute = PagosRouteImport.update({
+  id: '/pagos',
+  path: '/pagos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UniformesRoute = UniformesRouteImport.update({
+  id: '/uniformes',
+  path: '/uniformes',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AuthenticatedAppRoute = AuthenticatedAppRouteImport.update({
@@ -48,14 +114,36 @@ const ApiPublicN8nRoute = ApiPublicN8nRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admision': typeof AdmisionRoute
+  '/anuncios': typeof AnunciosRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRoute
+  '/contacto': typeof ContactoRoute
+  '/espiritualidad': typeof EspiritualidadRoute
+  '/estudiantes': typeof EstudiantesRoute
+  '/niveles': typeof NivelesRoute
+  '/nosotros': typeof NosotrosRoute
+  '/oferta': typeof OfertaRoute
+  '/pagos': typeof PagosRoute
+  '/uniformes': typeof UniformesRoute
   '/app': typeof AuthenticatedAppRoute
   '/api/chat': typeof ApiChatRoute
   '/api/public/n8n': typeof ApiPublicN8nRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/admision': typeof AdmisionRoute
+  '/anuncios': typeof AnunciosRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRoute
+  '/contacto': typeof ContactoRoute
+  '/espiritualidad': typeof EspiritualidadRoute
+  '/estudiantes': typeof EstudiantesRoute
+  '/niveles': typeof NivelesRoute
+  '/nosotros': typeof NosotrosRoute
+  '/oferta': typeof OfertaRoute
+  '/pagos': typeof PagosRoute
+  '/uniformes': typeof UniformesRoute
   '/app': typeof AuthenticatedAppRoute
   '/api/chat': typeof ApiChatRoute
   '/api/public/n8n': typeof ApiPublicN8nRoute
@@ -64,21 +152,75 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/admision': typeof AdmisionRoute
+  '/anuncios': typeof AnunciosRoute
   '/auth': typeof AuthRoute
+  '/blog': typeof BlogRoute
+  '/contacto': typeof ContactoRoute
+  '/espiritualidad': typeof EspiritualidadRoute
+  '/estudiantes': typeof EstudiantesRoute
+  '/niveles': typeof NivelesRoute
+  '/nosotros': typeof NosotrosRoute
+  '/oferta': typeof OfertaRoute
+  '/pagos': typeof PagosRoute
+  '/uniformes': typeof UniformesRoute
   '/_authenticated/app': typeof AuthenticatedAppRoute
   '/api/chat': typeof ApiChatRoute
   '/api/public/n8n': typeof ApiPublicN8nRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/auth' | '/app' | '/api/chat' | '/api/public/n8n'
+  fullPaths:
+    | '/'
+    | '/admision'
+    | '/anuncios'
+    | '/auth'
+    | '/blog'
+    | '/contacto'
+    | '/espiritualidad'
+    | '/estudiantes'
+    | '/niveles'
+    | '/nosotros'
+    | '/oferta'
+    | '/pagos'
+    | '/uniformes'
+    | '/app'
+    | '/api/chat'
+    | '/api/public/n8n'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/auth' | '/app' | '/api/chat' | '/api/public/n8n'
+  to:
+    | '/'
+    | '/admision'
+    | '/anuncios'
+    | '/auth'
+    | '/blog'
+    | '/contacto'
+    | '/espiritualidad'
+    | '/estudiantes'
+    | '/niveles'
+    | '/nosotros'
+    | '/oferta'
+    | '/pagos'
+    | '/uniformes'
+    | '/app'
+    | '/api/chat'
+    | '/api/public/n8n'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/admision'
+    | '/anuncios'
     | '/auth'
+    | '/blog'
+    | '/contacto'
+    | '/espiritualidad'
+    | '/estudiantes'
+    | '/niveles'
+    | '/nosotros'
+    | '/oferta'
+    | '/pagos'
+    | '/uniformes'
     | '/_authenticated/app'
     | '/api/chat'
     | '/api/public/n8n'
@@ -87,7 +229,18 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AdmisionRoute: typeof AdmisionRoute
+  AnunciosRoute: typeof AnunciosRoute
   AuthRoute: typeof AuthRoute
+  BlogRoute: typeof BlogRoute
+  ContactoRoute: typeof ContactoRoute
+  EspiritualidadRoute: typeof EspiritualidadRoute
+  EstudiantesRoute: typeof EstudiantesRoute
+  NivelesRoute: typeof NivelesRoute
+  NosotrosRoute: typeof NosotrosRoute
+  OfertaRoute: typeof OfertaRoute
+  PagosRoute: typeof PagosRoute
+  UniformesRoute: typeof UniformesRoute
   ApiChatRoute: typeof ApiChatRoute
   ApiPublicN8nRoute: typeof ApiPublicN8nRoute
 }
@@ -108,11 +261,88 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admision': {
+      id: '/admision'
+      path: '/admision'
+      fullPath: '/admision'
+      preLoaderRoute: typeof AdmisionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/anuncios': {
+      id: '/anuncios'
+      path: '/anuncios'
+      fullPath: '/anuncios'
+      preLoaderRoute: typeof AnunciosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/auth': {
       id: '/auth'
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/blog': {
+      id: '/blog'
+      path: '/blog'
+      fullPath: '/blog'
+      preLoaderRoute: typeof BlogRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/contacto': {
+      id: '/contacto'
+      path: '/contacto'
+      fullPath: '/contacto'
+      preLoaderRoute: typeof ContactoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/espiritualidad': {
+      id: '/espiritualidad'
+      path: '/espiritualidad'
+      fullPath: '/espiritualidad'
+      preLoaderRoute: typeof EspiritualidadRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/estudiantes': {
+      id: '/estudiantes'
+      path: '/estudiantes'
+      fullPath: '/estudiantes'
+      preLoaderRoute: typeof EstudiantesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/niveles': {
+      id: '/niveles'
+      path: '/niveles'
+      fullPath: '/niveles'
+      preLoaderRoute: typeof NivelesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/nosotros': {
+      id: '/nosotros'
+      path: '/nosotros'
+      fullPath: '/nosotros'
+      preLoaderRoute: typeof NosotrosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/oferta': {
+      id: '/oferta'
+      path: '/oferta'
+      fullPath: '/oferta'
+      preLoaderRoute: typeof OfertaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/pagos': {
+      id: '/pagos'
+      path: '/pagos'
+      fullPath: '/pagos'
+      preLoaderRoute: typeof PagosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/uniformes': {
+      id: '/uniformes'
+      path: '/uniformes'
+      fullPath: '/uniformes'
+      preLoaderRoute: typeof UniformesRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated/app': {
@@ -153,7 +383,18 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AdmisionRoute: AdmisionRoute,
+  AnunciosRoute: AnunciosRoute,
   AuthRoute: AuthRoute,
+  BlogRoute: BlogRoute,
+  ContactoRoute: ContactoRoute,
+  EspiritualidadRoute: EspiritualidadRoute,
+  EstudiantesRoute: EstudiantesRoute,
+  NivelesRoute: NivelesRoute,
+  NosotrosRoute: NosotrosRoute,
+  OfertaRoute: OfertaRoute,
+  PagosRoute: PagosRoute,
+  UniformesRoute: UniformesRoute,
   ApiChatRoute: ApiChatRoute,
   ApiPublicN8nRoute: ApiPublicN8nRoute,
 }
