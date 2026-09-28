@@ -197,7 +197,7 @@ function Index() {
   const [courseFilter, setCourseFilter] = useState<CourseCategory>("all");
   const [courseModal, setCourseModal] = useState(false);
   const [studentModal, setStudentModal] = useState(false);
-  const [newAnnouncement, setNewAnnouncement] = useState(false);
+  const [announcementRequest, setAnnouncementRequest] = useState(0);
   const [toast, setToast] = useState("");
 
   useEffect(() => {
@@ -279,10 +279,11 @@ function Index() {
               <DashboardView
                 onCourses={() => setView("courses")}
                 onStudents={() => setView("students")}
-                onAnnouncements={() => { setNewAnnouncement(true); setView("home"); }}
-                onHistory={() => setView("home")}
+                onAnnouncements={() => { setAnnouncementRequest((value) => value + 1); setView("home"); }}
+                onHistory={() => showToast("Mostrando el historial de anuncios")}
+                onToast={showToast}
               />
-              <AnnouncementsManager isAdmin={isAdmin} openNew={newAnnouncement} />
+              <AnnouncementsManager isAdmin={isAdmin} openNew={announcementRequest} />
             </>
           )}
 
@@ -473,11 +474,13 @@ function DashboardView({
   onStudents,
   onAnnouncements,
   onHistory,
+  onToast,
 }: {
   onCourses: () => void;
   onStudents: () => void;
   onAnnouncements: () => void;
   onHistory: () => void;
+  onToast: (message: string) => void;
 }) {
   return (
     <section className="flex flex-col gap-5 px-4 py-4 animate-edu-rise">
@@ -627,9 +630,11 @@ function DashboardView({
 
         <div className="mt-4 flex h-36 items-end justify-between gap-2">
           {chartBars.map((bar) => (
-            <div
+            <button
               key={bar.month}
-              className="flex flex-1 flex-col items-center gap-2"
+              type="button"
+              className="flex flex-1 flex-col items-center gap-2 rounded-xl hover:bg-surface-container-low"
+              onClick={() => onToast(`${bar.month}: ${bar.value} matrículas`)}
             >
               <div className="flex h-28 items-end">
                 <div
@@ -648,7 +653,7 @@ function DashboardView({
               <span className="text-body-sm text-on-surface-variant">
                 {bar.month}
               </span>
-            </div>
+            </button>
           ))}
         </div>
 
@@ -657,7 +662,7 @@ function DashboardView({
         </p>
       </section>
 
-      <div className="flex items-center justify-between rounded-2xl bg-primary p-4 text-primary-foreground shadow-sm">
+      <button type="button" onClick={() => onToast("Jornada de Inducción Académica")} className="flex items-center justify-between rounded-2xl bg-primary p-4 text-left text-primary-foreground shadow-sm hover:bg-primary/90">
         <div>
           <p className="text-body-sm opacity-90">
             Campus Central
@@ -669,7 +674,7 @@ function DashboardView({
         </div>
 
         <Icon name="chevron_right" />
-      </div>
+      </button>
 
       <section className="flex flex-col gap-3">
         <div className="flex items-center justify-between">
@@ -702,6 +707,7 @@ function DashboardView({
             text="Confirmar asistencia y cronograma para la presentación de avances semestrales en el Auditorio A."
             owner="Coord. Familiar"
             action="Detalles"
+            onAction={() => onToast("Detalles de la reunión general")}
           />
 
           <Announcement
@@ -713,6 +719,7 @@ function DashboardView({
             text="Últimos 8 cupos disponibles para bachillerato técnico. Posterior a la fecha aplicará recargo extraordinario."
             owner="Dpto. Admisiones"
             action="Ver cupos"
+            onAction={() => onToast("Quedan 8 cupos disponibles")}
           />
 
           <Announcement
@@ -724,6 +731,7 @@ function DashboardView({
             text="Taller virtual sincrónico sobre evaluación formativa con asistentes generativos certificados."
             owner="Innovación Educativa"
             action="Inscribirse"
+            onAction={() => onToast("Inscripción solicitada")}
           />
         </div>
 
@@ -828,6 +836,7 @@ function Announcement({
   text,
   owner,
   action,
+  onAction,
 }: {
   image: string;
   icon: string;
@@ -837,6 +846,7 @@ function Announcement({
   text: string;
   owner: string;
   action: string;
+  onAction: () => void;
 }) {
   return (
     <article className="rounded-2xl bg-surface-container-lowest p-4 shadow-sm">
@@ -881,6 +891,7 @@ function Announcement({
             <Button
               variant="ghost"
               className="h-8 rounded-lg px-2 text-primary"
+              onClick={onAction}
             >
               {action}
 
