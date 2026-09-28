@@ -16,9 +16,9 @@ import {
   TeacherAttendanceView,
   TeacherResourcesView,
 } from "@/pages/teacher";
-import { TeachersView } from "../pages/teachers";
-import { AdminSupervisionView } from "../pages/admin";
-import { TeacherDashboardView } from "../pages/dashboard";
+import { TeachersView } from "@/pages/teachers";
+import { AdminSupervisionView } from "@/pages/admin";
+import { TeacherDashboardView } from "@/pages/dashboard";
 
 export const Route = createFileRoute("/_authenticated/app")({
   head: () => ({
