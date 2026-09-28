@@ -8,7 +8,7 @@ import { es } from 'date-fns/locale';
 
 export const Route = createFileRoute('/blog')({
   component: Blog,
-  validateSearch: (search: Record<string, unknown>): { postId?: string } => {
+  validateSearch: (search: Record<string, unknown>): { postId?: string | undefined } => {
     return {
       postId: typeof search['postId'] === 'string' ? search['postId'] : undefined,
     };
