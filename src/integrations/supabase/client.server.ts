@@ -43,6 +43,10 @@ function createSupabaseAdminClient() {
     throw new Error(message);
   }
 
+  if (SUPABASE_URL !== 'https://zwyccbuegzomgtsclcxh.supabase.co') {
+    throw new Error('SUPABASE_URL does not match the configured EduGestion project');
+  }
+
   return createClient<Database>(SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY, {
     global: {
       fetch: createSupabaseFetch(SUPABASE_SERVICE_ROLE_KEY),
