@@ -197,6 +197,7 @@ function Index() {
   const [courseFilter, setCourseFilter] = useState<CourseCategory>("all");
   const [courseModal, setCourseModal] = useState(false);
   const [studentModal, setStudentModal] = useState(false);
+  const [newAnnouncement, setNewAnnouncement] = useState(false);
   const [toast, setToast] = useState("");
 
   useEffect(() => {
@@ -265,6 +266,8 @@ function Index() {
 
         <AppHeader
           title={view === "courses" ? "Cursos" : "Inicio"}
+          onHome={() => setView("home")}
+          onNotify={() => showToast("No hay notificaciones nuevas")}
           roleOpen={roleOpen}
           onToggleRole={() => setRoleOpen((open) => !open)}
           onCloseRole={() => setRoleOpen(false)}
@@ -276,8 +279,10 @@ function Index() {
               <DashboardView
                 onCourses={() => setView("courses")}
                 onStudents={() => setView("students")}
+                onAnnouncements={() => { setNewAnnouncement(true); setView("home"); }}
+                onHistory={() => setView("home")}
               />
-              <AnnouncementsManager isAdmin={isAdmin} />
+              <AnnouncementsManager isAdmin={isAdmin} openNew={newAnnouncement} />
             </>
           )}
 
@@ -350,11 +355,15 @@ function Icon({
 
 function AppHeader({
   title,
+  onHome,
+  onNotify,
   roleOpen,
   onToggleRole,
   onCloseRole,
 }: {
   title: string;
+  onHome: () => void;
+  onNotify: () => void;
   roleOpen: boolean;
   onToggleRole: () => void;
   onCloseRole: () => void;
@@ -367,6 +376,7 @@ function AppHeader({
           variant="ghost"
           size="icon"
           className="h-11 w-11 rounded-xl text-inverse-on-surface hover:bg-on-surface-variant"
+          onClick={onHome}
         >
           <Icon name="menu" />
         </Button>
@@ -394,6 +404,7 @@ function AppHeader({
             variant="ghost"
             size="icon"
             className="relative h-11 w-11 rounded-xl text-inverse-on-surface hover:bg-on-surface-variant"
+            onClick={onNotify}
           >
             <Icon name="notifications" />
 
@@ -460,9 +471,13 @@ function AppHeader({
 function DashboardView({
   onCourses,
   onStudents,
+  onAnnouncements,
+  onHistory,
 }: {
   onCourses: () => void;
   onStudents: () => void;
+  onAnnouncements: () => void;
+  onHistory: () => void;
 }) {
   return (
     <section className="flex flex-col gap-5 px-4 py-4 animate-edu-rise">
@@ -520,7 +535,7 @@ function DashboardView({
         <QuickAction
           icon="campaign"
           label="+ Anuncio"
-          onClick={() => undefined}
+          onClick={onAnnouncements}
         />
       </div>
 
@@ -671,6 +686,7 @@ function DashboardView({
           <Button
             variant="ghost"
             className="h-9 rounded-xl px-3 text-primary"
+            onClick={onHistory}
           >
             Historial
           </Button>

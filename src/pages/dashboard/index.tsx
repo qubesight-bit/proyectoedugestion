@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Icon, QuickAction, MetricCard, Announcement } from "../../components/shared";
 import { chartBars, announcementImages } from "../../services/mockData";
 
-export function DashboardView({ onCourses, onStudents }: { onCourses: () => void; onStudents: () => void }) {
+export function DashboardView({ onCourses, onStudents, onAnnouncements, onHistory }: { onCourses: () => void; onStudents: () => void; onAnnouncements: () => void; onHistory: () => void }) {
   return (
     <section className="flex flex-col gap-5 px-4 py-4 animate-edu-rise">
       <div className="rounded-2xl bg-surface-container-lowest p-4 shadow-sm">
@@ -29,7 +29,7 @@ export function DashboardView({ onCourses, onStudents }: { onCourses: () => void
       <div className="grid grid-cols-3 md:grid-cols-3 tv:grid-cols-6 gap-3 tv:gap-8">
         <QuickAction icon="how_to_reg" label="+ Matrícula" onClick={onStudents} />
         <QuickAction icon="person_add" label="+ Estudiante" onClick={onStudents} />
-        <QuickAction icon="campaign" label="+ Anuncio" onClick={() => undefined} />
+        <QuickAction icon="campaign" label="+ Anuncio" onClick={onAnnouncements} />
       </div>
 
       <div className="flex items-center justify-between">
@@ -96,7 +96,7 @@ export function DashboardView({ onCourses, onStudents }: { onCourses: () => void
             <h2 className="text-headline-sm font-semibold">Anuncios recientes</h2>
             <p className="text-body-sm text-on-surface-variant">3 nuevos</p>
           </div>
-          <Button variant="ghost" className="h-9 rounded-xl px-3 text-primary">Historial</Button>
+          <Button variant="ghost" className="h-9 rounded-xl px-3 text-primary" onClick={onHistory}>Historial</Button>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 tv:grid-cols-3 gap-3 tv:gap-8">
           <Announcement
