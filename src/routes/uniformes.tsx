@@ -49,7 +49,7 @@ function Uniformes() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [checkoutStep, setCheckoutStep] = useState<'cart' | 'payment'>('cart');
 
-  const sinpeNumber = import.meta.env.VITE_SCHOOL_SINPE_NUMBER || '8306-9777';
+  const sinpeNumber = import.meta.env['VITE_SCHOOL_SINPE_NUMBER'] || '8306-9777';
 
   const productosFiltrados = catalogo.filter(
     (p) => p.categoria === categoriaActiva || p.categoria === 'ambos'

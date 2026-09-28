@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { MessageCircle, Moon, Sun, Languages, Bot, X, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { useChat } from '@ai-sdk/react';
+import { useSimpleChat } from '@/hooks/use-simple-chat';
 
 export function FloatingActions() {
   const [theme, setTheme] = useState<'light' | 'dark'>('light');
@@ -9,16 +9,7 @@ export function FloatingActions() {
   const [chatOpen, setChatOpen] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const { messages, input, handleInputChange, handleSubmit, isLoading } = useChat({
-    api: '/api/chat',
-    initialMessages: [
-      {
-        id: 'initial',
-        role: 'assistant',
-        content: '¡Hola! Soy el asistente virtual oficial del CEAC. Conozco todo sobre nuestras admisiones, costos, historia y más. ¿En qué te puedo ayudar hoy?',
-      }
-    ]
-  });
+  const { messages, input, handleInputChange, handleSubmit, isLoading } = useSimpleChat({ api: '/api/chat', greeting: '¡Hola! Soy el asistente virtual oficial del CEAC. Conozco todo sobre nuestras admisiones, costos, historia y más. ¿En qué te puedo ayudar hoy?' });
 
   // Handle Theme
   useEffect(() => {

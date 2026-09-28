@@ -24,7 +24,7 @@ function Contacto() {
       const formData = new FormData(e.currentTarget);
       const data = Object.fromEntries(formData.entries());
       
-      const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL;
+      const webhookUrl = import.meta.env['VITE_N8N_WEBHOOK_URL'];
       
       if (webhookUrl) {
         await fetch(webhookUrl, {

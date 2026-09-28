@@ -10,6 +10,7 @@ export type View =
   | "teachers"
   | "assistant"
   | "profile"
+  | "settings"
   | "teacher_home"
   | "teacher_courses"
   | "teacher_grades"

@@ -110,7 +110,7 @@ function EstudiantesPage() {
               <div className="mt-8 pt-8 border-t border-slate-200">
                 <p className="text-slate-600 mb-4 font-medium">¿Quiere ver fotos y detalles de nuestros últimos eventos?</p>
                 <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-8">
-                  <Link to="/blog">Visitar el Blog de Actividades</Link>
+                  <Link to="/blog" search={{}}>Visitar el Blog de Actividades</Link>
                 </Button>
               </div>
             </div>
