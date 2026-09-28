@@ -1,78 +1,49 @@
 import { useState, type FormEvent } from "react";
-import { useChat } from "@ai-sdk/react";
-import { DefaultChatTransport } from "ai";
-import ReactMarkdown from "react-markdown";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 
-const SUGGESTIONS = [
-  "¿Qué cursos tienen menos cupos disponibles?",
-  "Resume el estado de los estudiantes",
-  "Redacta un anuncio para la reunión de padres",
-];
+type Message = { id: number; sender: "Tú" | "Consultas"; text: string };
+const suggestions = ["¿Qué cursos tienen menos cupos disponibles?", "Resume el estado de los estudiantes", "Muéstrame los anuncios recientes"];
 
 export function AssistantChat() {
   const [input, setInput] = useState("");
-  const { messages, sendMessage, status, error, stop } = useChat({
-    transport: new DefaultChatTransport({
-      api: "/api/chat",
-      headers: async (): Promise<Record<string, string>> => {
-        const { data } = await supabase.auth.getSession();
-        const t = data.session?.access_token;
-        return t ? { Authorization: `Bearer ${t}` } : {};
-      },
-    }),
-  });
-  const busy = status === "submitted" || status === "streaming";
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [busy, setBusy] = useState(false);
 
-  function send(text: string) {
-    if (!text.trim() || busy) return;
-    sendMessage({ text });
+  async function send(question: string) {
+    if (!question.trim() || busy) return;
     setInput("");
+    setBusy(true);
+    setMessages((current) => [...current, { id: Date.now(), sender: "Tú", text: question }]);
+    try {
+      const text = question.toLowerCase();
+      let response: string;
+      if (/curso|cupo|matr[ií]cula/.test(text)) {
+        const { data, error } = await supabase.from("courses").select("title, capacity, enrolled");
+        if (error) throw error;
+        response = data.length ? data.sort((a,b) => (a.capacity-a.enrolled)-(b.capacity-b.enrolled)).map((c) => `${c.title}: ${Math.max(0,c.capacity-c.enrolled)} cupos libres`).join("\n") : "No hay cursos registrados.";
+      } else if (/estudiant|alumn|estado/.test(text)) {
+        const { data, error } = await supabase.from("students").select("status");
+        if (error) throw error;
+        const counts = data.reduce<Record<string, number>>((acc, row) => { acc[row.status] = (acc[row.status] ?? 0) + 1; return acc; }, {});
+        response = data.length ? `${data.length} estudiantes registrados. ${Object.entries(counts).map(([status, n]) => `${status}: ${n}`).join("; ")}.` : "No hay estudiantes registrados.";
+      } else if (/anuncio|aviso|notific/.test(text)) {
+        const { data, error } = await supabase.from("announcements").select("title, content").order("created_at", { ascending: false }).limit(5);
+        if (error) throw error;
+        response = data.length ? data.map((a) => `${a.title}: ${a.content}`).join("\n\n") : "No hay anuncios publicados.";
+      } else {
+        response = "Puedo consultar los cursos y sus cupos, el estado de los estudiantes y los anuncios publicados. Elegí una de esas consultas.";
+      }
+      setMessages((current) => [...current, { id: Date.now() + 1, sender: "Consultas", text: response }]);
+    } catch (error) {
+      setMessages((current) => [...current, { id: Date.now() + 1, sender: "Consultas", text: `No se pudieron obtener los datos: ${(error as Error).message}` }]);
+    } finally { setBusy(false); }
   }
 
-  return (
-    <section className="flex h-[calc(100vh-11rem)] flex-col gap-3 py-4 md:h-[calc(100vh-7rem)]" aria-labelledby="ai-title">
-      <div>
-        <h1 id="ai-title" className="text-headline-md font-semibold">Asistente IA</h1>
-        <p className="text-body-sm text-on-surface-variant">Consulta datos de cursos, estudiantes y anuncios.</p>
-      </div>
-      <div className="flex-1 overflow-y-auto rounded-2xl bg-surface-container-low p-3" aria-live="polite" aria-busy={busy}>
-        {messages.length === 0 && (
-          <div className="flex flex-wrap gap-2">
-            {SUGGESTIONS.map((s) => (
-              <Button key={s} variant="secondary" size="sm" className="rounded-full" onClick={() => send(s)}>{s}</Button>
-            ))}
-          </div>
-        )}
-        <ul className="flex flex-col gap-3">
-          {messages.map((m) => (
-            <li key={m.id} className={m.role === "user" ? "self-end max-w-[85%] rounded-2xl bg-primary px-3 py-2 text-primary-foreground" : "max-w-[90%] rounded-2xl bg-surface-container-lowest px-3 py-2 shadow-sm"}>
-              <span className="sr-only">{m.role === "user" ? "Tú:" : "Asistente:"}</span>
-              {m.parts.map((p, i) =>
-                p.type === "text" ? (
-                  <div key={i} className="prose prose-sm max-w-none text-inherit [&_*]:text-inherit">
-                    <ReactMarkdown>{p.text}</ReactMarkdown>
-                  </div>
-                ) : null,
-              )}
-            </li>
-          ))}
-          {status === "submitted" && <li role="status" className="text-body-sm text-on-surface-variant">Pensando…</li>}
-        </ul>
-        {error && <p role="alert" className="mt-2 text-destructive">{error.message || "Error del asistente"}</p>}
-      </div>
-      <form className="flex gap-2" onSubmit={(e: FormEvent) => { e.preventDefault(); send(input); }}>
-        <label htmlFor="ai-input" className="sr-only">Mensaje para el asistente</label>
-        <input id="ai-input" className="form-input h-11 flex-1" placeholder="Escribe tu pregunta…" value={input} onChange={(e) => setInput(e.target.value)} />
-        {busy ? (
-          <Button type="button" variant="secondary" onClick={stop}>Detener</Button>
-        ) : (
-          <Button type="submit" aria-label="Enviar mensaje" disabled={!input.trim()}>
-            <span aria-hidden="true" className="material-symbols-outlined">send</span>
-          </Button>
-        )}
-      </form>
-    </section>
-  );
+  return <section className="flex flex-col gap-4" aria-labelledby="consultas-title">
+    <div><h1 id="consultas-title" className="text-headline-md font-semibold">Consultas</h1><p className="text-on-surface-variant">Consulta información actual de la plataforma.</p></div>
+    <div className="flex flex-wrap gap-2">{suggestions.map((s) => <Button key={s} type="button" variant="secondary" disabled={busy} onClick={() => void send(s)}>{s}</Button>)}</div>
+    <ol className="flex min-h-48 flex-col gap-3 rounded-2xl bg-surface-container-low p-4" aria-live="polite">{messages.map((m) => <li key={m.id} className="whitespace-pre-wrap rounded-xl bg-surface-container-lowest p-3"><strong>{m.sender}: </strong>{m.text}</li>)}{busy && <li role="status">Consultando datos…</li>}</ol>
+    <form onSubmit={(e: FormEvent) => { e.preventDefault(); void send(input); }} className="flex gap-2"><label htmlFor="consultas-input" className="sr-only">Escribe una consulta</label><input id="consultas-input" className="form-input flex-1" value={input} onChange={(e) => setInput(e.target.value)} placeholder="Preguntá por cursos, estudiantes o anuncios" /><Button type="submit" disabled={!input.trim() || busy}>Consultar</Button></form>
+  </section>;
 }

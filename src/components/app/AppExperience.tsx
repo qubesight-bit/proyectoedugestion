@@ -45,7 +45,7 @@ export function AppExperience() {
     ["home", "dashboard", "Inicio"], ["courses", "school", "Cursos"],
     ["students", "groups", "Estudiantes"], ["announcements", "campaign", "Anuncios"],
     ["teachers", "person", "Docentes"], ["supervision", "visibility", "Supervisión"],
-    ["assistant", "smart_toy", "Asistente IA"], ["profile", "account_circle", "Perfil"],
+    ["assistant", "search", "Consultas"], ["profile", "account_circle", "Perfil"],
   ];
   const go = (target: View) => { setAnnouncementRequest(0); setStudentRequest(0); setView(target); setMenuOpen(false); };
   const refresh = async () => {
