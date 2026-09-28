@@ -45,6 +45,15 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   console.error(error);
   const router = useRouter();
   useEffect(() => {
+    // Load Google Translate only after hydration so it can't alter the server HTML first.
+    if (document.getElementById("gt-script")) return;
+    const el = document.createElement("script");
+    el.id = "gt-script";
+    el.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+    el.async = true;
+    document.body.appendChild(el);
+  }, []);
+  useEffect(() => {
     reportLovableError(error, { boundary: "tanstack_root_error_component" });
   }, [error]);
 
@@ -125,10 +134,9 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
 
 function RootShell({ children }: { children: ReactNode }) {
   return (
-    <html lang="es">
+    <html lang="es" suppressHydrationWarning>
       <head>
         <HeadContent />
-        <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit" async></script>
         <script type="text/javascript" dangerouslySetInnerHTML={{
           __html: `
             function googleTranslateElementInit() {
@@ -146,8 +154,8 @@ function RootShell({ children }: { children: ReactNode }) {
           `
         }} />
       </head>
-      <body>
-        <div id="google_translate_element" style={{ display: 'none' }}></div>
+      <body suppressHydrationWarning>
+        <div id="google_translate_element" suppressHydrationWarning style={{ display: 'none' }}></div>
         {children}
         <Scripts />
       </body>
