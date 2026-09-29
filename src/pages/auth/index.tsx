@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Icon } from "../../components/shared";
 import { supabase } from "@/integrations/supabase/client";
@@ -8,6 +8,13 @@ export function AuthScreen({ onLogin }: { onLogin: () => void }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
+  const [recoveryMode, setRecoveryMode] = useState(false);
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  useEffect(() => {
+    setRecoveryMode(new URLSearchParams(window.location.search).get("recovery") === "1");
+  }, []);
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
@@ -15,7 +22,14 @@ export function AuthScreen({ onLogin }: { onLogin: () => void }) {
 
     try {
       const { data, error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
-      if (error) throw error;
+      if (error) {
+        if (error.code === "invalid_credentials") {
+          throw new Error(
+            "Supabase no reconoció ese correo y contraseña. Usá la contraseña del usuario creado en Authentication, no la contraseña de tu cuenta de Supabase.",
+          );
+        }
+        throw error;
+      }
       const { data: roles, error: roleError } = await supabase
         .from("user_roles")
         .select("role")
@@ -30,6 +44,56 @@ export function AuthScreen({ onLogin }: { onLogin: () => void }) {
       toast.error(error instanceof Error ? error.message : "No se pudo iniciar sesión.");
       setLoading(false);
     }
+  };
+
+  const sendRecovery = async () => {
+    if (!email.trim()) {
+      toast.error("Escribí primero el correo de tu usuario del panel.");
+      return;
+    }
+    setLoading(true);
+    const { error } = await supabase.auth.resetPasswordForEmail(email.trim(), {
+      redirectTo: `${window.location.origin}/auth?recovery=1`,
+    });
+    setLoading(false);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
+    toast.success("Revisá tu correo. Te enviamos el enlace para crear una contraseña nueva.");
+  };
+
+  const updatePassword = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (newPassword.length < 8) {
+      toast.error("La contraseña debe tener al menos 8 caracteres.");
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      toast.error("Las contraseñas no coinciden.");
+      return;
+    }
+    setLoading(true);
+    const { data: session } = await supabase.auth.getSession();
+    if (!session.session) {
+      toast.error("El enlace de recuperación venció o no es válido. Solicitá uno nuevo.");
+      setLoading(false);
+      return;
+    }
+    const { error } = await supabase.auth.updateUser({ password: newPassword });
+    if (error) {
+      toast.error(error.message);
+      setLoading(false);
+      return;
+    }
+    toast.success("Contraseña actualizada. Ya podés ingresar al panel.");
+    window.history.replaceState({}, "", "/auth");
+    setRecoveryMode(false);
+    setPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    await supabase.auth.signOut();
+    setLoading(false);
   };
 
   return (
@@ -54,7 +118,22 @@ export function AuthScreen({ onLogin }: { onLogin: () => void }) {
           </div>
         </div>
 
-        <form
+        {recoveryMode ? <form
+          className="flex flex-col gap-4 rounded-2xl bg-surface-container-lowest p-5 shadow-sm"
+          onSubmit={updatePassword}
+        >
+          <h2 className="text-headline-sm font-semibold">Crear contraseña nueva</h2>
+          <p className="text-body-sm text-on-surface-variant">Elegí una contraseña para tu usuario del panel EduGestión.</p>
+          <label className="flex flex-col gap-2 text-label-md font-semibold">
+            Contraseña nueva
+            <input required minLength={8} type="password" className="form-input" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} />
+          </label>
+          <label className="flex flex-col gap-2 text-label-md font-semibold">
+            Confirmar contraseña
+            <input required minLength={8} type="password" className="form-input" value={confirmPassword} onChange={(event) => setConfirmPassword(event.target.value)} />
+          </label>
+          <Button type="submit" disabled={loading}>{loading ? "Actualizando…" : "Guardar contraseña"}</Button>
+        </form> : <form
           className="flex flex-col gap-4 rounded-2xl bg-surface-container-lowest p-5 shadow-sm"
           onSubmit={handleSubmit}
         >
@@ -102,9 +181,9 @@ export function AuthScreen({ onLogin }: { onLogin: () => void }) {
               <input className="h-4 w-4 accent-primary" type="checkbox" />
               Recordar sesión
             </label>
-            <a className="font-semibold text-primary" href="#recover">
+            <button type="button" disabled={loading} className="font-semibold text-primary disabled:opacity-50" onClick={() => void sendRecovery()}>
               ¿Olvidaste tu contraseña?
-            </a>
+            </button>
           </div>
 
           <Button type="submit" disabled={loading} className="h-12 rounded-xl text-label-md mt-4">
@@ -143,7 +222,7 @@ export function AuthScreen({ onLogin }: { onLogin: () => void }) {
             </svg>
             <span className="font-medium">Acceder con Google</span>
           </Button>
-        </form>
+        </form>}
 
         <div className="flex flex-col items-center gap-2 text-center text-body-sm text-on-surface-variant mt-4">
           <div className="flex items-center gap-2">

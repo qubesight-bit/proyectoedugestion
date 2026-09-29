@@ -21,6 +21,7 @@ function AuthPage() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    if (new URLSearchParams(window.location.search).get("recovery") === "1") return;
     supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) return;
       const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", data.user.id);
