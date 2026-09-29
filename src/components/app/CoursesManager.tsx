@@ -156,7 +156,7 @@ function CourseForm({
     if (errs) return;
     setBusy(true);
     try {
-      await onSave({ ...courseSchema.parse(values), ...(course ? { id: course.id } : {}) });
+      await onSave(courseSchema.parse(values));
     } catch (err) {
       toast.error((err as Error).message);
     } finally {

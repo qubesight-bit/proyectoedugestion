@@ -1,17 +1,30 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 export function AccessibilityWidget() {
   const [isOpen, setIsOpen] = useState(false);
+  const triggerRef = useRef<HTMLButtonElement>(null);
+  const closeRef = useRef<HTMLButtonElement>(null);
+
+  useEffect(() => {
+    if (!isOpen) return;
+    closeRef.current?.focus();
+    const onEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setIsOpen(false);
+        triggerRef.current?.focus();
+      }
+    };
+    document.addEventListener("keydown", onEscape);
+    return () => document.removeEventListener("keydown", onEscape);
+  }, [isOpen]);
 
   const [highContrast, setHighContrast] = useState(false);
   const [largeText, setLargeText] = useState(false);
   const [dyslexiaFont, setDyslexiaFont] = useState(false);
   const [stopAnimations, setStopAnimations] = useState(false);
   const [highlightLinks, setHighlightLinks] = useState(false);
-  const [persistentAlerts, setPersistentAlerts] = useState(false);
   const [colorBlind, setColorBlind] = useState(false);
   const [textToSpeech, setTextToSpeech] = useState(false);
-  const [showCaptions, setShowCaptions] = useState(false);
 
   useEffect(() => {
     const html = document.documentElement;
@@ -126,8 +139,11 @@ export function AccessibilityWidget() {
 
       {/* Botón flotante */}
       <button
+        ref={triggerRef}
         onClick={toggleWidget}
         aria-label="Abrir menú de accesibilidad"
+        aria-expanded={isOpen}
+        aria-controls="a11y-panel"
         className="fixed bottom-6 left-6 z-[9999] flex h-14 w-14 items-center justify-center rounded-full bg-primary text-primary-foreground shadow-xl transition-transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-primary/50"
       >
         <span className="material-symbols-outlined text-[30px]">
@@ -138,6 +154,7 @@ export function AccessibilityWidget() {
       {/* Menú de Opciones */}
       {isOpen && (
         <div
+          id="a11y-panel"
           role="dialog"
           aria-labelledby="a11y-title"
           className="fixed bottom-24 left-6 z-[9999] w-80 max-w-[calc(100vw-2rem)] rounded-2xl bg-surface-container-lowest p-5 shadow-2xl ring-1 ring-black/5 animate-in slide-in-from-bottom-5"
@@ -147,7 +164,8 @@ export function AccessibilityWidget() {
               Accesibilidad
             </h2>
             <button
-              onClick={toggleWidget}
+              ref={closeRef}
+              onClick={() => { setIsOpen(false); triggerRef.current?.focus(); }}
               aria-label="Cerrar menú de accesibilidad"
               className="rounded-full p-1 hover:bg-surface-container-high text-on-surface"
             >
@@ -258,38 +276,9 @@ export function AccessibilityWidget() {
               </label>
             </div>
 
-            {/* Auditiva / Habla */}
-            <div className="space-y-2">
-              <h3 className="text-sm font-semibold text-primary">Auditiva y Habla</h3>
-              <p className="text-xs text-on-surface-variant px-2 mb-1">
-                La plataforma no requiere micrófono y utiliza elementos 100% visuales.
-              </p>
-              <label className="flex items-center justify-between text-body-md text-on-surface cursor-pointer p-2 hover:bg-surface-container rounded-lg">
-                <span className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[20px]">notifications_active</span>
-                  Notificaciones Persistentes
-                </span>
-                <input
-                  type="checkbox"
-                  className="h-5 w-5 accent-primary"
-                  checked={persistentAlerts}
-                  onChange={(e) => setPersistentAlerts(e.target.checked)}
-                />
-              </label>
-
-              <label className="flex items-center justify-between text-body-md text-on-surface cursor-pointer p-2 hover:bg-surface-container rounded-lg">
-                <span className="flex items-center gap-2">
-                  <span className="material-symbols-outlined text-[20px]">closed_caption</span>
-                  Subtítulos / Ayudas visuales
-                </span>
-                <input
-                  type="checkbox"
-                  className="h-5 w-5 accent-primary"
-                  checked={showCaptions}
-                  onChange={(e) => setShowCaptions(e.target.checked)}
-                />
-              </label>
-            </div>
+            <p className="text-xs text-on-surface-variant px-2">
+              El chatbot acepta consultas escritas y muestra sus respuestas como texto.
+            </p>
 
           </div>
           <div className="mt-4 border-t pt-3 text-center">
@@ -300,10 +289,8 @@ export function AccessibilityWidget() {
                 setDyslexiaFont(false);
                 setStopAnimations(false);
                 setHighlightLinks(false);
-                setPersistentAlerts(false);
                 setColorBlind(false);
                 setTextToSpeech(false);
-                setShowCaptions(false);
               }}
               className="text-sm font-medium text-destructive hover:underline focus:outline-none"
             >

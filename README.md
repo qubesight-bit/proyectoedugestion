@@ -1,4 +1,4 @@
-# Joyful Journeys
+# EduGestión · CEAC
 
 Build this app using the HTML files referenced below. You can hotlink the images referenced in the HTML. The attached images are screenshots of the desired screens. Here are public links to the html of the screens which you should read and use to build the app:
 
@@ -21,16 +21,13 @@ Continue developing this project in the [Lovable editor](https://lovable.dev/pro
 
 ## Development
 
-### Chatbot público con Groq
+### Guía para presentar el proyecto
 
-El endpoint `/api/chat` usa la variable secreta de servidor `GROQ_API_KEY`.
-Configurala en los secretos o variables de servidor del proyecto de Lovable y
-volvé a publicar. Para desarrollo local, añadila a un archivo `.env` no versionado.
-No uses una variable `VITE_` ni publiques la clave en GitHub: el navegador solo
-envía la conversación al endpoint propio del sitio.
+Abrí [docs/CRITERIOS_PRESENTACION.md](docs/CRITERIOS_PRESENTACION.md) en el IDE: contiene los criterios, rutas de los archivos y una demostración paso a paso. Ejecutá `npm test`, `npx tsc --noEmit` y `npm run build` para verificarlo.
 
-Se solicita `llama-3.1-8b-instant` a Groq y, si la cuenta ya no tiene acceso a
-ese modelo, se intenta `openai/gpt-oss-20b`.
+### Chatbot público con n8n y Groq
+
+El endpoint `/api/chat` requiere `N8N_CHAT_WEBHOOK_URL` y `N8N_CHAT_WEBHOOK_SECRET` como variables secretas **del servidor**. La aplicación manda los mensajes al webhook autenticado de n8n, y el nodo HTTP de ese workflow consulta a Groq. La credencial de Groq se guarda en n8n; consultá [n8n/README.md](n8n/README.md). Nunca publiques claves en el repositorio ni las expongas como variables `VITE_`.
 
 Prefer working locally? You need Node.js and npm — [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating).
 

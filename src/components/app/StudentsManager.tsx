@@ -135,7 +135,7 @@ function StudentForm({ student, onClose, onSave }: { student: Student | null; on
     if (errs) return;
     setBusy(true);
     try {
-      await onSave({ ...studentSchema.parse(values), ...(student ? { id: student.id } : {}) });
+      await onSave(studentSchema.parse(values));
     } catch (err) {
       toast.error((err as Error).message);
     } finally {

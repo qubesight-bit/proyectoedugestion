@@ -10,23 +10,18 @@ import { AnnouncementsManager } from "./AnnouncementsManager";
 import { ProfilePanel } from "./ProfilePanel";
 import { AssistantChat } from "./AssistantChat";
 import { useAccount } from "./useAccount";
+import { APP_SECTION_KEY, savedView, type AppSection } from "@/lib/app-section";
 
-type View = "home" | "courses" | "students" | "announcements" | "teachers" | "supervision" | "assistant" | "profile";
-
-const views: View[] = ["home", "courses", "students", "announcements", "teachers", "supervision", "assistant", "profile"];
-const viewKey = "edugestion:app-section";
-export function savedView(value: string | null): View {
-  return views.includes(value as View) ? value as View : "home";
-}
+type View = AppSection;
 
 const icon = (name: string) => <span aria-hidden="true" className="material-symbols-outlined text-[22px]">{name}</span>;
 
 export function AppExperience() {
   const [view, setView] = useState<View>(() => {
-    try { return savedView(window.localStorage.getItem(viewKey)); } catch { return "home"; }
+    try { return savedView(window.localStorage.getItem(APP_SECTION_KEY)); } catch { return "home"; }
   });
   useEffect(() => {
-    try { window.localStorage.setItem(viewKey, view); } catch { /* Private browsing may block storage. */ }
+    try { window.localStorage.setItem(APP_SECTION_KEY, view); } catch { /* Private browsing may block storage. */ }
   }, [view]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [announcementRequest, setAnnouncementRequest] = useState(0);
@@ -65,7 +60,7 @@ export function AppExperience() {
   };
   const logOut = async () => {
     await supabase.auth.signOut();
-    try { window.localStorage.removeItem(viewKey); } catch { /* Storage may be unavailable. */ }
+    try { window.localStorage.removeItem(APP_SECTION_KEY); } catch { /* Storage may be unavailable. */ }
     qc.clear();
     await navigate({ to: "/auth", replace: true });
   };

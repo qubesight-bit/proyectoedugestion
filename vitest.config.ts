@@ -11,6 +11,7 @@ export default defineConfig({
       "src/**/*.test.{ts,tsx}",
       "tests/lib/**/*.test.{ts,tsx}",
       "tests/components/auth/**/*.test.{ts,tsx}",
+      "tests/components/app/**/*.test.{ts,tsx}",
     ],
   },
 });
