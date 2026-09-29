@@ -8,14 +8,10 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
 // These values are public client identifiers for the selected EduGestion project.
 // Keep the pre-build transform because the generated client uses bracket syntax.
-const cloudUrl =
-  process.env["VITE_SUPABASE_URL"] ??
-  process.env["SUPABASE_URL"] ??
-  "https://hedufqqiqpxywcsvkytj.supabase.co";
-const cloudPublishableKey =
-  process.env["VITE_SUPABASE_PUBLISHABLE_KEY"] ??
-  process.env["SUPABASE_PUBLISHABLE_KEY"] ??
-  "sb_publishable_wZsh3a4N4U61Tc5J3fg-fQ_haCzhl3g";
+// This is the Supabase project that contains the CEAC accounts and app data.
+// Both values are public client identifiers and must stay paired.
+const cloudUrl = "https://zwyccbuegzomgtsclcxh.supabase.co";
+const cloudPublishableKey = "sb_publishable_rkasH3qneDyLCi7ixdKFVA_Qd2rNM0S";
 
 const cloudClientEnvPlugin = {
   name: "cloud-client-env",

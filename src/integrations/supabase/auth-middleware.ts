@@ -34,9 +34,9 @@ function createSupabaseFetch(supabaseKey: string): typeof fetch {
 export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server(
   async ({ next }) => {
     
-    const SUPABASE_URL = process.env['SUPABASE_URL'] ?? process.env['VITE_SUPABASE_URL'];
-    const SUPABASE_PUBLISHABLE_KEY =
-      process.env['SUPABASE_PUBLISHABLE_KEY'] ?? process.env['VITE_SUPABASE_PUBLISHABLE_KEY'];
+    // Keep server token validation on the same project used by the browser client.
+    const SUPABASE_URL = 'https://zwyccbuegzomgtsclcxh.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_rkasH3qneDyLCi7ixdKFVA_Qd2rNM0S';
 
     if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
       const missing = [

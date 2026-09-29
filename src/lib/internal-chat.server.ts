@@ -16,8 +16,9 @@ export async function handleInternalChat(request: Request): Promise<Response> {
     return reply({ error: "Solicitud demasiado grande" }, 413);
   const jwt = request.headers.get("authorization")?.match(/^Bearer ([^\s]+)$/)?.[1];
   if (!jwt) return reply({ error: "Iniciá sesión para consultar datos internos." }, 401);
-  const url = process.env["SUPABASE_URL"];
-  const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
+  // Authenticated dashboard data lives in this CEAC project. These are public identifiers.
+  const url = "https://zwyccbuegzomgtsclcxh.supabase.co";
+  const key = "sb_publishable_rkasH3qneDyLCi7ixdKFVA_Qd2rNM0S";
   const webhook = process.env["N8N_INTERNAL_CHAT_WEBHOOK_URL"];
   const secret = process.env["N8N_CHAT_WEBHOOK_SECRET"];
   if (!url || !key)
