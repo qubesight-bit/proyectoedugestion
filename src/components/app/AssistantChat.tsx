@@ -4,6 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 
 type Message = { id: number; sender: "Tú" | "Consultas"; text: string };
 const suggestions = [
+  "Dame la lista de estudiantes",
+  "Mostrame los docentes y sus cursos",
+  "Mostrame las solicitudes de ingreso",
   "¿Cuántos cupos quedan en total?",
   "¿Qué cursos tienen menos cupos disponibles?",
   "Resume el estado de los estudiantes",
@@ -133,8 +136,8 @@ export function AssistantChat({ isAdmin, userId }: { isAdmin: boolean; userId: s
           Consultas
         </h1>
         <p className="text-on-surface-variant">
-          Consultá información institucional actual. La IA recibe solo datos agregados, sin
-          expedientes personales.
+          Consultá datos del panel según tu rol. Las fichas personales se consultan directamente
+          en Supabase y no se envían al modelo de IA.
         </p>
       </div>
       <div className="flex flex-wrap gap-2">

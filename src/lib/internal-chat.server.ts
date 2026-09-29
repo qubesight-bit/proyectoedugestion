@@ -1,5 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
+import { answerDashboardQuery } from "@/lib/dashboard-answers.server";
 
 function reply(data: object, status = 200) {
   return Response.json(data, { status, headers: { "cache-control": "no-store" } });
@@ -19,13 +20,8 @@ export async function handleInternalChat(request: Request): Promise<Response> {
   const key = process.env["SUPABASE_PUBLISHABLE_KEY"];
   const webhook = process.env["N8N_INTERNAL_CHAT_WEBHOOK_URL"];
   const secret = process.env["N8N_CHAT_WEBHOOK_SECRET"];
-  if (!url || !key || !webhook || !secret)
+  if (!url || !key)
     return reply({ error: "El asistente interno aún no está configurado." }, 503);
-  try {
-    if (new URL(webhook).protocol !== "https:") return reply({ error: "Webhook inválido" }, 503);
-  } catch {
-    return reply({ error: "Webhook inválido" }, 503);
-  }
   let question: unknown;
   try {
     question = ((await request.json()) as { question?: unknown }).question;
@@ -49,6 +45,15 @@ export async function handleInternalChat(request: Request): Promise<Response> {
     return reply({ error: "Acceso restringido" }, 403);
   const admin = roles.some(({ role }) => role === "admin");
   try {
+    const dashboardAnswer = await answerDashboardQuery(db, question, admin, auth.user.id);
+    if (dashboardAnswer) return reply({ reply: dashboardAnswer.slice(0, 8000) });
+    if (!webhook || !secret)
+      return reply({ error: "El asistente interno aún no está configurado." }, 503);
+    try {
+      if (new URL(webhook).protocol !== "https:") return reply({ error: "Webhook inválido" }, 503);
+    } catch {
+      return reply({ error: "Webhook inválido" }, 503);
+    }
     const [courses, students, announcements, admissions, teacherProfiles] = await Promise.all([
       db.from("courses").select("id, title, capacity, enrolled, teacher_id"),
       db.from("students").select("status"),
