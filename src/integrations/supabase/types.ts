@@ -14,6 +14,57 @@ export type Database = {
   }
   public: {
     Tables: {
+      admission_requests: {
+        Row: {
+          admin_note: string
+          birth_date: string
+          created_at: string
+          desired_level: string
+          entry_type: string
+          guardian_document: string
+          guardian_email: string
+          guardian_name: string
+          guardian_phone: string
+          id: string
+          status: string
+          student_document: string
+          student_name: string
+          updated_at: string
+        }
+        Insert: {
+          admin_note?: string
+          birth_date: string
+          created_at?: string
+          desired_level: string
+          entry_type?: string
+          guardian_document: string
+          guardian_email: string
+          guardian_name: string
+          guardian_phone: string
+          id?: string
+          status?: string
+          student_document: string
+          student_name: string
+          updated_at?: string
+        }
+        Update: {
+          admin_note?: string
+          birth_date?: string
+          created_at?: string
+          desired_level?: string
+          entry_type?: string
+          guardian_document?: string
+          guardian_email?: string
+          guardian_name?: string
+          guardian_phone?: string
+          id?: string
+          status?: string
+          student_document?: string
+          student_name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       announcements: {
         Row: {
           author_name: string
@@ -47,6 +98,39 @@ export type Database = {
         }
         Relationships: []
       }
+      course_students: {
+        Row: {
+          course_id: string
+          enrolled_at: string
+          student_id: string
+        }
+        Insert: {
+          course_id: string
+          enrolled_at?: string
+          student_id: string
+        }
+        Update: {
+          course_id?: string
+          enrolled_at?: string
+          student_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "course_students_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "course_students_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       courses: {
         Row: {
           capacity: number
@@ -62,6 +146,7 @@ export type Database = {
           schedule: string
           tag: string
           teacher: string
+          teacher_id: string | null
           title: string
           updated_at: string
         }
@@ -79,6 +164,7 @@ export type Database = {
           schedule?: string
           tag?: string
           teacher?: string
+          teacher_id?: string | null
           title: string
           updated_at?: string
         }
@@ -96,10 +182,19 @@ export type Database = {
           schedule?: string
           tag?: string
           teacher?: string
+          teacher_id?: string | null
           title?: string
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "courses_teacher_id_fkey"
+            columns: ["teacher_id"]
+            isOneToOne: false
+            referencedRelation: "teacher_profiles"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       profiles: {
         Row: {
@@ -170,6 +265,42 @@ export type Database = {
           status?: string
           tutor?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      teacher_profiles: {
+        Row: {
+          bio: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          phone: string
+          specialty: string
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          bio?: string
+          created_at?: string
+          email?: string
+          full_name: string
+          id?: string
+          phone?: string
+          specialty?: string
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          bio?: string
+          created_at?: string
+          email?: string
+          full_name?: string
+          id?: string
+          phone?: string
+          specialty?: string
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: []
       }

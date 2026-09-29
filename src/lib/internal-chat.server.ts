@@ -73,11 +73,27 @@ export async function handleInternalChat(request: Request): Promise<Response> {
       : (courses.data ?? []).filter((c) =>
           teacherProfiles.data?.some((t) => t.id === c.teacher_id),
         );
-    // Only aggregates and institutional text are sent to n8n. Never send student names or admissions contacts to Groq.
+    const totalCapacity = assigned.reduce((sum, c) => sum + c.capacity, 0);
+    const totalEnrolled = assigned.reduce((sum, c) => sum + c.enrolled, 0);
     const context = {
       role: admin ? "administrador" : "docente",
+      dashboard: {
+        total_courses: assigned.length,
+        total_students: (students.data ?? []).length,
+        total_capacity: totalCapacity,
+        total_enrolled: totalEnrolled,
+        available_seats: Math.max(0, totalCapacity - totalEnrolled),
+        occupancy_percent: totalCapacity
+          ? Math.round((totalEnrolled / totalCapacity) * 100)
+          : 0,
+        pending_admissions: admin
+          ? (admissions.data ?? []).filter((a) => a.status === "pendiente").length
+          : undefined,
+      },
       courses: assigned.map((c) => ({
         title: c.title,
+        capacity: c.capacity,
+        enrolled: c.enrolled,
         available: Math.max(0, c.capacity - c.enrolled),
       })),
       students_by_status: Object.fromEntries(
@@ -99,6 +115,7 @@ export async function handleInternalChat(request: Request): Promise<Response> {
           )
         : undefined,
     };
+
     const result = await fetch(webhook, {
       method: "POST",
       headers: { "Content-Type": "application/json", "x-chat-secret": secret },
