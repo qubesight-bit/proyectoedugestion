@@ -4,11 +4,13 @@ import { supabase } from "@/integrations/supabase/client";
 
 type Message = { id: number; sender: "Tú" | "Consultas"; text: string };
 const suggestions = [
+  "¿Cuántos cupos quedan en total?",
   "¿Qué cursos tienen menos cupos disponibles?",
   "Resume el estado de los estudiantes",
   "Muéstrame los anuncios recientes",
-  "¿Cuántas solicitudes de ingreso están pendientes?",
+  "Resumen de solicitudes pendientes",
 ];
+
 
 export function AssistantChat({ isAdmin, userId }: { isAdmin: boolean; userId: string }) {
   const [input, setInput] = useState("");

@@ -110,11 +110,13 @@ export function AppExperience() {
           <div><h1 className="text-headline-md font-semibold">Hola{account.data?.fullName ? `, ${account.data.fullName}` : ""}</h1><p className="text-on-surface-variant">Resumen institucional · {new Date().toLocaleDateString("es-CR", { dateStyle: "long" })}</p></div>
           <Button variant="secondary" onClick={() => go("courses")}>Gestionar cursos</Button>
         </div>
-        <div className="mb-6 grid gap-3 sm:grid-cols-3">
+        <div className="mb-6 grid gap-3 sm:grid-cols-4">
           {isAdmin && <Button className="h-16 gap-2 rounded-xl" onClick={() => { go("students"); setStudentRequest((n) => n + 1); }}>{icon("person_add")}Nuevo estudiante</Button>}
           <Button className="h-16 gap-2 rounded-xl" onClick={() => go("courses")}>{icon("school")}Gestionar cursos</Button>
           {isAdmin && <Button className="h-16 gap-2 rounded-xl" onClick={() => { go("announcements"); setAnnouncementRequest((n) => n + 1); }}>{icon("campaign")}Nuevo anuncio</Button>}
+          <Button variant="secondary" className="h-16 gap-2 rounded-xl" onClick={() => go("assistant")}>{icon("smart_toy")}Asistente interno</Button>
         </div>
+
         <div className="mb-6 grid gap-3 sm:grid-cols-3">
           <Metric label="Cursos registrados" value={courses.data?.length} loading={courses.isLoading} onClick={() => go("courses")} />
           <Metric label="Estudiantes activos" value={students.data?.filter((s) => s.status === "Activo").length} loading={students.isLoading} onClick={() => go("students")} />
