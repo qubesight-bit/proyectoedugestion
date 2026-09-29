@@ -25,6 +25,7 @@ import { Route as PagosRouteImport } from './routes/pagos'
 import { Route as UniformesRouteImport } from './routes/uniformes'
 import { Route as AuthenticatedAppRouteImport } from './routes/_authenticated/app'
 import { Route as ApiChatRouteImport } from './routes/api/chat'
+import { Route as ApiInternalChatRouteImport } from './routes/api/internal-chat'
 import { Route as ApiPublicN8nRouteImport } from './routes/api/public/n8n'
 
 const IndexRoute = IndexRouteImport.update({
@@ -106,6 +107,11 @@ const ApiChatRoute = ApiChatRouteImport.update({
   path: '/api/chat',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiInternalChatRoute = ApiInternalChatRouteImport.update({
+  id: '/api/internal-chat',
+  path: '/api/internal-chat',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicN8nRoute = ApiPublicN8nRouteImport.update({
   id: '/api/public/n8n',
   path: '/api/public/n8n',
@@ -128,6 +134,7 @@ export interface FileRoutesByFullPath {
   '/uniformes': typeof UniformesRoute
   '/app': typeof AuthenticatedAppRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/internal-chat': typeof ApiInternalChatRoute
   '/api/public/n8n': typeof ApiPublicN8nRoute
 }
 export interface FileRoutesByTo {
@@ -146,6 +153,7 @@ export interface FileRoutesByTo {
   '/uniformes': typeof UniformesRoute
   '/app': typeof AuthenticatedAppRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/internal-chat': typeof ApiInternalChatRoute
   '/api/public/n8n': typeof ApiPublicN8nRoute
 }
 export interface FileRoutesById {
@@ -166,6 +174,7 @@ export interface FileRoutesById {
   '/uniformes': typeof UniformesRoute
   '/_authenticated/app': typeof AuthenticatedAppRoute
   '/api/chat': typeof ApiChatRoute
+  '/api/internal-chat': typeof ApiInternalChatRoute
   '/api/public/n8n': typeof ApiPublicN8nRoute
 }
 export interface FileRouteTypes {
@@ -186,6 +195,7 @@ export interface FileRouteTypes {
     | '/uniformes'
     | '/app'
     | '/api/chat'
+    | '/api/internal-chat'
     | '/api/public/n8n'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -204,6 +214,7 @@ export interface FileRouteTypes {
     | '/uniformes'
     | '/app'
     | '/api/chat'
+    | '/api/internal-chat'
     | '/api/public/n8n'
   id:
     | '__root__'
@@ -223,6 +234,7 @@ export interface FileRouteTypes {
     | '/uniformes'
     | '/_authenticated/app'
     | '/api/chat'
+    | '/api/internal-chat'
     | '/api/public/n8n'
   fileRoutesById: FileRoutesById
 }
@@ -242,6 +254,7 @@ export interface RootRouteChildren {
   PagosRoute: typeof PagosRoute
   UniformesRoute: typeof UniformesRoute
   ApiChatRoute: typeof ApiChatRoute
+  ApiInternalChatRoute: typeof ApiInternalChatRoute
   ApiPublicN8nRoute: typeof ApiPublicN8nRoute
 }
 
@@ -359,6 +372,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiChatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/internal-chat': {
+      id: '/api/internal-chat'
+      path: '/api/internal-chat'
+      fullPath: '/api/internal-chat'
+      preLoaderRoute: typeof ApiInternalChatRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/n8n': {
       id: '/api/public/n8n'
       path: '/api/public/n8n'
@@ -396,6 +416,7 @@ const rootRouteChildren: RootRouteChildren = {
   PagosRoute: PagosRoute,
   UniformesRoute: UniformesRoute,
   ApiChatRoute: ApiChatRoute,
+  ApiInternalChatRoute: ApiInternalChatRoute,
   ApiPublicN8nRoute: ApiPublicN8nRoute,
 }
 export const routeTree = rootRouteImport

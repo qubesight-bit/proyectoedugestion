@@ -8,7 +8,7 @@ import { fieldErrors, studentSchema } from "@/lib/validation";
 import { CrudDialog, FormField } from "./CrudDialog";
 
 type Student = Database["public"]["Tables"]["students"]["Row"];
-const GRADES = ["1° Primaria 'A'", "2° Primaria 'A'", "3° Primaria 'B'", "4° Primaria 'A'", "1° Secundaria 'A'", "1° Secundaria 'C'", "2° Secundaria 'B'"];
+const GRADES = ["Maternal", "Interactivo I", "Interactivo II", "Transición", "1° Primaria", "2° Primaria", "3° Primaria", "4° Primaria", "5° Primaria", "6° Primaria"];
 const STATUSES = ["Activo", "Doc. Pendiente", "En Observación", "Retirado Temporal"];
 
 export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; openNew?: number }) {
@@ -153,6 +153,7 @@ function StudentForm({ student, onClose, onSave }: { student: Student | null; on
         <div className="grid gap-3 sm:grid-cols-2">
           <FormField id="s-grade" label="Grado *" error={errors?.["grade"]}>
             <select {...f("grade")} defaultValue={student?.grade ?? GRADES[0]}>
+              {student?.grade && !GRADES.includes(student.grade) && <option>{student.grade}</option>}
               {GRADES.map((g) => <option key={g}>{g}</option>)}
             </select>
           </FormField>

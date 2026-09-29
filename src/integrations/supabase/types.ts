@@ -14,6 +14,111 @@ export type Database = {
   }
   public: {
     Tables: {
+      teacher_profiles: {
+        Row: {
+          id: string
+          created_at: string
+          updated_at: string
+          user_id: string | null
+          full_name: string
+          email: string
+          phone: string
+          specialty: string
+          bio: string
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          user_id?: string | null
+          full_name: string
+          email?: string
+          phone?: string
+          specialty?: string
+          bio?: string
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          user_id?: string | null
+          full_name?: string
+          email?: string
+          phone?: string
+          specialty?: string
+          bio?: string
+        }
+        Relationships: []
+      }
+      course_students: {
+        Row: {
+          course_id: string
+          student_id: string
+          enrolled_at: string
+        }
+        Insert: {
+          course_id: string
+          student_id: string
+          enrolled_at?: string
+        }
+        Update: {
+          course_id?: string
+          student_id?: string
+          enrolled_at?: string
+        }
+        Relationships: []
+      }
+      admission_requests: {
+        Row: {
+          id: string
+          created_at: string
+          updated_at: string
+          student_name: string
+          student_document: string
+          birth_date: string
+          desired_level: string
+          guardian_name: string
+          guardian_document: string
+          guardian_email: string
+          guardian_phone: string
+          entry_type: string
+          status: string
+          admin_note: string
+        }
+        Insert: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          student_name: string
+          student_document: string
+          birth_date: string
+          desired_level: string
+          guardian_name: string
+          guardian_document: string
+          guardian_email: string
+          guardian_phone: string
+          entry_type?: string
+          status?: string
+          admin_note?: string
+        }
+        Update: {
+          id?: string
+          created_at?: string
+          updated_at?: string
+          student_name?: string
+          student_document?: string
+          birth_date?: string
+          desired_level?: string
+          guardian_name?: string
+          guardian_document?: string
+          guardian_email?: string
+          guardian_phone?: string
+          entry_type?: string
+          status?: string
+          admin_note?: string
+        }
+        Relationships: []
+      }
       announcements: {
         Row: {
           author_name: string
@@ -62,6 +167,7 @@ export type Database = {
           schedule: string
           tag: string
           teacher: string
+          teacher_id: string | null
           title: string
           updated_at: string
         }
@@ -79,6 +185,7 @@ export type Database = {
           schedule?: string
           tag?: string
           teacher?: string
+          teacher_id?: string | null
           title: string
           updated_at?: string
         }
@@ -96,6 +203,7 @@ export type Database = {
           schedule?: string
           tag?: string
           teacher?: string
+          teacher_id?: string | null
           title?: string
           updated_at?: string
         }

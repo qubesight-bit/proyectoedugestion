@@ -23,7 +23,7 @@ Continue developing this project in the [Lovable editor](https://lovable.dev/pro
 
 ### Guía para presentar el proyecto
 
-Abrí [docs/CRITERIOS_PRESENTACION.md](docs/CRITERIOS_PRESENTACION.md) en el IDE: contiene los criterios, rutas de los archivos y una demostración paso a paso. Ejecutá `npm test`, `npx tsc --noEmit` y `npm run build` para verificarlo.
+Abrí [docs/CRITERIOS_PRESENTACION.md](docs/CRITERIOS_PRESENTACION.md) y [docs/NUEVAS_FUNCIONES.md](docs/NUEVAS_FUNCIONES.md) en el IDE: contiene los criterios, rutas de los archivos y una demostración paso a paso. Ejecutá `npm test`, `npx tsc --noEmit` y `npm run build` para verificarlo.
 
 ### Chatbot público con n8n y Groq
 

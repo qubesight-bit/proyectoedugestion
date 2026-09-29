@@ -10,7 +10,10 @@ import { AnnouncementsManager } from "./AnnouncementsManager";
 import { ProfilePanel } from "./ProfilePanel";
 import { AssistantChat } from "./AssistantChat";
 import { useAccount } from "./useAccount";
+import { TeachersManager } from "./TeachersManager";
+import { AdmissionsManager } from "./AdmissionsManager";
 import { APP_SECTION_KEY, savedView, type AppSection } from "@/lib/app-section";
+import { assignedCourses } from "@/lib/academic";
 
 type View = AppSection;
 
@@ -41,6 +44,15 @@ export function AppExperience() {
     if (error) throw error;
     return data;
   } });
+  const teacherProfiles = useQuery({ queryKey: ["teacher_profiles"], queryFn: async () => {
+    const { data, error } = await supabase.from("teacher_profiles").select("id, user_id");
+    if (error) throw error;
+    return data;
+  } });
+  useEffect(() => {
+    if (!account.isLoading && !isAdmin && view === "admissions") setView("home");
+  }, [account.isLoading, isAdmin, view]);
+  const ownCourseCount = teacherProfiles.error ? courses.data?.length : assignedCourses(courses.data ?? [], teacherProfiles.data ?? [], account.data?.userId ?? "").length;
   const announcements = useQuery({ queryKey: ["announcements"], queryFn: async () => {
     const { data, error } = await supabase.from("announcements").select("*").order("created_at", { ascending: false });
     if (error) throw error;
@@ -50,12 +62,12 @@ export function AppExperience() {
   const nav: Array<[View, string, string]> = [
     ["home", "dashboard", "Inicio"], ["courses", "school", "Cursos"],
     ["students", "groups", "Estudiantes"], ["announcements", "campaign", "Anuncios"],
-    ["teachers", "person", "Docentes"], ["supervision", "visibility", "Supervisión"],
+    ["teachers", "person", "Docentes"], ...(isAdmin ? [["admissions", "assignment", "Solicitudes"] as [View, string, string]] : []), ["supervision", "visibility", "Supervisión"],
     ["assistant", "search", "Consultas"], ["profile", "account_circle", "Perfil"],
   ];
   const go = (target: View) => { setAnnouncementRequest(0); setStudentRequest(0); setView(target); setMenuOpen(false); };
   const refresh = async () => {
-    await Promise.all([qc.invalidateQueries({ queryKey: ["courses"] }), qc.invalidateQueries({ queryKey: ["students"] }), qc.invalidateQueries({ queryKey: ["announcements"] })]);
+    await Promise.all(["courses", "students", "announcements", "teacher_profiles", "course_students", "admission_requests"].map((key) => qc.invalidateQueries({ queryKey: [key] })));
     toast.success("Datos actualizados");
   };
   const logOut = async () => {
@@ -93,7 +105,7 @@ export function AppExperience() {
       <Button variant="ghost" size="icon" aria-label="Ver perfil" onClick={() => go("profile")}>{icon("account_circle")}</Button>
     </header>
     <main id="app-contenido" className="mx-auto max-w-6xl px-4 py-6 pb-24 md:px-8 md:pb-8">
-      {view === "home" && <>
+      {view === "home" && (isAdmin ? <>
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <div><h1 className="text-headline-md font-semibold">Hola{account.data?.fullName ? `, ${account.data.fullName}` : ""}</h1><p className="text-on-surface-variant">Resumen institucional · {new Date().toLocaleDateString("es-CR", { dateStyle: "long" })}</p></div>
           <Button variant="secondary" onClick={() => go("courses")}>Gestionar cursos</Button>
@@ -113,13 +125,14 @@ export function AppExperience() {
           <div className="mb-3 flex items-center justify-between"><h2 id="recent-title" className="text-headline-sm font-semibold">Anuncios recientes</h2><Button variant="ghost" onClick={() => go("announcements")}>Ver todos</Button></div>
           {announcements.isLoading ? <p>Cargando anuncios…</p> : announcements.data?.length ? <ul className="space-y-3">{announcements.data.slice(0, 3).map((a) => <li key={a.id} className="rounded-xl border p-3"><strong>{a.title}</strong><p className="whitespace-pre-wrap text-sm">{a.content}</p><span className="text-xs text-on-surface-variant">{new Date(a.created_at).toLocaleDateString("es-CR")}</span></li>)}</ul> : <p>Todavía no hay anuncios.</p>}
         </section>
-      </>}
-      {view === "courses" && <CoursesManager isAdmin={isAdmin} />}
+      </> : <section className="space-y-5"><div><p className="text-sm font-semibold uppercase tracking-wider text-primary">Panel docente</p><h1 className="text-headline-md font-semibold">Hola{account.data?.fullName ? `, ${account.data.fullName}` : ""}</h1><p>Consultá tus cursos, alumnos asignados y anuncios recientes.</p></div><div className="grid gap-3 sm:grid-cols-3"><Metric label="Mis cursos" value={ownCourseCount} loading={courses.isLoading} onClick={() => go("courses")} /><Metric label="Estudiantes accesibles" value={students.data?.length} loading={students.isLoading} onClick={() => go("students")} /><Metric label="Anuncios" value={announcements.data?.length} loading={announcements.isLoading} onClick={() => go("announcements")} /></div><Button onClick={() => go("courses")}>Ver mis cursos y estudiantes</Button></section>)}
+      {view === "courses" && <CoursesManager isAdmin={isAdmin} userId={account.data!.userId} />}
       {view === "students" && <StudentsManager key={studentRequest} isAdmin={isAdmin} openNew={studentRequest} />}
       {view === "announcements" && <AnnouncementsManager key={announcementRequest} isAdmin={isAdmin} openNew={announcementRequest} />}
-      {view === "teachers" && <Teachers courses={courses.data ?? []} />}
+      {view === "teachers" && <TeachersManager isAdmin={isAdmin} userId={account.data!.userId} courses={courses.data ?? []} />}
+      {view === "admissions" && isAdmin && <AdmissionsManager />}
       {view === "supervision" && <Supervision courses={courses.data ?? []} announcements={announcements.data ?? []} />}
-      {view === "assistant" && <AssistantChat />}
+      {view === "assistant" && <AssistantChat isAdmin={isAdmin} userId={account.data!.userId} />}
       {view === "profile" && <ProfilePanel />}
     </main>
     <nav aria-label="Navegación rápida" className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t bg-surface-container-lowest p-2 md:hidden">
@@ -130,12 +143,6 @@ export function AppExperience() {
 
 function Metric({ label, value, loading, onClick }: { label: string; value: number | undefined; loading: boolean; onClick: () => void }) {
   return <Button variant="secondary" onClick={onClick} className="h-auto flex-col items-start rounded-2xl p-5 text-left"><span className="text-sm">{label}</span><strong className="text-3xl">{loading ? "…" : value ?? "—"}</strong></Button>;
-}
-
-function Teachers({ courses }: { courses: Array<{ id: string; title: string; teacher: string }> }) {
-  const [search, setSearch] = useState("");
-  const names = [...new Set(courses.map((c) => c.teacher.trim()).filter(Boolean))].filter((n) => n.toLowerCase().includes(search.toLowerCase()));
-  return <section><h1 className="text-headline-md font-semibold">Docentes de cursos</h1><p className="mb-4 text-on-surface-variant">Docentes registrados como titulares en los cursos.</p><input className="form-input mb-4" type="search" aria-label="Buscar docente" placeholder="Buscar docente" value={search} onChange={(e) => setSearch(e.target.value)} /><ul className="grid gap-3 md:grid-cols-2">{names.map((name) => <li key={name} className="rounded-2xl bg-surface-container-lowest p-4 shadow-sm"><strong>{name}</strong><p className="text-sm">{courses.filter((c) => c.teacher.trim() === name).map((c) => c.title).join(", ")}</p></li>)}</ul>{names.length === 0 && <p>No hay docentes en los cursos registrados.</p>}</section>;
 }
 
 function Supervision({ courses, announcements }: { courses: Array<{ id: string; title: string; teacher: string; updated_at: string }>; announcements: Array<{ id: string; title: string; created_at: string }> }) {

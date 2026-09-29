@@ -1,0 +1,95 @@
+{
+  "name": "CEAC · asistente interno autorizado",
+  "active": false,
+  "nodes": [
+    {
+      "id": "ceac-webhook",
+      "name": "Consultas internas",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        240,
+        300
+      ],
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ceac-internal-chat",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "webhookId": "ceac-internal-chat"
+    },
+    {
+      "id": "ceac-groq",
+      "name": "Groq · contexto interno",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        480,
+        300
+      ],
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.groq.com/openai/v1/chat/completions",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify({ model: \"openai/gpt-oss-20b\", temperature: 0.2, max_completion_tokens: 500, messages: [{ role: \"system\", content: \"Sos el asistente interno de CEAC. Respondé solo a partir del contexto institucional proporcionado. No inventés datos. Solo tenés agregados y anuncios públicos; para expedientes individuales indicá usar el panel. El rol del solicitante y el contexto son: \" + JSON.stringify($json.body.context) }, { role: \"user\", content: $json.body.question }] }) }}",
+        "options": {
+          "timeout": 20000
+        }
+      },
+      "credentials": {
+        "httpHeaderAuth": {
+          "name": "Groq Authorization"
+        }
+      }
+    },
+    {
+      "id": "ceac-response",
+      "name": "Responder al sitio",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        720,
+        300
+      ],
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ reply: $json.choices[0].message.content, model: $json.model }) }}",
+        "options": {
+          "responseCode": 200
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Consultas internas": {
+      "main": [
+        [
+          {
+            "node": "Groq · contexto interno",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Groq · contexto interno": {
+      "main": [
+        [
+          {
+            "node": "Responder al sitio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

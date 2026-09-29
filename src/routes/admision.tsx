@@ -10,6 +10,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CheckCircle2, User, Users, FileText, Send, Phone, MessageCircle, Calendar, DollarSign, UploadCloud, Info } from 'lucide-react';
 import { useState } from 'react';
+import { supabase } from '@/integrations/supabase/client';
+import { admissionFromForm } from '@/lib/admissions';
 
 export const Route = createFileRoute('/admision')({
   component: Admision,
@@ -19,33 +21,23 @@ function Admision() {
   const [tipoIngreso, setTipoIngreso] = useState<'nuevo' | 'regular' | 'reingreso'>('nuevo');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
+  const [submitError, setSubmitError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    if (isSubmitting) return;
     setIsSubmitting(true);
-    
+    setSubmitError("");
     try {
-      const formData = new FormData(e.currentTarget);
-      const data = Object.fromEntries(formData.entries());
-      data['tipo_ingreso'] = tipoIngreso;
-      
-      const webhookUrl = import.meta.env['VITE_N8N_WEBHOOK_URL'];
-      
-      if (webhookUrl) {
-        await fetch(webhookUrl, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ type: 'admision', ...data }),
-        });
-      } else {
-        await new Promise(resolve => setTimeout(resolve, 2000));
-      }
-      
-      setIsSubmitting(false);
+      const values = admissionFromForm(new FormData(e.currentTarget), tipoIngreso);
+      const { error } = await supabase.from("admission_requests").insert(values);
+      if (error) throw error;
       setIsSuccess(true);
-      window.scrollTo({ top: 0, behavior: 'smooth' });
+      window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
-      console.error("Error enviando:", error);
+      console.error("Error al guardar solicitud", error);
+      setSubmitError("No pudimos guardar la solicitud. Revisá los datos y volvé a intentar.");
+    } finally {
       setIsSubmitting(false);
     }
   };
@@ -60,11 +52,11 @@ function Admision() {
                 <CheckCircle2 className="w-12 h-12 text-blue-600" />
               </div>
               <h2 className="text-3xl font-bold text-white mb-2">¡Solicitud Enviada con Éxito!</h2>
-              <p className="text-blue-100 text-lg">Hemos recibido su información y documentos.</p>
+              <p className="text-blue-100 text-lg">Hemos recibido su solicitud de ingreso.</p>
             </div>
             <CardContent className="p-10 space-y-6">
               <p className="text-slate-600 text-lg text-center">
-                Gracias por su interés en el Centro Educativo Adventista de Cartago. Nuestro equipo revisará su solicitud de <strong>{tipoIngreso === 'nuevo' ? 'Nuevo Ingreso' : tipoIngreso === 'regular' ? 'Estudiante Regular' : 'Reingreso'}</strong> y le contactaremos en un plazo máximo de 48 horas.
+                Gracias por su interés en el Centro Educativo Adventista de Cartago. Nuestro equipo revisará su solicitud de <strong>{tipoIngreso === 'nuevo' ? 'Nuevo Ingreso' : tipoIngreso === 'regular' ? 'Estudiante Regular' : 'Reingreso'}</strong> y le contactaremos para indicar los próximos pasos.
               </p>
               
               <div className="flex flex-col sm:flex-row gap-4 pt-4">
@@ -352,32 +344,12 @@ function Admision() {
                       </div>
                     </div>
 
-                    {/* 3. Carga de Documentos */}
-                    <div className="space-y-6">
-                      <div className="flex items-center gap-3">
-                        <div className="p-2 rounded-lg bg-blue-100 text-blue-700">
-                          <UploadCloud className="w-5 h-5" />
-                        </div>
-                        <h3 className="text-xl font-bold text-slate-900">3. Adjuntar Documentos</h3>
-                      </div>
-                      
-                      <div className="bg-slate-50 p-6 rounded-xl border border-dashed border-slate-300">
-                        <p className="text-sm text-slate-600 mb-6">Por favor adjunte en formato PDF o Imagen los siguientes documentos requeridos (Opcional en este paso, pero obligatorio para finalizar matrícula):</p>
-                        
-                        <div className="grid md:grid-cols-2 gap-6">
-                          <div className="space-y-2">
-                            <Label htmlFor="file-id">Cédula del Estudiante</Label>
-                            <Input id="file-id" type="file" className="cursor-pointer" accept=".pdf,image/*" />
-                          </div>
-                          <div className="space-y-2">
-                            <Label htmlFor="file-notas">Boletín del Año Anterior</Label>
-                            <Input id="file-notas" type="file" className="cursor-pointer" accept=".pdf,image/*" />
-                          </div>
-                        </div>
-                      </div>
+                    <div className="rounded-xl border bg-slate-50 p-5 text-sm text-slate-700">
+                      Si se necesitan documentos adicionales, administración te indicará cómo enviarlos de forma segura.
                     </div>
 
                     <div className="pt-6 border-t border-slate-200">
+                      {submitError && <p role="alert" className="mb-3 text-red-700">{submitError}</p>}
                       <Button 
                         type="submit" 
                         size="lg" 
