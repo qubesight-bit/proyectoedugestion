@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "@tanstack/react-router";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
@@ -13,10 +13,21 @@ import { useAccount } from "./useAccount";
 
 type View = "home" | "courses" | "students" | "announcements" | "teachers" | "supervision" | "assistant" | "profile";
 
+const views: View[] = ["home", "courses", "students", "announcements", "teachers", "supervision", "assistant", "profile"];
+const viewKey = "edugestion:app-section";
+export function savedView(value: string | null): View {
+  return views.includes(value as View) ? value as View : "home";
+}
+
 const icon = (name: string) => <span aria-hidden="true" className="material-symbols-outlined text-[22px]">{name}</span>;
 
 export function AppExperience() {
-  const [view, setView] = useState<View>("home");
+  const [view, setView] = useState<View>(() => {
+    try { return savedView(window.localStorage.getItem(viewKey)); } catch { return "home"; }
+  });
+  useEffect(() => {
+    try { window.localStorage.setItem(viewKey, view); } catch { /* Private browsing may block storage. */ }
+  }, [view]);
   const [menuOpen, setMenuOpen] = useState(false);
   const [announcementRequest, setAnnouncementRequest] = useState(0);
   const [studentRequest, setStudentRequest] = useState(0);
@@ -54,6 +65,7 @@ export function AppExperience() {
   };
   const logOut = async () => {
     await supabase.auth.signOut();
+    try { window.localStorage.removeItem(viewKey); } catch { /* Storage may be unavailable. */ }
     qc.clear();
     await navigate({ to: "/auth", replace: true });
   };
@@ -85,7 +97,7 @@ export function AppExperience() {
       <Button variant="ghost" size="icon" aria-label="Ver anuncios" onClick={() => go("announcements")}>{icon("notifications")}</Button>
       <Button variant="ghost" size="icon" aria-label="Ver perfil" onClick={() => go("profile")}>{icon("account_circle")}</Button>
     </header>
-    <main id="contenido" className="mx-auto max-w-6xl px-4 py-6 pb-24 md:px-8 md:pb-8">
+    <main id="app-contenido" className="mx-auto max-w-6xl px-4 py-6 pb-24 md:px-8 md:pb-8">
       {view === "home" && <>
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
           <div><h1 className="text-headline-md font-semibold">Hola{account.data?.fullName ? `, ${account.data.fullName}` : ""}</h1><p className="text-on-surface-variant">Resumen institucional · {new Date().toLocaleDateString("es-CR", { dateStyle: "long" })}</p></div>
@@ -116,7 +128,7 @@ export function AppExperience() {
       {view === "profile" && <ProfilePanel />}
     </main>
     <nav aria-label="Navegación rápida" className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t bg-surface-container-lowest p-2 md:hidden">
-      {(["home", "courses", "students", "announcements"] as const).map((target) => <Button key={target} type="button" variant="ghost" className="flex h-16 flex-col gap-0 text-xs" aria-label={target} aria-current={view === target ? "page" : undefined} onClick={() => go(target)}>{icon(({home:"dashboard", courses:"school", students:"groups", announcements:"campaign"})[target])}{({home:"Inicio", courses:"Cursos", students:"Alumnos", announcements:"Anuncios"})[target]}</Button>)}
+      {(["home", "courses", "students", "announcements"] as const).map((target) => <Button key={target} type="button" variant="ghost" className="flex h-16 flex-col gap-0 text-xs" aria-label={({home:"Inicio", courses:"Cursos", students:"Alumnos", announcements:"Anuncios"})[target]} aria-current={view === target ? "page" : undefined} onClick={() => go(target)}>{icon(({home:"dashboard", courses:"school", students:"groups", announcements:"campaign"})[target])}{({home:"Inicio", courses:"Cursos", students:"Alumnos", announcements:"Anuncios"})[target]}</Button>)}
     </nav>
   </div>;
 }
