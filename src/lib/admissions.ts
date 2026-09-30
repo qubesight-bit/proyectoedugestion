@@ -12,12 +12,28 @@ export const admissionSchema = z.object({
   entry_type: z.enum(["nuevo", "regular", "reingreso"]),
 });
 
+const LEVEL_ALIASES: Record<string, string> = {
+  "1": "1° Primaria",
+  "2": "2° Primaria",
+  "3": "3° Primaria",
+  "4": "4° Primaria",
+  "5": "5° Primaria",
+  "6": "6° Primaria",
+  maternal: "Maternal",
+  interactivo1: "Interactivo I",
+  interactivo2: "Interactivo II",
+  preparatoria: "Transición",
+};
+
 export function admissionFromForm(data: FormData, entryType: string) {
+  const rawLevel = String(data.get("est_nivel") ?? "").trim();
+  const desiredLevel = LEVEL_ALIASES[rawLevel] ?? rawLevel;
+
   return admissionSchema.parse({
     student_name: data.get("est_nombre"),
     student_document: data.get("est_id"),
     birth_date: data.get("est_fecha"),
-    desired_level: data.get("est_nivel"),
+    desired_level: desiredLevel,
     guardian_name: data.get("enc_nombre"),
     guardian_document: data.get("enc_id"),
     guardian_email: data.get("enc_email"),
