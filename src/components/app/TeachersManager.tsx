@@ -1,10 +1,11 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { CrudDialog, FormField } from "./CrudDialog";
+import { pageItems, PaginationControls } from "./PaginationControls";
 
 type Teacher = Database["public"]["Tables"]["teacher_profiles"]["Row"];
 type Course = Database["public"]["Tables"]["courses"]["Row"];
@@ -21,6 +22,7 @@ export function TeachersManager({
   const qc = useQueryClient();
   const [editing, setEditing] = useState<Teacher | "new" | null>(null);
   const [search, setSearch] = useState("");
+  const [page, setPage] = useState(1);
   const teachers = useQuery({
     queryKey: ["teacher_profiles"],
     queryFn: async () => {
@@ -50,6 +52,8 @@ export function TeachersManager({
   const visible = (teachers.data ?? []).filter((teacher) =>
     String(teacher.full_name ?? "").toLowerCase().includes(search.toLowerCase()),
   );
+  useEffect(() => setPage(1), [search]);
+  const pageTeachers = pageItems(visible, page);
   const myProfile = (teachers.data ?? []).find((teacher) => teacher.user_id === userId);
 
   async function save(event: FormEvent<HTMLFormElement>) {
@@ -172,7 +176,7 @@ export function TeachersManager({
         </div>
       )}
       <ul className="grid gap-4 md:grid-cols-2">
-        {visible.map((teacher) => {
+        {pageTeachers.map((teacher) => {
           const assigned = courses.filter((course) => course.teacher_id === teacher.id);
           return (
             <li
@@ -221,6 +225,7 @@ export function TeachersManager({
           );
         })}
       </ul>
+      <PaginationControls page={page} total={visible.length} onPageChange={setPage} />
       {!teachers.isLoading && !legacy && visible.length === 0 && (
         <p>No hay docentes registrados.</p>
       )}

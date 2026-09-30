@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import { pageItems, PaginationControls } from "./PaginationControls";
 
 type Admission = Database["public"]["Tables"]["admission_requests"]["Row"];
 const statuses = [
@@ -14,6 +16,7 @@ const statuses = [
 
 export function AdmissionsManager() {
   const qc = useQueryClient();
+  const [page, setPage] = useState(1);
   const requests = useQuery({
     queryKey: ["admission_requests"],
     queryFn: async () => {
@@ -26,19 +29,31 @@ export function AdmissionsManager() {
     },
   });
   async function update(row: Admission, status: string) {
-    const { error } = await supabase
-      .from("admission_requests")
-      .update({ status })
-      .eq("id", row.id)
-      .select("id")
-      .single();
+    const { data, error } = await supabase.functions.invoke("update-admission-status", {
+      body: { requestId: row.id, status },
+    });
     if (error) {
-      toast.error(error.message);
-      return;
+      // Keep status management usable while the Edge Function is being deployed.
+      const { error: updateError } = await supabase
+        .from("admission_requests")
+        .update({ status })
+        .eq("id", row.id)
+        .select("id")
+        .single();
+      if (updateError) {
+        toast.error(updateError.message);
+        return;
+      }
+      toast.warning("Estado actualizado, pero la notificación por correo no está configurada.");
+    } else if (data?.emailSent) {
+      toast.success("Solicitud actualizada y correo enviado al encargado");
+    } else {
+      toast.warning(data?.warning ?? "Estado actualizado; el correo no pudo enviarse.");
     }
     await qc.invalidateQueries({ queryKey: ["admission_requests"] });
-    toast.success("Solicitud actualizada");
   }
+  const rows = requests.data ?? [];
+  const pageRequests = pageItems(rows, page);
   return (
     <section className="space-y-5" aria-labelledby="admissions-title">
       <div>
@@ -58,7 +73,7 @@ export function AdmissionsManager() {
       )}
       {!requests.isLoading && requests.data?.length === 0 && <p>Todavía no hay solicitudes.</p>}
       <ul className="grid gap-4 lg:grid-cols-2">
-        {requests.data?.map((row) => (
+        {pageRequests.map((row) => (
           <li key={row.id} className="rounded-2xl border bg-surface-container-lowest p-5 shadow-sm">
             <div className="flex items-start justify-between gap-3">
               <div>
@@ -112,6 +127,7 @@ export function AdmissionsManager() {
           </li>
         ))}
       </ul>
+      <PaginationControls page={page} total={rows.length} onPageChange={setPage} />
     </section>
   );
 }

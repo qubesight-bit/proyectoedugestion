@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { announcementSchema, fieldErrors } from "@/lib/validation";
 import { CrudDialog, FormField } from "./CrudDialog";
+import { pageItems, PaginationControls } from "./PaginationControls";
 
 type Ann = Database["public"]["Tables"]["announcements"]["Row"];
 
@@ -19,6 +20,8 @@ export function AnnouncementsManager({ isAdmin, openNew = 0 }: { isAdmin: boolea
   const [editing, setEditing] = useState<Ann | "new" | null>(null);
   useEffect(() => { if (openNew > 0 && isAdmin) setEditing("new"); }, [openNew, isAdmin]);
   const [errors, setErrors] = useState<Record<string, string> | null>(null);
+  const [page, setPage] = useState(1);
+  const pageAnnouncements = pageItems(data, page);
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
@@ -70,7 +73,7 @@ export function AnnouncementsManager({ isAdmin, openNew = 0 }: { isAdmin: boolea
       {error && <p role="alert" className="text-destructive">{(error as Error).message}</p>}
       {!isLoading && data.length === 0 && <p className="text-on-surface-variant">Aún no hay anuncios.</p>}
       <ul className="grid gap-3 md:grid-cols-2">
-        {data.map((a) => (
+        {pageAnnouncements.map((a) => (
           <li key={a.id} className="rounded-2xl bg-surface-container-lowest p-4 shadow-sm">
             <div className="flex items-start justify-between gap-2">
               <div>
@@ -95,6 +98,7 @@ export function AnnouncementsManager({ isAdmin, openNew = 0 }: { isAdmin: boolea
           </li>
         ))}
       </ul>
+      <PaginationControls page={page} total={data.length} onPageChange={setPage} />
       {editing && (
         <CrudDialog title={current ? "Editar anuncio" : "Nuevo anuncio"} onClose={() => setEditing(null)}>
           <form noValidate className="flex flex-col gap-3" onSubmit={submit}>

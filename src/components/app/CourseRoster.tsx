@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { CrudDialog } from "./CrudDialog";
+import { pageItems, PaginationControls } from "./PaginationControls";
 
 type Student = Database["public"]["Tables"]["students"]["Row"];
 type Course = Database["public"]["Tables"]["courses"]["Row"];
@@ -13,6 +14,7 @@ export function CourseRoster({ course, isAdmin }: { course: Course; isAdmin: boo
   const qc = useQueryClient();
   const [chosen, setChosen] = useState("");
   const [detail, setDetail] = useState<Student | null>(null);
+  const [page, setPage] = useState(1);
   const links = useQuery({
     queryKey: ["course_students", course.id],
     queryFn: async () => {
@@ -38,6 +40,7 @@ export function CourseRoster({ course, isAdmin }: { course: Course; isAdmin: boo
   const available = (students.data ?? []).filter(
     (s) => !links.data?.some((link) => link.student_id === s.id),
   );
+  const pageEnrolled = pageItems(enrolled, page);
 
   async function enroll() {
     if (!chosen) return;
@@ -108,7 +111,7 @@ export function CourseRoster({ course, isAdmin }: { course: Course; isAdmin: boo
         </div>
       )}
       <ul className="space-y-2">
-        {enrolled.map((student) => (
+        {pageEnrolled.map((student) => (
           <li
             key={student.id}
             className="flex items-center justify-between gap-3 rounded-xl bg-surface-container-lowest p-3"
@@ -142,6 +145,7 @@ export function CourseRoster({ course, isAdmin }: { course: Course; isAdmin: boo
           </li>
         ))}
       </ul>
+      <PaginationControls page={page} total={enrolled.length} onPageChange={setPage} />
       {!links.isLoading && enrolled.length === 0 && (
         <p className="text-sm text-on-surface-variant">Todavía no hay estudiantes vinculados.</p>
       )}

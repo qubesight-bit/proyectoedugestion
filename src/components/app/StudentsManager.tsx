@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -7,6 +7,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { fieldErrors, studentSchema } from "@/lib/validation";
 import { CrudDialog, FormField } from "./CrudDialog";
 import { StudentGradesDialog } from "./StudentGradesDialog";
+import { pageItems, PaginationControls } from "./PaginationControls";
 
 type Student = Database["public"]["Tables"]["students"]["Row"];
 const GRADES = ["Maternal", "Interactivo I", "Interactivo II", "Transición", "1° Primaria", "2° Primaria", "3° Primaria", "4° Primaria", "5° Primaria", "6° Primaria"];
@@ -22,6 +23,7 @@ export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; op
   const [q, setQ] = useState("");
   const [editing, setEditing] = useState<Student | "new" | null>(openNew > 0 && isAdmin ? "new" : null);
   const [grading, setGrading] = useState<Student | null>(null);
+  const [page, setPage] = useState(1);
   const courses = useQuery({ queryKey: ["courses"], queryFn: async () => {
     const { data, error } = await supabase.from("courses").select("*").order("title");
     if (error) throw error;
@@ -52,6 +54,8 @@ export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; op
 
   const term = q.trim().toLowerCase();
   const shown = data.filter((s) => !term || String(s.name ?? "").toLowerCase().includes(term) || String(s.code ?? "").toLowerCase().includes(term));
+  useEffect(() => setPage(1), [q]);
+  const pageStudents = pageItems(shown, page);
 
   return (
     <section className="flex flex-col gap-4 py-4 animate-edu-rise" aria-labelledby="students-title">
@@ -80,7 +84,7 @@ export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; op
       {error && <p role="alert" className="text-destructive">{(error as Error).message}</p>}
       {!isLoading && shown.length === 0 && <p className="text-on-surface-variant">Sin resultados.</p>}
       <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {shown.map((s) => {
+        {pageStudents.map((s) => {
           const studentCourses = (courses.data ?? []).filter((course) => links.data?.some((link) => link.student_id === s.id && link.course_id === course.id));
           const courseTeachers = [...new Set(studentCourses.map((course) => teachers.data?.find((teacher) => teacher.id === course.teacher_id)?.full_name ?? course.teacher).filter(Boolean))];
           return (
@@ -127,6 +131,7 @@ export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; op
           </li>
         )})}
       </ul>
+      <PaginationControls page={page} total={shown.length} onPageChange={setPage} />
       {editing && (
         <StudentForm
           student={editing === "new" ? null : editing}

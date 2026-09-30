@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { CrudDialog, FormField } from "./CrudDialog";
+import { pageItems, PaginationControls } from "./PaginationControls";
 
 type Student = Database["public"]["Tables"]["students"]["Row"];
 type Course = Database["public"]["Tables"]["courses"]["Row"];
@@ -12,6 +13,7 @@ type Course = Database["public"]["Tables"]["courses"]["Row"];
 export function StudentGradesDialog({ student, courses, onClose }: { student: Student; courses: Course[]; onClose: () => void }) {
   const qc = useQueryClient();
   const [busy, setBusy] = useState(false);
+  const [page, setPage] = useState(1);
   const grades = useQuery({
     queryKey: ["student_grades", student.id],
     queryFn: async () => {
@@ -20,6 +22,8 @@ export function StudentGradesDialog({ student, courses, onClose }: { student: St
       return data;
     },
   });
+  const rows = grades.data ?? [];
+  const pageGrades = pageItems(rows, page);
 
   async function save(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -89,13 +93,14 @@ export function StudentGradesDialog({ student, courses, onClose }: { student: St
         {grades.isLoading && <p role="status">Cargando notas…</p>}
         {grades.error && <p role="alert" className="text-destructive">{grades.error.message}</p>}
         <ul className="mt-2 space-y-2">
-          {grades.data?.map((item) => (
+          {pageGrades.map((item) => (
             <li key={item.id} className="flex items-center justify-between gap-3 rounded-xl bg-surface-container-low p-3">
               <div><strong>{courses.find((course) => course.id === item.course_id)?.title ?? "Curso"}: {Number(item.grade).toFixed(1)}</strong><p className="text-xs text-on-surface-variant">{item.period}{item.notes ? ` · ${item.notes}` : ""}</p></div>
               <Button type="button" size="sm" variant="outline" onClick={() => void remove(item.id)}>Eliminar</Button>
             </li>
           ))}
         </ul>
+        <PaginationControls page={page} total={rows.length} onPageChange={setPage} />
         {!grades.isLoading && grades.data?.length === 0 && <p className="text-sm text-on-surface-variant">Sin notas registradas.</p>}
       </div>
     </CrudDialog>

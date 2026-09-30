@@ -14,6 +14,7 @@ import { TeachersManager } from "./TeachersManager";
 import { AdmissionsManager } from "./AdmissionsManager";
 import { APP_SECTION_KEY, savedView, type AppSection } from "@/lib/app-section";
 import { assignedCourses } from "@/lib/academic";
+import { pageItems, PaginationControls } from "./PaginationControls";
 
 type View = AppSection;
 
@@ -149,9 +150,12 @@ function Metric({ label, value, loading, onClick }: { label: string; value: numb
 
 function Supervision({ courses, announcements }: { courses: Array<{ id: string; title: string; teacher: string; updated_at: string }>; announcements: Array<{ id: string; title: string; created_at: string }> }) {
   const [filter, setFilter] = useState("todos");
+  const [page, setPage] = useState(1);
   const items = [
     ...courses.map((c) => ({ id: c.id, kind: "Curso", title: c.title, detail: c.teacher, date: c.updated_at })),
     ...announcements.map((a) => ({ id: a.id, kind: "Anuncio", title: a.title, detail: "", date: a.created_at })),
   ].filter((i) => filter === "todos" || i.kind === filter).sort((a,b) => b.date.localeCompare(a.date));
-  return <section><h1 className="text-headline-md font-semibold">Supervisión</h1><p className="mb-4 text-on-surface-variant">Actividad registrada de cursos y anuncios.</p><label className="flex items-center gap-2">Filtrar <select className="form-input mb-4 max-w-xs" value={filter} onChange={(e) => setFilter(e.target.value)}><option value="todos">Todos</option><option value="Curso">Cursos</option><option value="Anuncio">Anuncios</option></select></label><ul className="space-y-3">{items.map((item) => <li key={`${item.kind}-${item.id}`} className="rounded-2xl bg-surface-container-lowest p-4 shadow-sm"><strong>{item.kind}: {item.title}</strong><p>{item.detail}</p><small>{new Date(item.date).toLocaleDateString("es-CR")}</small></li>)}</ul>{items.length === 0 && <p>No hay actividad registrada.</p>}</section>;
+  useEffect(() => setPage(1), [filter]);
+  const pageActivity = pageItems(items, page);
+  return <section><h1 className="text-headline-md font-semibold">Supervisión</h1><p className="mb-4 text-on-surface-variant">Actividad registrada de cursos y anuncios.</p><label className="flex items-center gap-2">Filtrar <select className="form-input mb-4 max-w-xs" value={filter} onChange={(e) => setFilter(e.target.value)}><option value="todos">Todos</option><option value="Curso">Cursos</option><option value="Anuncio">Anuncios</option></select></label><ul className="space-y-3">{pageActivity.map((item) => <li key={`${item.kind}-${item.id}`} className="rounded-2xl bg-surface-container-lowest p-4 shadow-sm"><strong>{item.kind}: {item.title}</strong><p>{item.detail}</p><small>{new Date(item.date).toLocaleDateString("es-CR")}</small></li>)}</ul>{items.length === 0 && <p>No hay actividad registrada.</p>}<div className="mt-4"><PaginationControls page={page} total={items.length} onPageChange={setPage} /></div></section>;
 }

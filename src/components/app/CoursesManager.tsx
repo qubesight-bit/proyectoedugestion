@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react";
+import { useEffect, useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,7 @@ import { COURSE_CATEGORIES, courseSchema, fieldErrors, occupancyPercent } from "
 import { CrudDialog, FormField } from "./CrudDialog";
 import { CourseRoster } from "./CourseRoster";
 import { assignedCourses } from "@/lib/academic";
+import { pageItems, PaginationControls } from "./PaginationControls";
 
 type Course = Database["public"]["Tables"]["courses"]["Row"];
 const LEVELS = ["Maternal", "Interactivo I", "Interactivo II", "Transición", "1° Primaria", "2° Primaria", "3° Primaria", "4° Primaria", "5° Primaria", "6° Primaria"];
@@ -28,6 +29,7 @@ export function CoursesManager({ isAdmin, userId }: { isAdmin: boolean; userId: 
   const [selectedCourse, setSelectedCourse] = useState<string | null>(null);
   const [filter, setFilter] = useState<string>("all");
   const [editing, setEditing] = useState<Course | "new" | null>(null);
+  const [page, setPage] = useState(1);
 
   async function assignTeacher(course: Course, teacherId: string) {
     const teacher = (teachers.data ?? []).find((item) => item.id === teacherId);
@@ -51,6 +53,8 @@ export function CoursesManager({ isAdmin, userId }: { isAdmin: boolean; userId: 
 
   const assigned = isAdmin || (teachers.error as { code?: string } | null)?.code === "42P01" ? data : assignedCourses(data, teachers.data ?? [], userId);
   const shown = assigned.filter((c) => filter === "all" || c.category === filter);
+  useEffect(() => setPage(1), [filter]);
+  const pageCourses = pageItems(shown, page);
 
   return (
     <section className="flex flex-col gap-4 py-4 animate-edu-rise" aria-labelledby="courses-title">
@@ -88,7 +92,7 @@ export function CoursesManager({ isAdmin, userId }: { isAdmin: boolean; userId: 
       {!isLoading && shown.length === 0 && <p className="text-on-surface-variant">No hay cursos en esta categoría.</p>}
 
       <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-2">
-        {shown.map((c) => {
+        {pageCourses.map((c) => {
           const pct = occupancyPercent(c.enrolled, c.capacity);
           return (
             <li key={c.id} className={`flex flex-col gap-3 rounded-2xl border border-primary/10 bg-surface-container-lowest p-5 shadow-sm transition-shadow hover:shadow-md ${selectedCourse === c.id ? "md:col-span-2" : ""}`}>
@@ -145,6 +149,7 @@ export function CoursesManager({ isAdmin, userId }: { isAdmin: boolean; userId: 
           );
         })}
       </ul>
+      <PaginationControls page={page} total={shown.length} onPageChange={setPage} />
 
       {editing && (
         <CourseForm
