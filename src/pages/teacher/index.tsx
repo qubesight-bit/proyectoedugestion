@@ -195,7 +195,7 @@ export function TeacherResourcesView() {
   const [query, setQuery] = useState("");
   const [items, setItems] = useState(resources);
   const [notice, setNotice] = useState("");
-  const filtered = items.filter((resource) => resource.title.toLowerCase().includes(query.toLowerCase()));
+  const filtered = items.filter((resource) => String(resource.title ?? "").toLowerCase().includes(query.toLowerCase()));
 
   const addDemoResource = () => {
     const nextId = Math.max(...items.map((item) => item.id)) + 1;

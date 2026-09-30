@@ -34,7 +34,7 @@ export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; op
   });
 
   const term = q.trim().toLowerCase();
-  const shown = data.filter((s) => !term || s.name.toLowerCase().includes(term) || s.code.toLowerCase().includes(term));
+  const shown = data.filter((s) => !term || String(s.name ?? "").toLowerCase().includes(term) || String(s.code ?? "").toLowerCase().includes(term));
 
   return (
     <section className="flex flex-col gap-4 py-4 animate-edu-rise" aria-labelledby="students-title">
@@ -70,7 +70,7 @@ export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; op
                 <img src={s.image} alt={`Foto de ${s.name}`} className="h-14 w-14 rounded-2xl object-cover" />
               ) : (
                 <div aria-hidden="true" className="flex h-14 w-14 items-center justify-center rounded-2xl bg-primary-fixed text-headline-sm font-bold text-on-primary-fixed">
-                  {s.name.charAt(0)}
+                  {String(s.name ?? "?").charAt(0)}
                 </div>
               )}
               <div className="min-w-0 flex-1">

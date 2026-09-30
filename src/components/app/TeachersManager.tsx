@@ -46,8 +46,9 @@ export function TeachersManager({
     },
   });
   const legacy = (teachers.error as { code?: string } | null)?.code === "42P01";
+  // Rows from the connected database may lack a name; never let that blank the screen.
   const visible = (teachers.data ?? []).filter((teacher) =>
-    teacher.full_name.toLowerCase().includes(search.toLowerCase()),
+    String(teacher.full_name ?? "").toLowerCase().includes(search.toLowerCase()),
   );
   const myProfile = (teachers.data ?? []).find((teacher) => teacher.user_id === userId);
 
@@ -183,7 +184,7 @@ export function TeachersManager({
                   aria-hidden="true"
                   className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-fixed text-xl font-bold text-on-primary-fixed"
                 >
-                  {teacher.full_name.charAt(0)}
+                  {String(teacher.full_name ?? "?").charAt(0)}
                 </span>
                 <div className="min-w-0">
                   <h2 className="text-lg font-semibold">{teacher.full_name}</h2>

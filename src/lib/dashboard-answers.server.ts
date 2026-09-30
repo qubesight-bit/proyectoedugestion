@@ -3,6 +3,14 @@ import type { Database } from "@/integrations/supabase/types";
 
 const normalize = (value: string) => value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 const show = (value: string | null | undefined) => value?.trim() || "Sin dato";
+/** Tables/columns that may be absent in the connected project resolve to empty data instead of failing the whole answer. */
+type Result<T> = { data: T[] | null; error: { code?: string; message: string } | null };
+const MISSING = new Set(["PGRST205", "PGRST204", "42703", "42P01"]);
+export async function optional<T>(query: PromiseLike<Result<T>>): Promise<Result<T>> {
+  const result = await query;
+  if (result.error && MISSING.has(result.error.code ?? "")) return { data: [], error: null };
+  return result;
+}
 const cap = (rows: string[], total: number) => `${rows.join("\n")}${total > rows.length ? `\nMostrando ${rows.length} de ${total}; consultá la sección del panel para ver el resto.` : ""}`;
 
 /** Answer records from the authenticated database. Personal details never go to n8n/Groq. */
@@ -14,6 +22,7 @@ export async function answerDashboardQuery(db: SupabaseClient<Database>, questio
   if (/solicitud|admision|nuevo ingreso/.test(q) && !/cuant|total|resum|estadistic/.test(q)) {
     if (!admin) return "Solo administración puede consultar las solicitudes de ingreso.";
     const { data, error } = await db.from("admission_requests").select("*").order("created_at", { ascending: false }).limit(101);
+    if (error && MISSING.has(error.code ?? "")) return "Las solicitudes de ingreso todavía no están habilitadas en la base de datos.";
     if (error) throw error;
     const rows = data ?? [];
     const selected = rows.filter((row) => matches(row.student_name, row.student_document));
@@ -28,10 +37,14 @@ export async function answerDashboardQuery(db: SupabaseClient<Database>, questio
 
   if (/docent|profesor|maestr/.test(q) && !/estudiant|alumn/.test(q)) {
     const [{ data, error }, { data: courses, error: courseError }] = await Promise.all([
-      db.from("teacher_profiles").select("*").order("full_name").limit(101),
-      db.from("courses").select("teacher_id, title"),
+      optional(db.from("teacher_profiles").select("*").order("full_name").limit(101)),
+      db.from("courses").select("*"),
     ]);
     if (error || courseError) throw error ?? courseError;
+    if (!(data ?? []).length && admin) {
+      const names = [...new Set((courses ?? []).map((c) => c.teacher).filter(Boolean))].sort();
+      return names.length ? `Docentes (${names.length}):\n${names.map((name, i) => `${i + 1}. ${name}; cursos: ${(courses ?? []).filter((c) => c.teacher === name).map((c) => c.title).join(", ")}`).join("\n")}` : "No hay docentes registrados.";
+    }
     const teachers = admin ? (data ?? []) : (data ?? []).filter((t) => t.user_id === userId);
     const selected = teachers.filter((t) => matches(t.full_name));
     if (details && selected.length === 1) {
@@ -44,7 +57,7 @@ export async function answerDashboardQuery(db: SupabaseClient<Database>, questio
   if ((/estudiant|alumn|matriculad/.test(q) || (/ficha|expediente/.test(q) && !/docent|profesor|curso/.test(q))) && !/resum|estado|cuant|total|estadistic/.test(q)) {
     const [{ data: students, error }, { data: courses, error: courseError }] = await Promise.all([
       db.from("students").select("*").order("name").limit(1001),
-      db.from("courses").select("id, title, teacher_id"),
+      db.from("courses").select("*"),
     ]);
     if (error || courseError) throw error ?? courseError;
     const visible = students ?? []; // RLS already limits teacher access to assigned students.
@@ -52,11 +65,12 @@ export async function answerDashboardQuery(db: SupabaseClient<Database>, questio
     let filtered = visible;
     if (course) {
       if (!admin) {
-        const { data: profiles, error: profileError } = await db.from("teacher_profiles").select("id").eq("user_id", userId);
+        const { data: profiles, error: profileError } = await optional(db.from("teacher_profiles").select("id").eq("user_id", userId));
         if (profileError) throw profileError;
         if (!(profiles ?? []).some((p) => p.id === course.teacher_id)) return "No tenés acceso a ese curso.";
       }
       const { data: links, error: linkError } = await db.from("course_students").select("student_id").eq("course_id", course.id);
+      if (linkError && MISSING.has(linkError.code ?? "")) return `Todavía no hay matrículas por curso registradas para ${course.title}.`;
       if (linkError) throw linkError;
       const ids = new Set((links ?? []).map((link) => link.student_id));
       filtered = visible.filter((student) => ids.has(student.id));
@@ -75,7 +89,7 @@ export async function answerDashboardQuery(db: SupabaseClient<Database>, questio
   if (/\bcurso|cupo|horario|aula/.test(q) && !/\btotal|\bcuant|resum|menor|mayor/.test(q)) {
     const [{ data, error }, { data: profiles, error: profileError }] = await Promise.all([
       db.from("courses").select("*").order("title").limit(101),
-      admin ? Promise.resolve({ data: [], error: null }) : db.from("teacher_profiles").select("id").eq("user_id", userId),
+      admin ? Promise.resolve({ data: [], error: null }) : optional(db.from("teacher_profiles").select("id").eq("user_id", userId)),
     ]);
     if (error || profileError) throw error ?? profileError;
     const courses = admin ? (data ?? []) : (data ?? []).filter((c) => (profiles ?? []).some((p) => p.id === c.teacher_id));

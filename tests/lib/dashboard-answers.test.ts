@@ -46,4 +46,21 @@ describe("consultas del panel", () => {
     expect(await answerDashboardQuery(db, "Lista de cursos", false, "docente"))
       .toBe("No hay cursos disponibles para tu cuenta.");
   });
+
+  it("lista estudiantes y docentes aunque falten tablas de docentes", async () => {
+    const missing = { data: null, error: { code: "PGRST205", message: "missing" } };
+    const rows: Record<string, Array<Record<string, unknown>>> = {
+      students: [{ id: "s1", name: "Ana Mora", code: "A01", grade: "5°", status: "Activo" }],
+      courses: [{ id: "c1", title: "Matemáticas", teacher: "Luis Soto" }],
+    };
+    const db = {
+      from: (table: string) => {
+        const result = table in rows ? { data: rows[table], error: null } : missing;
+        const query = { order: () => query, limit: () => Promise.resolve(result), eq: () => Promise.resolve(result), then: (r: (v: unknown) => void) => r(result) };
+        return { select: () => query };
+      },
+    } as unknown as SupabaseClient<Database>;
+    expect(await answerDashboardQuery(db, "Dame la lista de estudiantes", true, "admin")).toContain("Ana Mora");
+    expect(await answerDashboardQuery(db, "Mostrame los docentes y sus cursos", true, "admin")).toContain("Luis Soto; cursos: Matemáticas");
+  });
 });
