@@ -184,7 +184,7 @@ export function TeachersManager({
                   aria-hidden="true"
                   className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-fixed text-xl font-bold text-on-primary-fixed"
                 >
-                  {teacher.full_name.charAt(0)}
+                  {String(teacher.full_name ?? "?").charAt(0)}
                 </span>
                 <div className="min-w-0">
                   <h2 className="text-lg font-semibold">{teacher.full_name}</h2>
