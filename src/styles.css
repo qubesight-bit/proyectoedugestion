@@ -2,6 +2,8 @@
 @source "../src";
 @import "tw-animate-css";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
   --color-background: #f8fafc;
   --color-surface: #ffffff;
@@ -228,4 +230,32 @@ html.dark .border-white {
 html.dark .bg-blue-900 {
   background-color: #020617 !important;
   border-bottom: 1px solid #1e293b;
+}
+html.dark .bg-popover {
+  background-color: #0f172a !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+html.dark .bg-card {
+  background-color: #0f172a !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+html.dark input, html.dark select, html.dark textarea {
+  background-color: #020617 !important;
+  color: #f8fafc !important;
+  border-color: #1e293b !important;
+}
+html.dark input::placeholder, html.dark textarea::placeholder {
+  color: #64748b !important;
+}
+html.dark .text-muted-foreground {
+  color: #94a3b8 !important;
+}
+html.dark [data-state="open"] {
+  background-color: #1e293b !important;
+}
+html.dark .focus\:bg-accent:focus, html.dark .hover\:bg-accent:hover {
+  background-color: #1e293b !important;
+  color: #f8fafc !important;
 }
