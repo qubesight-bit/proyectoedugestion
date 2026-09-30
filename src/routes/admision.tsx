@@ -19,6 +19,7 @@ export const Route = createFileRoute('/admision')({
 
 function Admision() {
   const [tipoIngreso, setTipoIngreso] = useState<'nuevo' | 'regular' | 'reingreso'>('nuevo');
+  const [nivelIngreso, setNivelIngreso] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
@@ -26,10 +27,16 @@ function Admision() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (isSubmitting) return;
+    if (!nivelIngreso) {
+      setSubmitError("Seleccioná el nivel al que ingresará el estudiante.");
+      return;
+    }
     setIsSubmitting(true);
     setSubmitError("");
     try {
-      const values = admissionFromForm(new FormData(e.currentTarget), tipoIngreso);
+      const formData = new FormData(e.currentTarget);
+      formData.set("est_nivel", nivelIngreso);
+      const values = admissionFromForm(formData, tipoIngreso);
       const { error } = await supabase.rpc("submit_admission_request", {
         p_student_name: values.student_name,
         p_student_document: values.student_document,
@@ -304,7 +311,7 @@ function Admision() {
                         </div>
                         <div className="space-y-2">
                           <Label htmlFor="est-nivel">Nivel a Ingresar <span className="text-red-500">*</span></Label>
-                          <Select name="est_nivel" required>
+                          <Select value={nivelIngreso} onValueChange={setNivelIngreso} required>
                             <SelectTrigger id="est-nivel">
                               <SelectValue placeholder="Seleccione el nivel" />
                             </SelectTrigger>
@@ -321,6 +328,7 @@ function Admision() {
                               <SelectItem value="6">Sexto Grado</SelectItem>
                             </SelectContent>
                           </Select>
+                          <input type="hidden" name="est_nivel" value={nivelIngreso} />
                         </div>
                       </div>
                     </div>
