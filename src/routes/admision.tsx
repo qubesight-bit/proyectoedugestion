@@ -316,16 +316,16 @@ function Admision() {
                               <SelectValue placeholder="Seleccione el nivel" />
                             </SelectTrigger>
                             <SelectContent>
-                              <SelectItem value="maternal">Maternal</SelectItem>
-                              <SelectItem value="interactivo1">Interactivo I</SelectItem>
-                              <SelectItem value="interactivo2">Interactivo II</SelectItem>
-                              <SelectItem value="preparatoria">Transición (Preparatoria)</SelectItem>
-                              <SelectItem value="1">Primer Grado</SelectItem>
-                              <SelectItem value="2">Segundo Grado</SelectItem>
-                              <SelectItem value="3">Tercer Grado</SelectItem>
-                              <SelectItem value="4">Cuarto Grado</SelectItem>
-                              <SelectItem value="5">Quinto Grado</SelectItem>
-                              <SelectItem value="6">Sexto Grado</SelectItem>
+                              <SelectItem value="Maternal">Maternal</SelectItem>
+                              <SelectItem value="Interactivo I">Interactivo I</SelectItem>
+                              <SelectItem value="Interactivo II">Interactivo II</SelectItem>
+                              <SelectItem value="Transición">Transición (Preparatoria)</SelectItem>
+                              <SelectItem value="1° Primaria">Primer Grado</SelectItem>
+                              <SelectItem value="2° Primaria">Segundo Grado</SelectItem>
+                              <SelectItem value="3° Primaria">Tercer Grado</SelectItem>
+                              <SelectItem value="4° Primaria">Cuarto Grado</SelectItem>
+                              <SelectItem value="5° Primaria">Quinto Grado</SelectItem>
+                              <SelectItem value="6° Primaria">Sexto Grado</SelectItem>
                             </SelectContent>
                           </Select>
                           <input type="hidden" name="est_nivel" value={nivelIngreso} />
