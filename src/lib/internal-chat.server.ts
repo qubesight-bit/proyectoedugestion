@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { answerDashboardQuery } from "@/lib/dashboard-answers.server";
+import { answerDashboardQuery, optional } from "@/lib/dashboard-answers.server";
 
 function reply(data: object, status = 200) {
   return Response.json(data, { status, headers: { "cache-control": "no-store" } });
@@ -56,7 +56,7 @@ export async function handleInternalChat(request: Request): Promise<Response> {
       return reply({ error: "Webhook inválido" }, 503);
     }
     const [courses, students, announcements, admissions, teacherProfiles] = await Promise.all([
-      db.from("courses").select("id, title, capacity, enrolled, teacher_id"),
+      db.from("courses").select("*"),
       db.from("students").select("status"),
       db
         .from("announcements")
@@ -64,11 +64,11 @@ export async function handleInternalChat(request: Request): Promise<Response> {
         .order("created_at", { ascending: false })
         .limit(5),
       admin
-        ? db.from("admission_requests").select("status")
+        ? optional(db.from("admission_requests").select("status"))
         : Promise.resolve({ data: [], error: null }),
       admin
         ? Promise.resolve({ data: [], error: null })
-        : db.from("teacher_profiles").select("id").eq("user_id", auth.user.id),
+        : optional(db.from("teacher_profiles").select("id").eq("user_id", auth.user.id)),
     ]);
     const failed = [courses, students, announcements, admissions, teacherProfiles].find(
       (result) => result.error,
