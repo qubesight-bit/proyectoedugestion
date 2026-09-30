@@ -55,26 +55,38 @@ Deno.serve(async (request) => {
       return json({ updated: true, emailSent: false, warning: "El estado no cambió; no se envió otro correo." });
     }
 
-    const resendKey = Deno.env.get("RESEND_API_KEY");
-    const from = Deno.env.get("RESEND_FROM_EMAIL");
-    if (!resendKey || !from) {
-      return json({ updated: true, emailSent: false, warning: "Configurá RESEND_API_KEY y RESEND_FROM_EMAIL en Supabase." });
+    const webhookUrl = Deno.env.get("ADMISSION_NOTIFICATION_WEBHOOK_URL");
+    const webhookSecret = Deno.env.get("ADMISSION_NOTIFICATION_SECRET");
+    if (!webhookUrl || !webhookSecret) {
+      return json({
+        updated: true,
+        emailSent: false,
+        warning: "Configurá ADMISSION_NOTIFICATION_WEBHOOK_URL y ADMISSION_NOTIFICATION_SECRET en Supabase.",
+      });
     }
 
-    const emailResponse = await fetch("https://api.resend.com/emails", {
+    const emailResponse = await fetch(webhookUrl, {
       method: "POST",
-      headers: { Authorization: `Bearer ${resendKey}`, "Content-Type": "application/json" },
+      headers: {
+        "Content-Type": "application/json",
+        "x-admission-secret": webhookSecret,
+      },
       body: JSON.stringify({
-        from,
-        to: [admission.guardian_email],
+        requestId: admission.id,
+        to: admission.guardian_email,
+        guardianName: admission.guardian_name,
+        studentName: admission.student_name,
+        desiredLevel: admission.desired_level,
+        status,
+        statusLabel: labels[status],
         subject: `Actualización de solicitud de ingreso · ${admission.student_name}`,
         html: emailHtml(admission.guardian_name, admission.student_name, admission.desired_level, labels[status]),
       }),
     });
     if (!emailResponse.ok) {
       const detail = await emailResponse.text();
-      console.error("Resend error", detail);
-      return json({ updated: true, emailSent: false, warning: "Estado actualizado, pero Resend rechazó el correo." });
+      console.error("n8n notification error", detail);
+      return json({ updated: true, emailSent: false, warning: "Estado actualizado, pero n8n no pudo enviar el correo." });
     }
 
     return json({ updated: true, emailSent: true });
