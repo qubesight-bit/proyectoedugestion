@@ -60,8 +60,8 @@ export function DashboardView({ onCourses, onStudents }: { onCourses: () => void
       <section className="rounded-2xl bg-surface-container-lowest p-4 shadow-sm">
         <div className="flex items-start justify-between gap-2">
           <div>
-            <h2 className="text-headline-sm font-semibold">Proceso de Matrícula 2025</h2>
-            <p className="text-body-sm text-on-surface-variant">Progreso actual con proyección a Febrero</p>
+            <h2 className="text-headline-sm font-semibold">Matrículas por mes</h2>
+            <p className="text-body-sm text-on-surface-variant">Semestre actual con proyección</p>
           </div>
           <div className="flex gap-2 text-label-sm">
             <span className="flex items-center gap-1"><span className="h-2 w-2 rounded-full bg-primary" />Real</span>
@@ -168,7 +168,7 @@ export function TeacherDashboardView() {
           <div className="flex flex-col gap-5">
             <div>
               <div className="flex justify-between text-body-md font-semibold mb-2">
-                <span>Ciencias 3° A</span>
+                <span>Matemáticas 4A</span>
               </div>
               <div className="h-2.5 w-full rounded-full bg-surface-container-high overflow-hidden">
                 <div className="h-full bg-primary w-[40%] rounded-full"></div>
@@ -176,7 +176,7 @@ export function TeacherDashboardView() {
             </div>
             <div>
               <div className="flex justify-between text-body-md font-semibold mb-2">
-                <span>Matemáticas 3° A</span>
+                <span>Física 5B</span>
               </div>
               <div className="h-2.5 w-full rounded-full bg-surface-container-high overflow-hidden">
                 <div className="h-full bg-primary w-[80%] rounded-full"></div>
@@ -189,7 +189,7 @@ export function TeacherDashboardView() {
           {/* Próximas Clases */}
           <div className="flex flex-col gap-4 rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
             <h2 className="text-headline-sm font-semibold">Próximas Clases</h2>
-            <p className="text-body-md font-medium text-on-surface-variant">Hoy (Ciencias 3° A, Aula 3A)</p>
+            <p className="text-body-md font-medium text-on-surface-variant">Hoy (Matemáticas 4A, Aula 102)</p>
             <div className="grid grid-cols-3 gap-3">
               <div className="flex flex-col items-center justify-center rounded-xl bg-surface-container-high p-3">
                 <span className="text-body-sm text-on-surface-variant">Hoy</span>
