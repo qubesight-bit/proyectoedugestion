@@ -46,8 +46,9 @@ export function TeachersManager({
     },
   });
   const legacy = (teachers.error as { code?: string } | null)?.code === "42P01";
+  // Rows from the connected database may lack a name; never let that blank the screen.
   const visible = (teachers.data ?? []).filter((teacher) =>
-    teacher.full_name.toLowerCase().includes(search.toLowerCase()),
+    String(teacher.full_name ?? "").toLowerCase().includes(search.toLowerCase()),
   );
   const myProfile = (teachers.data ?? []).find((teacher) => teacher.user_id === userId);
 
