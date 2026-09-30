@@ -268,6 +268,57 @@ export type Database = {
         }
         Relationships: []
       }
+      student_grades: {
+        Row: {
+          course_id: string
+          created_at: string
+          grade: number
+          id: string
+          notes: string
+          period: string
+          recorded_by: string | null
+          student_id: string
+          updated_at: string
+        }
+        Insert: {
+          course_id: string
+          created_at?: string
+          grade: number
+          id?: string
+          notes?: string
+          period?: string
+          recorded_by?: string | null
+          student_id: string
+          updated_at?: string
+        }
+        Update: {
+          course_id?: string
+          created_at?: string
+          grade?: number
+          id?: string
+          notes?: string
+          period?: string
+          recorded_by?: string | null
+          student_id?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_grades_course_id_fkey"
+            columns: ["course_id"]
+            isOneToOne: false
+            referencedRelation: "courses"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "student_grades_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       teacher_profiles: {
         Row: {
           bio: string
@@ -335,6 +386,20 @@ export type Database = {
         Returns: boolean
       }
       is_staff: { Args: { _user_id: string }; Returns: boolean }
+      submit_admission_request: {
+        Args: {
+          p_birth_date: string
+          p_desired_level: string
+          p_entry_type: string
+          p_guardian_document: string
+          p_guardian_email: string
+          p_guardian_name: string
+          p_guardian_phone: string
+          p_student_document: string
+          p_student_name: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       app_role: "admin" | "docente" | "estudiante"

@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 import { fieldErrors, studentSchema } from "@/lib/validation";
 import { CrudDialog, FormField } from "./CrudDialog";
+import { StudentGradesDialog } from "./StudentGradesDialog";
 
 type Student = Database["public"]["Tables"]["students"]["Row"];
 const GRADES = ["Maternal", "Interactivo I", "Interactivo II", "Transición", "1° Primaria", "2° Primaria", "3° Primaria", "4° Primaria", "5° Primaria", "6° Primaria"];
@@ -20,6 +21,22 @@ export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; op
   } });
   const [q, setQ] = useState("");
   const [editing, setEditing] = useState<Student | "new" | null>(openNew > 0 && isAdmin ? "new" : null);
+  const [grading, setGrading] = useState<Student | null>(null);
+  const courses = useQuery({ queryKey: ["courses"], queryFn: async () => {
+    const { data, error } = await supabase.from("courses").select("*").order("title");
+    if (error) throw error;
+    return data;
+  } });
+  const links = useQuery({ queryKey: ["course_students", "all"], queryFn: async () => {
+    const { data, error } = await supabase.from("course_students").select("course_id, student_id");
+    if (error) throw error;
+    return data;
+  } });
+  const teachers = useQuery({ queryKey: ["teacher_profiles"], queryFn: async () => {
+    const { data, error } = await supabase.from("teacher_profiles").select("*").order("full_name");
+    if (error) throw error;
+    return data;
+  } });
 
   const remove = useMutation({
     mutationFn: async (id: string) => {
@@ -63,7 +80,10 @@ export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; op
       {error && <p role="alert" className="text-destructive">{(error as Error).message}</p>}
       {!isLoading && shown.length === 0 && <p className="text-on-surface-variant">Sin resultados.</p>}
       <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-        {shown.map((s) => (
+        {shown.map((s) => {
+          const studentCourses = (courses.data ?? []).filter((course) => links.data?.some((link) => link.student_id === s.id && link.course_id === course.id));
+          const courseTeachers = [...new Set(studentCourses.map((course) => teachers.data?.find((teacher) => teacher.id === course.teacher_id)?.full_name ?? course.teacher).filter(Boolean))];
+          return (
           <li key={s.id} className="flex flex-col gap-3 rounded-2xl bg-surface-container-lowest p-4 shadow-sm">
             <div className="flex gap-3">
               {s.image ? (
@@ -85,6 +105,10 @@ export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; op
               )}
             </div>
             {s.alert && <p className="rounded-lg bg-destructive/10 p-2 text-body-sm text-destructive">{s.alert}</p>}
+            <p className="text-sm"><strong>Cursos:</strong> {studentCourses.map((course) => course.title).join(", ") || "Sin asignar"}</p>
+            <p className="text-sm"><strong>Docente(s):</strong> {courseTeachers.join(", ") || "Sin asignar"}</p>
+            <div className="mt-auto flex flex-wrap gap-2">
+              <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setGrading(s)}>Notas por curso</Button>
             {isAdmin && (
               <div className="mt-auto flex gap-2">
                 <Button variant="secondary" className="flex-1 rounded-xl" aria-label={`Editar ${s.name}`} onClick={() => setEditing(s)}>Editar</Button>
@@ -99,30 +123,37 @@ export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; op
                 </Button>
               </div>
             )}
+            </div>
           </li>
-        ))}
+        )})}
       </ul>
       {editing && (
         <StudentForm
           student={editing === "new" ? null : editing}
+          courses={courses.data ?? []}
           onClose={() => setEditing(null)}
-          onSave={async (v) => {
+          onSave={async (v, courseId) => {
             const { data: auth } = await supabase.auth.getUser();
-            const { error } = editing === "new"
+            const { data: saved, error } = editing === "new"
               ? await supabase.from("students").insert({ ...(v as Database["public"]["Tables"]["students"]["Insert"]), created_by: auth.user?.id ?? null }).select("id").single()
               : await supabase.from("students").update(v as Database["public"]["Tables"]["students"]["Update"]).eq("id", editing.id).select("id").single();
             if (error) throw error;
+            if (courseId && saved) {
+              const { error: linkError } = await supabase.from("course_students").upsert({ course_id: courseId, student_id: saved.id });
+              if (linkError) throw linkError;
+            }
             toast.success(editing === "new" ? "Estudiante registrado" : "Estudiante actualizado");
-            qc.invalidateQueries({ queryKey: ["students"] });
+            await Promise.all([qc.invalidateQueries({ queryKey: ["students"] }), qc.invalidateQueries({ queryKey: ["course_students"] })]);
             setEditing(null);
           }}
         />
       )}
+      {grading && <StudentGradesDialog student={grading} courses={(courses.data ?? []).filter((course) => links.data?.some((link) => link.student_id === grading.id && link.course_id === course.id))} onClose={() => setGrading(null)} />}
     </section>
   );
 }
 
-function StudentForm({ student, onClose, onSave }: { student: Student | null; onClose: () => void; onSave: (v: Record<string, unknown>) => Promise<void> }) {
+function StudentForm({ student, courses, onClose, onSave }: { student: Student | null; courses: Database["public"]["Tables"]["courses"]["Row"][]; onClose: () => void; onSave: (v: Record<string, unknown>, courseId: string) => Promise<void> }) {
   const [errors, setErrors] = useState<Record<string, string> | null>(null);
   const [busy, setBusy] = useState(false);
 
@@ -135,7 +166,7 @@ function StudentForm({ student, onClose, onSave }: { student: Student | null; on
     if (errs) return;
     setBusy(true);
     try {
-      await onSave(studentSchema.parse(values));
+      await onSave(studentSchema.parse(values), String(raw["course_id"] ?? ""));
     } catch (err) {
       toast.error((err as Error).message);
     } finally {
@@ -181,6 +212,12 @@ function StudentForm({ student, onClose, onSave }: { student: Student | null; on
         </div>
         <FormField id="s-alert" label="Observación / alerta" error={errors?.["alert"]}>
           <input {...f("alert")} defaultValue={student?.alert} />
+        </FormField>
+        <FormField id="s-course" label="Asignar a curso (define su docente encargado)">
+          <select id="s-course" name="course_id" className="form-input" defaultValue="">
+            <option value="">Sin nueva asignación</option>
+            {courses.map((course) => <option key={course.id} value={course.id}>{course.title} · {course.level} · {course.teacher || "Sin docente"}</option>)}
+          </select>
         </FormField>
         <div className="flex justify-end gap-2 pt-2">
           <Button type="button" variant="secondary" onClick={onClose}>Cancelar</Button>

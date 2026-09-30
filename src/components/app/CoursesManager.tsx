@@ -29,6 +29,14 @@ export function CoursesManager({ isAdmin, userId }: { isAdmin: boolean; userId: 
   const [filter, setFilter] = useState<string>("all");
   const [editing, setEditing] = useState<Course | "new" | null>(null);
 
+  async function assignTeacher(course: Course, teacherId: string) {
+    const teacher = (teachers.data ?? []).find((item) => item.id === teacherId);
+    const { error } = await supabase.from("courses").update({ teacher_id: teacherId || null, teacher: teacher?.full_name ?? "" }).eq("id", course.id);
+    if (error) return void toast.error(error.message);
+    await qc.invalidateQueries({ queryKey: ["courses"] });
+    toast.success(teacher ? `${teacher.full_name} fue asignado al curso` : "Curso sin docente asignado");
+  }
+
   const remove = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase.from("courses").delete().eq("id", id).select("id").single();
@@ -96,6 +104,16 @@ export function CoursesManager({ isAdmin, userId }: { isAdmin: boolean; userId: 
                   <p className="text-on-surface-variant">{c.schedule}</p>
                 </div>
               </div>
+              {isAdmin && (
+                <div>
+                  <label className="text-sm font-semibold" htmlFor={`teacher-${c.id}`}>Docente encargado</label>
+                  <select id={`teacher-${c.id}`} className="form-input mt-1" value={c.teacher_id ?? ""} onChange={(event) => void assignTeacher(c, event.target.value)}>
+                    <option value="">Sin asignar</option>
+                    {(teachers.data ?? []).map((teacher) => <option key={teacher.id} value={teacher.id}>{teacher.full_name} · {teacher.specialty || "Docente"}</option>)}
+                  </select>
+                  {!teachers.isLoading && teachers.data?.length === 0 && <p className="mt-1 text-xs text-destructive">Primero agregá docentes en la sección Docentes.</p>}
+                </div>
+              )}
               <div>
                 <div className="flex justify-between text-body-sm">
                   <span>Ocupación</span>

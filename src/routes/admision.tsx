@@ -30,13 +30,23 @@ function Admision() {
     setSubmitError("");
     try {
       const values = admissionFromForm(new FormData(e.currentTarget), tipoIngreso);
-      const { error } = await supabase.from("admission_requests").insert(values);
+      const { error } = await supabase.rpc("submit_admission_request", {
+        p_student_name: values.student_name,
+        p_student_document: values.student_document,
+        p_birth_date: values.birth_date,
+        p_desired_level: values.desired_level,
+        p_guardian_name: values.guardian_name,
+        p_guardian_document: values.guardian_document,
+        p_guardian_email: values.guardian_email,
+        p_guardian_phone: values.guardian_phone,
+        p_entry_type: values.entry_type ?? "nuevo",
+      });
       if (error) throw error;
       setIsSuccess(true);
       window.scrollTo({ top: 0, behavior: "smooth" });
     } catch (error) {
       console.error("Error al guardar solicitud", error);
-      setSubmitError("No pudimos guardar la solicitud. Revisá los datos y volvé a intentar.");
+      setSubmitError("No pudimos enviar la solicitud. Verificá los campos o intentá nuevamente en unos minutos.");
     } finally {
       setIsSubmitting(false);
     }
