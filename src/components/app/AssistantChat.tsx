@@ -1,19 +1,19 @@
 import { useState, type FormEvent } from "react";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { answerDashboardQuery } from "@/lib/dashboard-answers";
 
 type Message = { id: number; sender: "Tú" | "Consultas"; text: string };
 const suggestions = [
   "Dame la lista de estudiantes",
   "Mostrame los docentes y sus cursos",
   "Mostrame las solicitudes de ingreso",
+  "Mostrame la actividad de supervisión",
+  "Mostrame mi perfil",
   "¿Cuántos cupos quedan en total?",
-  "¿Qué cursos tienen menos cupos disponibles?",
-  "Resume el estado de los estudiantes",
   "Muéstrame los anuncios recientes",
-  "Resumen de solicitudes pendientes",
+  "¿Qué información del panel podés consultar?",
 ];
-
 
 export function AssistantChat({ isAdmin, userId }: { isAdmin: boolean; userId: string }) {
   const [input, setInput] = useState("");
@@ -29,6 +29,20 @@ export function AssistantChat({ isAdmin, userId }: { isAdmin: boolean; userId: s
       const { data: session } = await supabase.auth.getSession();
       if (!session.session?.access_token)
         throw new Error("Iniciá sesión para consultar datos internos.");
+
+      // Consultas de datos se resuelven directamente contra Supabase con la sesión
+      // actual. RLS mantiene el alcance por rol y evita depender de n8n para leer el panel.
+      const dashboardAnswer = await answerDashboardQuery(supabase, question, isAdmin, userId);
+      if (dashboardAnswer) {
+        setMessages((current) => [
+          ...current,
+          { id: Date.now() + 1, sender: "Consultas", text: dashboardAnswer },
+        ]);
+        return;
+      }
+
+      // n8n/Groq se conserva para preguntas generales que no corresponden a una
+      // consulta estructurada. Los datos personales nunca se envían al modelo.
       const ai = await fetch("/api/internal-chat", {
         method: "POST",
         headers: {
@@ -45,76 +59,11 @@ export function AssistantChat({ isAdmin, userId }: { isAdmin: boolean; userId: s
         ]);
         return;
       }
-      if (ai.status !== 503) {
-        const result = (await ai.json()) as { error?: string };
-        throw new Error(result.error ?? "No se pudo consultar el asistente interno.");
-      }
-      // Consultas locales mantienen el panel usable mientras se activa el segundo workflow de n8n.
-      const text = question.toLowerCase();
-      let response: string;
-      if (/curso|cupo|matr[ií]cula/.test(text)) {
-        const { data, error } = await supabase.from("courses").select("title, capacity, enrolled");
-        if (error) throw error;
-        const visible = isAdmin
-          ? data
-          : await (async () => {
-              const { data: teacher, error: teacherError } = await supabase
-                .from("teacher_profiles")
-                .select("id")
-                .eq("user_id", userId);
-              if (teacherError) throw teacherError;
-              const { data: assigned, error: assignedError } = await supabase
-                .from("courses")
-                .select("id, title, capacity, enrolled, teacher_id");
-              if (assignedError) throw assignedError;
-              return assigned.filter((course) =>
-                teacher.some((profile) => profile.id === course.teacher_id),
-              );
-            })();
-        response = visible.length
-          ? visible
-              .sort((a, b) => a.capacity - a.enrolled - (b.capacity - b.enrolled))
-              .map((c) => `${c.title}: ${Math.max(0, c.capacity - c.enrolled)} cupos libres`)
-              .join("\n")
-          : "No hay cursos registrados.";
-      } else if (/estudiant|alumn|estado/.test(text)) {
-        const { data, error } = await supabase.from("students").select("status");
-        if (error) throw error;
-        const counts = data.reduce<Record<string, number>>((acc, row) => {
-          acc[row.status] = (acc[row.status] ?? 0) + 1;
-          return acc;
-        }, {});
-        response = data.length
-          ? `${data.length} estudiantes registrados. ${Object.entries(counts)
-              .map(([status, n]) => `${status}: ${n}`)
-              .join("; ")}.`
-          : "No hay estudiantes registrados.";
-      } else if (/anuncio|aviso|notific/.test(text)) {
-        const { data, error } = await supabase
-          .from("announcements")
-          .select("title, content")
-          .order("created_at", { ascending: false })
-          .limit(5);
-        if (error) throw error;
-        response = data.length
-          ? data.map((a) => `${a.title}: ${a.content}`).join("\n\n")
-          : "No hay anuncios publicados.";
-      } else if (isAdmin && /solicitud|ingreso|admis/.test(text)) {
-        const { data, error } = await supabase.from("admission_requests").select("status");
-        if (error) throw error;
-        response = `${data.length} solicitudes recibidas; ${data.filter((row) => row.status === "pendiente").length} pendientes.`;
-      } else {
-        response =
-          "Puedo consultar los cursos y sus cupos, el estado de los estudiantes y los anuncios publicados. Elegí una de esas consultas.";
-      }
-      setMessages((current) => [
-        ...current,
-        {
-          id: Date.now() + 1,
-          sender: "Consultas",
-          text: `Resumen con datos actuales: ${response}`,
-        },
-      ]);
+      const result = (await ai.json().catch(() => ({}))) as { error?: string };
+      throw new Error(
+        result.error ??
+          "No pude interpretar esa pregunta. Probá pedir cursos, estudiantes, docentes, anuncios, solicitudes, supervisión o perfil.",
+      );
     } catch (error) {
       setMessages((current) => [
         ...current,
@@ -136,8 +85,8 @@ export function AssistantChat({ isAdmin, userId }: { isAdmin: boolean; userId: s
           Consultas
         </h1>
         <p className="text-on-surface-variant">
-          Consultá datos del panel según tu rol. Las fichas personales se consultan directamente
-          en Supabase y no se envían al modelo de IA.
+          Consultá datos del panel según tu rol. Las fichas personales se consultan directamente en
+          Supabase y no se envían al modelo de IA.
         </p>
       </div>
       <div className="flex flex-wrap gap-2">
@@ -180,7 +129,7 @@ export function AssistantChat({ isAdmin, userId }: { isAdmin: boolean; userId: s
           className="form-input flex-1"
           value={input}
           onChange={(e) => setInput(e.target.value)}
-          placeholder="Preguntá por cursos, estudiantes o anuncios"
+          placeholder="Preguntá por cualquier sección del panel"
         />
         <Button type="submit" disabled={!input.trim() || busy}>
           Consultar

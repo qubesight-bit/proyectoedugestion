@@ -1,6 +1,6 @@
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
-import { answerDashboardQuery, optional } from "@/lib/dashboard-answers.server";
+import { answerDashboardQuery, optional } from "@/lib/dashboard-answers";
 
 function reply(data: object, status = 200) {
   return Response.json(data, { status, headers: { "cache-control": "no-store" } });
@@ -21,8 +21,7 @@ export async function handleInternalChat(request: Request): Promise<Response> {
   const key = "sb_publishable_rkasH3qneDyLCi7ixdKFVA_Qd2rNM0S";
   const webhook = process.env["N8N_INTERNAL_CHAT_WEBHOOK_URL"];
   const secret = process.env["N8N_CHAT_WEBHOOK_SECRET"];
-  if (!url || !key)
-    return reply({ error: "El asistente interno aún no está configurado." }, 503);
+  if (!url || !key) return reply({ error: "El asistente interno aún no está configurado." }, 503);
   let question: unknown;
   try {
     question = ((await request.json()) as { question?: unknown }).question;
@@ -89,9 +88,7 @@ export async function handleInternalChat(request: Request): Promise<Response> {
         total_capacity: totalCapacity,
         total_enrolled: totalEnrolled,
         available_seats: Math.max(0, totalCapacity - totalEnrolled),
-        occupancy_percent: totalCapacity
-          ? Math.round((totalEnrolled / totalCapacity) * 100)
-          : 0,
+        occupancy_percent: totalCapacity ? Math.round((totalEnrolled / totalCapacity) * 100) : 0,
         pending_admissions: admin
           ? (admissions.data ?? []).filter((a) => a.status === "pendiente").length
           : undefined,

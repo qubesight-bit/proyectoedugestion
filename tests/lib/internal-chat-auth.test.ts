@@ -71,7 +71,7 @@ describe("acceso del asistente interno", () => {
       new Request("https://ceac.example/api/internal-chat", {
         method: "POST",
         headers: { Authorization: "Bearer user-jwt" },
-        body: JSON.stringify({ question: "¿Cuántas solicitudes hay?" }),
+        body: JSON.stringify({ question: "¿Qué situación institucional ves hoy?" }),
       }),
     );
     expect(response.status).toBe(200);
