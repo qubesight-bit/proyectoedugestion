@@ -70,7 +70,7 @@ export function AppExperience() {
   const go = (target: View) => { setAnnouncementRequest(0); setStudentRequest(0); setView(target); setMenuOpen(false); };
   const refresh = async () => {
     await Promise.all([
-      "courses", "students", "announcements", "teacher_profiles", "course_students", "admission_requests", "analytics",
+      "courses", "students", "student_documents", "announcements", "teacher_profiles", "course_students", "admission_requests", "analytics",
     ].map((key) => qc.invalidateQueries({ queryKey: [key] })));
     toast.success("Datos actualizados");
   };

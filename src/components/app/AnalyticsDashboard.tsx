@@ -60,10 +60,12 @@ export function AnalyticsDashboard({ isAdmin, courses, students, teachers, annou
 
   const gradeRows = grades.data ?? [];
   const enrollmentRows = enrollments.data ?? [];
+  const currentStudents = students.filter((student) => !student.archived_at);
+  const archivedStudents = students.length - currentStudents.length;
   const average = gradeRows.length ? gradeRows.reduce((sum, row) => sum + Number(row.grade), 0) / gradeRows.length : null;
   const passing = gradeRows.filter((row) => Number(row.grade) >= 7).length;
   const atRisk = gradeRows.filter((row) => Number(row.grade) < 7).length;
-  const activeStudents = students.filter((student) => student.status === "Activo").length;
+  const activeStudents = currentStudents.filter((student) => student.status === "Activo").length;
   const pendingAdmissions = (admissions.data ?? []).filter((request) => ["pendiente", "en_revision"].includes(request.status)).length;
   const totalCapacity = courses.reduce((sum, course) => sum + course.capacity, 0);
   const occupancy = totalCapacity ? (enrollmentRows.length / totalCapacity) * 100 : 0;
@@ -80,7 +82,7 @@ export function AnalyticsDashboard({ isAdmin, courses, students, teachers, annou
     })
     .sort((a, b) => (b.average ?? -1) - (a.average ?? -1));
 
-  const statusCounts = students.reduce<Record<string, number>>((counts, student) => {
+  const statusCounts = currentStudents.reduce<Record<string, number>>((counts, student) => {
     counts[student.status] = (counts[student.status] ?? 0) + 1;
     return counts;
   }, {});
@@ -108,7 +110,7 @@ export function AnalyticsDashboard({ isAdmin, courses, students, teachers, annou
       <section aria-labelledby="kpi-title">
         <h2 id="kpi-title" className="sr-only">Indicadores principales</h2>
         <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
-          <Kpi icon="groups" label="Estudiantes activos" value={loading ? "…" : activeStudents} detail={`${students.length} visibles en total`} />
+          <Kpi icon="groups" label="Estudiantes activos" value={loading ? "…" : activeStudents} detail={`${currentStudents.length} vigentes${isAdmin && archivedStudents ? ` · ${archivedStudents} archivados` : ""}`} />
           <Kpi icon="school" label={isAdmin ? "Cursos registrados" : "Mis cursos"} value={loading ? "…" : courses.length} detail={`${enrollmentRows.length} asignaciones`} />
           <Kpi icon="monitoring" label="Promedio académico" value={grades.isLoading ? "…" : average === null ? "—" : average.toFixed(1)} detail={gradeRows.length ? `${passing} de ${gradeRows.length} notas aprobadas` : "Sin notas registradas"} />
           <Kpi icon={isAdmin ? "assignment" : "warning"} label={isAdmin ? "Solicitudes pendientes" : "Estudiantes bajo 7"} value={isAdmin ? (admissions.isLoading ? "…" : pendingAdmissions) : atRisk} detail={isAdmin ? `${admissions.data?.length ?? 0} solicitudes totales` : "Requieren seguimiento"} />
@@ -137,7 +139,7 @@ export function AnalyticsDashboard({ isAdmin, courses, students, teachers, annou
       <SectionHeading eyebrow="Matrícula y operación" title="Estudiantes, capacidad y horarios" description="Distribución de expedientes, uso de cupos y organización de la jornada académica." />
       <div className="grid gap-6 xl:grid-cols-2">
         <Panel title="Estado de estudiantes" subtitle="Distribución de los expedientes visibles">
-          {students.length ? <><ChartFrame label="Gráfica de pastel del estado de estudiantes"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={studentStatusData} dataKey="value" nameKey="name" cx="50%" cy="45%" outerRadius={92} label={({ value }) => value}>{studentStatusData.map((entry) => <Cell key={entry.name} fill={entry.color} />)}</Pie><Tooltip formatter={(value, name) => [String(value) + " estudiantes", name]} /><Legend verticalAlign="bottom" /></PieChart></ResponsiveContainer></ChartFrame><p className="mt-3 text-sm text-on-surface-variant">{students.filter((student) => student.alert.trim()).length} estudiantes tienen una alerta o seguimiento registrado.</p></> : <Empty text="No hay estudiantes visibles para este usuario." />}
+          {currentStudents.length ? <><ChartFrame label="Gráfica de pastel del estado de estudiantes"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={studentStatusData} dataKey="value" nameKey="name" cx="50%" cy="45%" outerRadius={92} label={({ value }) => value}>{studentStatusData.map((entry) => <Cell key={entry.name} fill={entry.color} />)}</Pie><Tooltip formatter={(value, name) => [String(value) + " estudiantes", name]} /><Legend verticalAlign="bottom" /></PieChart></ResponsiveContainer></ChartFrame><p className="mt-3 text-sm text-on-surface-variant">{currentStudents.filter((student) => student.alert.trim()).length} estudiantes tienen una alerta o seguimiento registrado.</p></> : <Empty text="No hay estudiantes visibles para este usuario." />}
         </Panel>
 
         <Panel title="Ocupación por curso" subtitle="Estudiantes asignados frente a capacidad">

@@ -7,6 +7,7 @@ import type { Database } from "@/integrations/supabase/types";
 import { fieldErrors, studentSchema } from "@/lib/validation";
 import { CrudDialog, FormField } from "./CrudDialog";
 import { StudentGradesDialog } from "./StudentGradesDialog";
+import { StudentDocumentsDialog } from "./StudentDocumentsDialog";
 import { pageItems, PaginationControls } from "./PaginationControls";
 
 type Student = Database["public"]["Tables"]["students"]["Row"];
@@ -23,6 +24,8 @@ export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; op
   const [q, setQ] = useState("");
   const [editing, setEditing] = useState<Student | "new" | null>(openNew > 0 && isAdmin ? "new" : null);
   const [grading, setGrading] = useState<Student | null>(null);
+  const [records, setRecords] = useState<Student | null>(null);
+  const [viewMode, setViewMode] = useState<"active" | "archived">("active");
   const [page, setPage] = useState(1);
   const courses = useQuery({ queryKey: ["courses"], queryFn: async () => {
     const { data, error } = await supabase.from("courses").select("*").order("title");
@@ -40,21 +43,39 @@ export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; op
     return data;
   } });
 
-  const remove = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from("students").delete().eq("id", id).select("id").single();
+  const archive = useMutation({
+    mutationFn: async ({ id, reason, previousStatus }: { id: string; reason: string; previousStatus: string }) => {
+      const { data: auth } = await supabase.auth.getUser();
+      if (!auth.user) throw new Error("La sesión expiró.");
+      const { error } = await supabase.from("students").update({ archived_at: new Date().toISOString(), archived_by: auth.user.id, archive_reason: reason, archived_previous_status: previousStatus, status: "Archivado" }).eq("id", id);
       if (error) throw error;
     },
     onSuccess: () => {
-      toast.success("Estudiante eliminado");
+      toast.success("Estudiante archivado; toda su información se conserva");
       qc.invalidateQueries({ queryKey: ["students"] });
+      qc.invalidateQueries({ queryKey: ["analytics"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
+  const restore = useMutation({
+    mutationFn: async ({ id, previousStatus }: { id: string; previousStatus: string | null }) => {
+      const { error } = await supabase.from("students").update({ archived_at: null, archived_by: null, archive_reason: "", archived_previous_status: null, status: previousStatus || "Activo" }).eq("id", id);
+      if (error) throw error;
+    },
+    onSuccess: () => {
+      toast.success("Estudiante recuperado");
+      qc.invalidateQueries({ queryKey: ["students"] });
+      qc.invalidateQueries({ queryKey: ["analytics"] });
     },
     onError: (e: Error) => toast.error(e.message),
   });
 
   const term = q.trim().toLowerCase();
-  const shown = data.filter((s) => !term || String(s.name ?? "").toLowerCase().includes(term) || String(s.code ?? "").toLowerCase().includes(term));
-  useEffect(() => setPage(1), [q]);
+  const activeCount = data.filter((student) => !student.archived_at).length;
+  const archivedCount = data.length - activeCount;
+  const shown = data.filter((s) => (viewMode === "archived" ? !!s.archived_at : !s.archived_at) && (!term || String(s.name ?? "").toLowerCase().includes(term) || String(s.code ?? "").toLowerCase().includes(term)));
+  useEffect(() => setPage(1), [q, viewMode]);
   const pageStudents = pageItems(shown, page);
 
   return (
@@ -62,7 +83,7 @@ export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; op
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 id="students-title" className="text-headline-md font-semibold">Directorio de Estudiantes</h1>
-          <p className="text-body-sm text-on-surface-variant">{data.length} registrados</p>
+          <p className="text-body-sm text-on-surface-variant">{activeCount} activos{isAdmin ? ` · ${archivedCount} archivados` : ""}</p>
         </div>
         {isAdmin && (
           <Button className="rounded-xl" onClick={() => setEditing("new")}>
@@ -71,6 +92,10 @@ export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; op
           </Button>
         )}
       </div>
+      {isAdmin && <div className="flex gap-2" role="group" aria-label="Vista de estudiantes">
+        <Button variant={viewMode === "active" ? "default" : "outline"} onClick={() => setViewMode("active")}>Activos ({activeCount})</Button>
+        <Button variant={viewMode === "archived" ? "default" : "outline"} onClick={() => setViewMode("archived")}>Archivados ({archivedCount})</Button>
+      </div>}
       <label htmlFor="student-search" className="sr-only">Buscar estudiante</label>
       <input
         id="student-search"
@@ -109,22 +134,23 @@ export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; op
               )}
             </div>
             {s.alert && <p className="rounded-lg bg-destructive/10 p-2 text-body-sm text-destructive">{s.alert}</p>}
+            {s.archived_at && <p className="rounded-lg bg-secondary-container p-2 text-body-sm"><strong>Archivado:</strong> {new Date(s.archived_at).toLocaleDateString("es-CR")}{s.archive_reason ? ` · ${s.archive_reason}` : ""}</p>}
             <p className="text-sm"><strong>Cursos:</strong> {studentCourses.map((course) => course.title).join(", ") || "Sin asignar"}</p>
             <p className="text-sm"><strong>Docente(s):</strong> {courseTeachers.join(", ") || "Sin asignar"}</p>
             <div className="mt-auto flex flex-wrap gap-2">
               <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setGrading(s)}>Notas por curso</Button>
+              <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setRecords(s)}>Expediente</Button>
             {isAdmin && (
               <div className="mt-auto flex gap-2">
                 <Button variant="secondary" className="flex-1 rounded-xl" aria-label={`Editar ${s.name}`} onClick={() => setEditing(s)}>Editar</Button>
-                <Button
-                  variant="destructive"
-                  className="rounded-xl"
-                  aria-label={`Eliminar ${s.name}`}
-                  disabled={remove.isPending}
-                  onClick={() => confirm(`¿Eliminar a ${s.name}?`) && remove.mutate(s.id)}
-                >
-                  <span aria-hidden="true" className="material-symbols-outlined text-[20px]">delete</span>
-                </Button>
+                {s.archived_at ? (
+                  <Button className="rounded-xl" disabled={restore.isPending} onClick={() => restore.mutate({ id: s.id, previousStatus: s.archived_previous_status })}>Recuperar</Button>
+                ) : (
+                  <Button variant="destructive" className="rounded-xl" aria-label={`Archivar ${s.name}`} disabled={archive.isPending} onClick={() => {
+                    const reason = prompt(`Motivo para archivar a ${s.name}:`, "Se retiró de la institución");
+                    if (reason !== null && confirm("El estudiante dejará de aparecer entre los activos, pero sus datos se conservarán. ¿Continuar?")) archive.mutate({ id: s.id, reason: reason.trim(), previousStatus: s.status });
+                  }}><span aria-hidden="true" className="material-symbols-outlined text-[20px]">archive</span></Button>
+                )}
               </div>
             )}
             </div>
@@ -154,6 +180,7 @@ export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; op
         />
       )}
       {grading && <StudentGradesDialog student={grading} courses={(courses.data ?? []).filter((course) => links.data?.some((link) => link.student_id === grading.id && link.course_id === course.id))} onClose={() => setGrading(null)} />}
+      {records && <StudentDocumentsDialog student={records} isAdmin={isAdmin} onClose={() => setRecords(null)} />}
     </section>
   );
 }
