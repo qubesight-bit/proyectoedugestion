@@ -2,6 +2,7 @@ export const APP_SECTIONS = [
   "home",
   "courses",
   "students",
+  "records",
   "announcements",
   "admissions",
   "teachers",

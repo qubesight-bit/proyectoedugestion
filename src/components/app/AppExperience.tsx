@@ -17,6 +17,7 @@ import { assignedCourses } from "@/lib/academic";
 import { pageItems, PaginationControls } from "./PaginationControls";
 import { AnalyticsDashboard } from "./AnalyticsDashboard";
 import { AdminUsersManager } from "./AdminUsersManager";
+import { StudentRecordsManager } from "./StudentRecordsManager";
 
 type View = AppSection;
 
@@ -64,7 +65,7 @@ export function AppExperience() {
 
   const nav: Array<[View, string, string]> = [
     ["home", "dashboard", "Inicio"], ["courses", "school", "Cursos"],
-    ["students", "groups", "Estudiantes"], ["announcements", "campaign", "Anuncios"],
+    ["students", "groups", "Estudiantes"], ["records", "folder_open", "Expedientes"], ["announcements", "campaign", "Anuncios"],
     ["teachers", "person", "Docentes"], ...(isAdmin ? [["users", "manage_accounts", "Usuarios"] as [View, string, string], ["admissions", "assignment", "Solicitudes"] as [View, string, string]] : []), ["supervision", "visibility", "Supervisión"],
     ["assistant", "search", "Consultas"], ["profile", "account_circle", "Perfil"],
   ];
@@ -147,6 +148,7 @@ export function AppExperience() {
       </section>)}
       {view === "courses" && <CoursesManager isAdmin={isAdmin} userId={account.data!.userId} />}
       {view === "students" && <StudentsManager key={studentRequest} isAdmin={isAdmin} openNew={studentRequest} />}
+      {view === "records" && <StudentRecordsManager />}
       {view === "announcements" && <AnnouncementsManager key={announcementRequest} isAdmin={isAdmin} openNew={announcementRequest} />}
       {view === "teachers" && <TeachersManager isAdmin={isAdmin} userId={account.data!.userId} courses={courses.data ?? []} />}
       {view === "users" && isAdmin && <AdminUsersManager />}
