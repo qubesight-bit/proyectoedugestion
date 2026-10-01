@@ -19,24 +19,21 @@ function Index() {
   return (
     <PublicLayout>
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-slate-900 text-white py-20 lg:py-32">
+      <section className="relative overflow-hidden bg-slate-950 text-white py-20 lg:py-32">
         {/* Fondo fotográfico */}
-        <div className="absolute inset-0 z-0 bg-slate-900">
-          <img src="/tour/1.jpg" alt="Estudiantes CEAC" className="w-full h-full object-cover object-center opacity-60" />
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-900/80 via-transparent to-slate-900/90 dark:from-slate-900/90 dark:to-slate-900/95"></div>
+        <div className="absolute inset-0 z-0 bg-slate-950">
+          <img src="/hero-ceac.png" alt="Estudiante del Centro Educativo Adventista explorando la naturaleza" className="h-full w-full object-cover object-center" />
+          <div className="absolute inset-0 bg-black/10" aria-hidden="true"></div>
         </div>
-        
-        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[40rem] h-[40rem] rounded-full bg-blue-600/40 blur-3xl opacity-60 pointer-events-none z-0"></div>
-        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[30rem] h-[30rem] rounded-full bg-yellow-500/30 blur-3xl opacity-60 pointer-events-none z-0"></div>
-        
-        <div className="container mx-auto px-4 relative z-10 flex flex-col items-center text-center">
+
+        <div className="container relative z-10 mx-auto flex flex-col items-start px-4 text-left">
           <div className="w-32 h-32 bg-white/95 backdrop-blur-md rounded-2xl flex items-center justify-center mb-8 border border-white/20 shadow-2xl p-4">
             <img src="/logo.png" alt="Logo Educación Adventista CEAC" className="w-full h-full object-contain" />
           </div>
-          <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold tracking-tight mb-6 max-w-4xl">
+          <h1 className="max-w-3xl text-4xl font-bold tracking-tight drop-shadow-lg md:text-5xl lg:text-6xl">
             ¿Está listo para dar el siguiente paso en la educación de su hijo?
           </h1>
-          <p className="text-lg md:text-xl text-slate-300 mb-10 max-w-2xl font-light">
+          <p className="mb-10 mt-6 max-w-2xl text-lg font-light text-slate-100 drop-shadow-md md:text-xl">
             Educamos hoy la generación del mañana con una formación integral para cuerpo, mente y espíritu.
           </p>
           <div className="flex flex-col sm:flex-row gap-4">
