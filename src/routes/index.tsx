@@ -19,12 +19,15 @@ function Index() {
   return (
     <PublicLayout>
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-slate-950 text-white py-20 lg:py-32">
+      <section className="relative isolate flex min-h-[620px] items-center overflow-hidden bg-slate-950 py-20 text-white lg:min-h-[704px] lg:py-24">
         {/* Fondo fotográfico */}
-        <div className="absolute inset-0 z-0 bg-slate-950">
-          <img src="/hero-ceac.png" alt="Estudiante del Centro Educativo Adventista explorando la naturaleza" className="h-full w-full object-cover object-center" />
-          <div className="absolute inset-0 bg-black/10" aria-hidden="true"></div>
-        </div>
+        <div
+          className="absolute inset-0 z-0 bg-cover bg-[position:68%_center] bg-no-repeat sm:bg-[position:62%_center] lg:bg-center"
+          style={{ backgroundImage: "url('/hero-ceac.png')" }}
+          role="img"
+          aria-label="Estudiante del Centro Educativo Adventista explorando la naturaleza"
+        />
+        <div className="absolute inset-0 z-0 bg-gradient-to-r from-slate-950/35 via-transparent to-transparent lg:hidden" aria-hidden="true" />
 
         <div className="container relative z-10 mx-auto flex flex-col items-start px-4 text-left">
           <div className="w-32 h-32 bg-white/95 backdrop-blur-md rounded-2xl flex items-center justify-center mb-8 border border-white/20 shadow-2xl p-4">
