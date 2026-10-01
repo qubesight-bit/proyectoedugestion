@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from '@tanstack/react-router';
 import { PublicLayout } from '@/components/layout/PublicLayout';
+import heroImage from '@/assets/ceac-hero-nina.png.asset.json';
 import { Button } from '@/components/ui/button';
 import { ArrowRight, BookOpen, Users, Coffee, Laptop, MonitorPlay, Trees } from 'lucide-react';
 import { Card, CardContent } from '@/components/ui/card';
@@ -21,13 +22,16 @@ function Index() {
       {/* Hero Section */}
       <section className="relative overflow-hidden bg-slate-900 text-white py-20 lg:py-32">
         {/* Fondo fotográfico */}
-        <div className="absolute inset-0 z-0 bg-slate-900">
-          <img src="/tour/1.jpg" alt="Estudiantes CEAC" className="w-full h-full object-cover object-center opacity-60" />
-          <div className="absolute inset-0 bg-gradient-to-b from-slate-900/80 via-transparent to-slate-900/90 dark:from-slate-900/90 dark:to-slate-900/95"></div>
+        <div className="absolute inset-0 z-0">
+          <img
+            src={heroImage.url}
+            alt="Estudiante de CEAC explorando en el jardín del colegio"
+            className="w-full h-full object-cover object-[70%_center] md:object-center"
+          />
+          {/* Velo sutil para legibilidad del texto (la foto ya trae degradado oscuro a la izquierda) */}
+          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-slate-950/40 to-slate-950/60 md:from-slate-950/70 md:via-transparent md:to-slate-950/20"></div>
+          <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-slate-950/80 to-transparent"></div>
         </div>
-        
-        <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[40rem] h-[40rem] rounded-full bg-blue-600/40 blur-3xl opacity-60 pointer-events-none z-0"></div>
-        <div className="absolute bottom-0 left-0 -ml-20 -mb-20 w-[30rem] h-[30rem] rounded-full bg-yellow-500/30 blur-3xl opacity-60 pointer-events-none z-0"></div>
         
         <div className="container mx-auto px-4 relative z-10 flex flex-col items-center text-center">
           <div className="w-32 h-32 bg-white/95 backdrop-blur-md rounded-2xl flex items-center justify-center mb-8 border border-white/20 shadow-2xl p-4">

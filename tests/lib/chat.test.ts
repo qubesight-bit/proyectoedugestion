@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { handleChat } from "../../src/routes/api/chat";
 
 const request = (messages: unknown, origin = "https://ceac.example") =>
@@ -9,6 +9,12 @@ const request = (messages: unknown, origin = "https://ceac.example") =>
   });
 
 describe("chat público a través de n8n", () => {
+  // El entorno de pruebas puede tener credenciales reales inyectadas; el test
+  // del caso sin configurar requiere que las variables no existan.
+  beforeEach(() => {
+    delete process.env.N8N_CHAT_WEBHOOK_URL;
+    delete process.env.N8N_CHAT_WEBHOOK_SECRET;
+  });
   afterEach(() => {
     vi.unstubAllGlobals();
     delete process.env.N8N_CHAT_WEBHOOK_URL;
