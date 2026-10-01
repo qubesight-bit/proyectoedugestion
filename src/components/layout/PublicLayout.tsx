@@ -12,7 +12,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
   const currentYear = new Date().getFullYear();
 
   return (
-    <div className="min-h-screen flex flex-col font-sans bg-slate-50 text-slate-900">
+    <div className="min-h-screen flex flex-col font-sans bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
       {/* Top Bar (Optional, but good for contact info) */}
       <div className="bg-blue-900 text-white py-2 px-4 hidden md:flex justify-between items-center text-sm">
         <div className="flex space-x-6">
@@ -36,23 +36,23 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
       </div>
 
       {/* Navbar */}
-      <header className="bg-white shadow-sm sticky top-0 z-50">
+      <header className="bg-white dark:bg-slate-900 shadow-sm sticky top-0 z-50 dark:border-b dark:border-slate-800">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
           <Link to="/" className="flex items-center space-x-2">
             <div className="w-12 h-12 flex items-center justify-center">
               <img src="/logo.png" alt="Logo CEAC" className="w-full h-full object-contain" />
             </div>
             <div className="flex flex-col">
-              <span className="font-bold text-xl leading-tight text-blue-950">CEAC</span>
-              <span className="text-xs text-slate-500 hidden md:block">Centro Educativo Adventista</span>
+              <span className="font-bold text-xl leading-tight text-blue-950 dark:text-blue-400">CEAC</span>
+              <span className="text-xs text-slate-500 dark:text-slate-400 hidden md:block">Centro Educativo Adventista</span>
             </div>
           </Link>
 
-          <nav className="hidden lg:flex items-center space-x-4 text-sm font-medium text-slate-700">
-            <Link to="/" className="hover:text-blue-600 transition-colors px-2">Inicio</Link>
+          <nav className="hidden lg:flex items-center space-x-4 text-sm font-medium text-slate-700 dark:text-slate-300">
+            <Link to="/" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-2">Inicio</Link>
             
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center hover:text-blue-600 transition-colors outline-none cursor-pointer px-2">
+              <DropdownMenuTrigger className="flex items-center hover:text-blue-600 dark:hover:text-blue-400 transition-colors outline-none cursor-pointer px-2">
                 Nosotros <ChevronDown className="ml-1 w-4 h-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 bg-white/95 backdrop-blur-md">
@@ -62,7 +62,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             </DropdownMenu>
 
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center hover:text-blue-600 transition-colors outline-none cursor-pointer px-2">
+              <DropdownMenuTrigger className="flex items-center hover:text-blue-600 dark:hover:text-blue-400 transition-colors outline-none cursor-pointer px-2">
                 Oferta <ChevronDown className="ml-1 w-4 h-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 bg-white/95 backdrop-blur-md">
@@ -75,7 +75,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             </DropdownMenu>
 
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center hover:text-blue-600 transition-colors outline-none cursor-pointer px-2">
+              <DropdownMenuTrigger className="flex items-center hover:text-blue-600 dark:hover:text-blue-400 transition-colors outline-none cursor-pointer px-2">
                 Admisión <ChevronDown className="ml-1 w-4 h-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 bg-white/95 backdrop-blur-md">
@@ -90,7 +90,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             </DropdownMenu>
 
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center hover:text-blue-600 transition-colors outline-none cursor-pointer px-2">
+              <DropdownMenuTrigger className="flex items-center hover:text-blue-600 dark:hover:text-blue-400 transition-colors outline-none cursor-pointer px-2">
                 Espiritualidad <ChevronDown className="ml-1 w-4 h-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 bg-white/95 backdrop-blur-md">
@@ -101,7 +101,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             </DropdownMenu>
 
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center hover:text-blue-600 transition-colors outline-none cursor-pointer px-2">
+              <DropdownMenuTrigger className="flex items-center hover:text-blue-600 dark:hover:text-blue-400 transition-colors outline-none cursor-pointer px-2">
                 Estudiantes <ChevronDown className="ml-1 w-4 h-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 bg-white/95 backdrop-blur-md">
@@ -112,7 +112,7 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             </DropdownMenu>
 
             <DropdownMenu>
-              <DropdownMenuTrigger className="flex items-center hover:text-blue-600 transition-colors outline-none cursor-pointer px-2">
+              <DropdownMenuTrigger className="flex items-center hover:text-blue-600 dark:hover:text-blue-400 transition-colors outline-none cursor-pointer px-2">
                 Pagos <ChevronDown className="ml-1 w-4 h-4" />
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56 bg-white/95 backdrop-blur-md">
@@ -121,17 +121,17 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
               </DropdownMenuContent>
             </DropdownMenu>
 
-            <Link to="/contacto" className="hover:text-blue-600 transition-colors px-2">Contacto</Link>
+            <Link to="/contacto" className="hover:text-blue-600 dark:hover:text-blue-400 transition-colors px-2">Contacto</Link>
           </nav>
 
           <div className="flex items-center space-x-3">
-            <Button asChild variant="outline" className="hidden md:flex rounded-full border-blue-600 text-blue-700 hover:bg-blue-50 px-4">
+            <Button asChild variant="outline" className="hidden md:flex rounded-full border-blue-600 dark:border-blue-500 text-blue-700 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-800 px-4">
               <Link to="/auth">Iniciar Sesión</Link>
             </Button>
-            <Button asChild className="bg-blue-600 hover:bg-blue-700 text-white rounded-full px-6 shadow-md hover:shadow-lg transition-all hidden md:flex">
+            <Button asChild className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full px-6 shadow-md hover:shadow-lg transition-all hidden md:flex">
               <Link to="/admision">ADMISIÓN</Link>
             </Button>
-            <Button variant="ghost" size="icon" className="lg:hidden text-slate-700">
+            <Button variant="ghost" size="icon" className="lg:hidden text-slate-700 dark:text-slate-300">
               <ChevronDown className="w-6 h-6" />
             </Button>
           </div>

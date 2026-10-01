@@ -12,8 +12,8 @@ function Nosotros() {
     <PublicLayout>
       {/* Header */}
       <div className="bg-slate-900 py-20 text-white text-center relative overflow-hidden">
-        <img src="/img/kids_group.jpg" alt="Estudiantes CEAC" className="absolute inset-0 w-full h-full object-cover" />
-        <div className="absolute inset-0 bg-black/30"></div>
+        <img src="/tour/5.jpg" alt="Estudiantes CEAC" className="absolute inset-0 w-full h-full object-cover object-center" />
+        <div className="absolute inset-0 bg-black/50"></div>
         <div className="relative z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-4 drop-shadow-xl">Nosotros</h1>
           <p className="text-slate-100 max-w-2xl mx-auto px-4 text-lg drop-shadow-md font-medium">
@@ -39,7 +39,7 @@ function Nosotros() {
               </p>
             </div>
             <div className="lg:w-1/2 w-full">
-               <img src="/img/entrance.jpg" alt="Entrada del CEAC" className="rounded-2xl shadow-2xl w-full object-cover transform hover:scale-105 transition-transform duration-500" />
+               <img src="/tour/6.jpg" alt="Entrada del CEAC" className="rounded-2xl shadow-2xl w-full h-96 object-cover transform hover:scale-105 transition-transform duration-500" />
             </div>
           </div>
         </div>

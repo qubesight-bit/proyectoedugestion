@@ -22,8 +22,8 @@ function Index() {
       <section className="relative overflow-hidden bg-slate-900 text-white py-20 lg:py-32">
         {/* Fondo fotográfico */}
         <div className="absolute inset-0 z-0 bg-slate-900">
-          <img src="/img/hero-4k.png" alt="Estudiantes CEAC" className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-slate-900/90"></div>
+          <img src="/tour/1.jpg" alt="Estudiantes CEAC" className="w-full h-full object-cover object-center opacity-60" />
+          <div className="absolute inset-0 bg-gradient-to-b from-slate-900/80 via-transparent to-slate-900/90 dark:from-slate-900/90 dark:to-slate-900/95"></div>
         </div>
         
         <div className="absolute top-0 right-0 -mr-20 -mt-20 w-[40rem] h-[40rem] rounded-full bg-blue-600/40 blur-3xl opacity-60 pointer-events-none z-0"></div>
@@ -51,20 +51,20 @@ function Index() {
       </section>
 
       {/* Quiénes Somos */}
-      <section className="py-20 bg-white relative">
+      <section className="py-20 bg-white dark:bg-slate-900 relative">
         <div className="container mx-auto px-4">
           <div className="flex flex-col lg:flex-row items-center gap-16">
             <div className="lg:w-1/2">
-              <div className="inline-block px-4 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-semibold mb-6">
+              <div className="inline-block px-4 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-800 dark:text-blue-300 rounded-full text-sm font-semibold mb-6">
                 Quiénes somos
               </div>
-              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-6">
+              <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-6">
                 Institución misionera sin fines de lucro
               </h2>
-              <p className="text-slate-600 mb-6 text-lg leading-relaxed">
+              <p className="text-slate-600 dark:text-slate-300 mb-6 text-lg leading-relaxed">
                 Somos parte de la red global de Educación Adventista. Nuestra misión es ofrecer una formación integral desde una perspectiva espiritual y de valores, abierta a toda la comunidad sin distinción de creencias.
               </p>
-              <Button asChild variant="link" className="text-blue-600 p-0 text-lg group">
+              <Button asChild variant="link" className="text-blue-600 dark:text-blue-400 p-0 text-lg group">
                 <Link to="/nosotros" className="flex items-center">
                   Descubra nuestra historia <ArrowRight className="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" />
                 </Link>
@@ -90,39 +90,39 @@ function Index() {
       </section>
 
       {/* Niveles Académicos */}
-      <section className="py-20 bg-slate-50">
+      <section className="py-20 bg-slate-50 dark:bg-slate-950">
         <div className="container mx-auto px-4 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-16">Nuestros Niveles</h2>
+          <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-16">Nuestros Niveles</h2>
           <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
             {/* Preescolar Card */}
-            <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 rounded-3xl bg-white">
+            <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 rounded-3xl bg-white dark:bg-slate-900">
               <div className="h-56 flex items-center justify-center relative overflow-hidden">
-                <img src="/img/preescolar.jpg" alt="Preescolar CEAC" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <img src="/tour/2.jpg" alt="Preescolar CEAC" className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110" />
                 <div className="absolute bottom-0 left-0 w-full h-2/3 bg-gradient-to-t from-black/80 to-transparent z-20"></div>
                 <h3 className="relative z-30 text-3xl font-bold text-white mt-auto mb-6 drop-shadow-lg">Preescolar</h3>
               </div>
               <CardContent className="p-8 text-left">
-                <p className="text-slate-600 mb-8 line-clamp-3">
+                <p className="text-slate-600 dark:text-slate-300 mb-8 line-clamp-3">
                   Un ambiente seguro y estimulante donde los más pequeños desarrollan sus habilidades cognitivas, motoras y sociales a través del juego y valores cristianos.
                 </p>
-                <Button asChild variant="outline" className="w-full rounded-full border-blue-200 hover:bg-blue-50 hover:text-blue-700 transition-colors">
+                <Button asChild variant="outline" className="w-full rounded-full border-blue-200 dark:border-blue-900/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
                   <Link to="/niveles" search={{ nivel: 'preescolar' }}>Ver detalles</Link>
                 </Button>
               </CardContent>
             </Card>
 
             {/* Primaria Card */}
-            <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 rounded-3xl bg-white">
+            <Card className="group overflow-hidden border-0 shadow-lg hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 rounded-3xl bg-white dark:bg-slate-900">
               <div className="h-56 flex items-center justify-center relative overflow-hidden">
-                <img src="/img/primaria.jpg" alt="Primaria CEAC" className="absolute inset-0 w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" />
+                <img src="/tour/3.jpg" alt="Primaria CEAC" className="absolute inset-0 w-full h-full object-cover object-center transition-transform duration-700 group-hover:scale-110" />
                 <div className="absolute bottom-0 left-0 w-full h-2/3 bg-gradient-to-t from-black/80 to-transparent z-20"></div>
                 <h3 className="relative z-30 text-3xl font-bold text-white mt-auto mb-6 drop-shadow-lg">Primaria</h3>
               </div>
               <CardContent className="p-8 text-left">
-                <p className="text-slate-600 mb-8 line-clamp-3">
+                <p className="text-slate-600 dark:text-slate-300 mb-8 line-clamp-3">
                   I y II Ciclos de Educación General Básica. Fomentamos el pensamiento crítico, la excelencia académica y el desarrollo del carácter en un entorno de apoyo.
                 </p>
-                <Button asChild variant="outline" className="w-full rounded-full border-blue-200 hover:bg-blue-50 hover:text-blue-700 transition-colors">
+                <Button asChild variant="outline" className="w-full rounded-full border-blue-200 dark:border-blue-900/50 hover:bg-blue-50 dark:hover:bg-blue-900/20 hover:text-blue-700 dark:hover:text-blue-300 transition-colors">
                   <Link to="/niveles" search={{ nivel: 'primaria' }}>Ver detalles</Link>
                 </Button>
               </CardContent>
@@ -132,11 +132,11 @@ function Index() {
       </section>
 
       {/* Servicios / Instalaciones y Tour Virtual */}
-      <section id="tour-virtual" className="py-24 bg-white relative">
+      <section id="tour-virtual" className="py-24 bg-white dark:bg-slate-900 relative">
         <div className="container mx-auto px-4">
           <div className="text-center mb-16">
-            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 mb-4">Nuestras Instalaciones</h2>
-            <p className="text-slate-600 max-w-2xl mx-auto">
+            <h2 className="text-3xl md:text-4xl font-bold text-slate-900 dark:text-white mb-4">Nuestras Instalaciones</h2>
+            <p className="text-slate-600 dark:text-slate-300 max-w-2xl mx-auto">
               Contamos con espacios diseñados para potenciar el aprendizaje y bienestar de nuestros estudiantes.
             </p>
           </div>
@@ -155,11 +155,11 @@ function Index() {
           {/* Tour Virtual Gallery */}
           <div className="max-w-5xl mx-auto px-12 relative">
             <div className="text-left mb-8 md:max-w-lg">
-              <div className="inline-block px-3 py-1 bg-blue-500/20 text-blue-700 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-blue-500/30">
+              <div className="inline-block px-3 py-1 bg-blue-500/20 dark:bg-blue-500/30 text-blue-700 dark:text-blue-300 rounded-full text-xs font-bold uppercase tracking-wider mb-4 border border-blue-500/30 dark:border-blue-500/50">
                 Explorar
               </div>
-              <h3 className="text-3xl font-bold text-slate-900 mb-4">Tour Virtual 360°</h3>
-              <p className="text-slate-600">
+              <h3 className="text-3xl font-bold text-slate-900 dark:text-white mb-4">Tour Virtual 360°</h3>
+              <p className="text-slate-600 dark:text-slate-300">
                 Recorra nuestros pasillos, aulas, y zonas de recreación desde la comodidad de su hogar con esta galería.
               </p>
             </div>
@@ -172,10 +172,10 @@ function Index() {
               className="w-full"
             >
               <CarouselContent>
-                {[1, 2, 3, 4, 5].map((index) => (
+                {[1, 2, 3, 4, 5, 6].map((index) => (
                   <CarouselItem key={index} className="md:basis-1/2 lg:basis-1/3">
                     <div className="p-1">
-                      <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-2xl bg-slate-100">
+                      <Card className="overflow-hidden border-0 shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all duration-300 rounded-2xl bg-slate-100 dark:bg-slate-800">
                         <CardContent className="p-0 aspect-[4/3] relative group">
                           <img 
                             src={`/tour/${index}.jpg`} 
@@ -194,8 +194,8 @@ function Index() {
                   </CarouselItem>
                 ))}
               </CarouselContent>
-              <CarouselPrevious className="left-0 md:-left-12 bg-white/90 shadow-md border-slate-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700" />
-              <CarouselNext className="right-0 md:-right-12 bg-white/90 shadow-md border-slate-200 text-blue-600 hover:bg-blue-50 hover:text-blue-700" />
+              <CarouselPrevious className="left-0 md:-left-12 bg-white/90 dark:bg-slate-800 shadow-md border-slate-200 dark:border-slate-700 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-700 dark:hover:text-blue-300" />
+              <CarouselNext className="right-0 md:-right-12 bg-white/90 dark:bg-slate-800 shadow-md border-slate-200 dark:border-slate-700 text-blue-600 dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-slate-700 hover:text-blue-700 dark:hover:text-blue-300" />
             </Carousel>
           </div>
         </div>
@@ -258,12 +258,12 @@ function Index() {
 function ServiceIcon({ icon, title }: { icon: React.ReactNode, title: string }) {
   return (
     <div className="flex flex-col items-center group cursor-default">
-      <div className="w-20 h-20 rounded-full bg-slate-50 flex items-center justify-center text-blue-600 shadow-sm border border-slate-100 mb-4 group-hover:scale-110 group-hover:bg-blue-600 group-hover:text-white transition-all duration-300">
+      <div className="w-20 h-20 rounded-full bg-slate-50 dark:bg-slate-800 flex items-center justify-center text-blue-600 dark:text-blue-400 shadow-sm border border-slate-100 dark:border-slate-700 mb-4 group-hover:scale-110 group-hover:bg-blue-600 dark:group-hover:bg-blue-500 group-hover:text-white transition-all duration-300">
         <div className="[&>svg]:w-8 [&>svg]:h-8">
           {icon}
         </div>
       </div>
-      <span className="text-sm font-semibold text-slate-700 text-center">{title}</span>
+      <span className="text-sm font-semibold text-slate-700 dark:text-slate-300 text-center">{title}</span>
     </div>
   );
 }
