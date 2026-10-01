@@ -1,6 +1,5 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { AuthScreen } from "@/pages/auth";
 
@@ -23,22 +22,11 @@ function AuthPage() {
 
   useEffect(() => {
     if (new URLSearchParams(window.location.search).get("recovery") === "1") return;
-    const params = new URLSearchParams(window.location.search);
-    const oauthError = params.get("error_description") ?? new URLSearchParams(window.location.hash.slice(1)).get("error_description");
-    if (oauthError) {
-      toast.error(decodeURIComponent(oauthError.replace(/\+/g, " ")));
-      window.history.replaceState({}, "", "/auth");
-      return;
-    }
     supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) return;
       const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", data.user.id);
       if (roles?.some(({ role }) => role === "admin" || role === "docente")) {
         navigate({ to: "/app", replace: true });
-      } else if (params.get("oauth") === "1") {
-        await supabase.auth.signOut();
-        toast.error("La cuenta de Google inició sesión, pero no tiene un rol de administrador o docente asignado.");
-        window.history.replaceState({}, "", "/auth");
       }
     });
   }, [navigate]);
