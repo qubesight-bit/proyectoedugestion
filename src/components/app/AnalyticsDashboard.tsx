@@ -1,4 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
+import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
 
@@ -17,11 +18,12 @@ type Props = {
 };
 
 const gradeBands = [
-  { label: "Excelente (9–10)", min: 9, max: 10.01, color: "bg-emerald-500" },
-  { label: "Bueno (8–8.9)", min: 8, max: 9, color: "bg-blue-500" },
-  { label: "Satisfactorio (7–7.9)", min: 7, max: 8, color: "bg-amber-500" },
-  { label: "Requiere apoyo (<7)", min: 0, max: 7, color: "bg-rose-500" },
+  { label: "Excelente", min: 9, max: 10.01, color: "#10b981" },
+  { label: "Bueno", min: 8, max: 9, color: "#3b82f6" },
+  { label: "Satisfactorio", min: 7, max: 8, color: "#f59e0b" },
+  { label: "Requiere apoyo", min: 0, max: 7, color: "#f43f5e" },
 ];
+const chartColors = ["#2563eb", "#10b981", "#f59e0b", "#8b5cf6", "#f43f5e", "#06b6d4"];
 
 export function AnalyticsDashboard({ isAdmin, courses, students, teachers, announcements, loading }: Props) {
   const grades = useQuery({
@@ -82,6 +84,21 @@ export function AnalyticsDashboard({ isAdmin, courses, students, teachers, annou
     counts[student.status] = (counts[student.status] ?? 0) + 1;
     return counts;
   }, {});
+  const gradeDistribution = gradeBands.map((band) => ({
+    name: band.label,
+    value: gradeRows.filter((row) => Number(row.grade) >= band.min && Number(row.grade) < band.max).length,
+    color: band.color,
+  }));
+  const studentStatusData = Object.entries(statusCounts)
+    .sort((a, b) => b[1] - a[1])
+    .map(([name, value], index) => ({ name, value, color: chartColors[index % chartColors.length] }));
+  const courseChartData = coursePerformance
+    .filter((course) => course.average !== null)
+    .slice(0, 8)
+    .map((course) => ({
+      name: course.title.length > 18 ? course.title.slice(0, 18) + "…" : course.title,
+      promedio: Number(course.average?.toFixed(1)),
+    }));
   const queryError = grades.error ?? enrollments.error ?? admissions.error;
 
   return (
@@ -98,26 +115,35 @@ export function AnalyticsDashboard({ isAdmin, courses, students, teachers, annou
         </div>
       </section>
 
+      <SectionHeading eyebrow="Rendimiento académico" title="¿Cómo avanzan las calificaciones?" description="Lectura visual del desempeño general y comparación de promedios entre cursos." />
       <div className="grid gap-6 xl:grid-cols-2">
-        <Panel title="Distribución de calificaciones" subtitle="Escala institucional de 0 a 10">
-          {gradeRows.length ? <div className="space-y-4">{gradeBands.map((band) => {
-            const count = gradeRows.filter((row) => Number(row.grade) >= band.min && Number(row.grade) < band.max).length;
-            const percentage = (count / gradeRows.length) * 100;
-            return <div key={band.label}><div className="mb-1 flex justify-between gap-3 text-sm"><span>{band.label}</span><strong>{count} · {percentage.toFixed(0)}%</strong></div><div className="h-3 overflow-hidden rounded-full bg-surface-container-high" role="meter" aria-label={band.label} aria-valuenow={percentage} aria-valuemin={0} aria-valuemax={100}><div className={`h-full rounded-full ${band.color}`} style={{ width: `${percentage}%` }} /></div></div>;
-          })}</div> : <Empty text="Registrá notas para visualizar su distribución." />}
+        <Panel title="Distribución de calificaciones" subtitle="Cantidad de notas en cada rango">
+          {gradeRows.length ? <ChartFrame label="Gráfica de pastel de distribución de calificaciones"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={gradeDistribution} dataKey="value" nameKey="name" cx="50%" cy="45%" innerRadius={58} outerRadius={92} paddingAngle={3} label={({ value }) => value}>{gradeDistribution.map((entry) => <Cell key={entry.name} fill={entry.color} />)}</Pie><Tooltip formatter={(value, name) => [String(value) + " notas", name]} /><Legend verticalAlign="bottom" /></PieChart></ResponsiveContainer></ChartFrame> : <Empty text="Registrá notas para visualizar su distribución." />}
         </Panel>
 
-        <Panel title="Estado de estudiantes" subtitle="Situación actual de los expedientes visibles">
-          {students.length ? <div className="space-y-3">{Object.entries(statusCounts).sort((a, b) => b[1] - a[1]).map(([status, count]) => <div key={status} className="flex items-center justify-between rounded-xl border p-3"><span>{status}</span><strong className="rounded-full bg-primary-fixed px-3 py-1 text-on-primary-fixed">{count}</strong></div>)}<p className="text-sm text-on-surface-variant">{students.filter((student) => student.alert.trim()).length} estudiantes tienen una alerta o seguimiento registrado.</p></div> : <Empty text="No hay estudiantes visibles para este usuario." />}
+        <Panel title="Promedio por curso" subtitle="Comparación de los cursos con notas registradas">
+          {courseChartData.length ? <ChartFrame label="Gráfica de barras de promedio por curso"><ResponsiveContainer width="100%" height="100%"><BarChart data={courseChartData} margin={{ top: 10, right: 10, left: -15, bottom: 55 }}><CartesianGrid strokeDasharray="3 3" opacity={0.25} /><XAxis dataKey="name" angle={-35} textAnchor="end" interval={0} height={70} fontSize={11} /><YAxis domain={[0, 10]} tickCount={6} fontSize={12} /><Tooltip /><Bar dataKey="promedio" name="Promedio" fill="#2563eb" radius={[8, 8, 0, 0]} /></BarChart></ResponsiveContainer></ChartFrame> : <Empty text="Todavía no hay promedios por curso." />}
         </Panel>
       </div>
 
+      <SectionHeading eyebrow="Detalle académico" title="Rendimiento y ocupación por curso" description="Datos exactos para identificar grupos fuertes, cupos disponibles y cursos que necesitan seguimiento." />
       <Panel title="Rendimiento y ocupación por curso" subtitle="Promedio, estudiantes asignados y capacidad disponible">
         {coursePerformance.length ? <div className="overflow-x-auto"><table className="w-full min-w-[720px] text-left text-sm"><thead className="border-b text-on-surface-variant"><tr><th className="p-3">Curso</th><th className="p-3">Docente</th><th className="p-3">Promedio</th><th className="p-3">Notas</th><th className="p-3">Ocupación</th></tr></thead><tbody>{coursePerformance.map((course) => {
           const percentage = course.capacity ? Math.min(100, (course.enrolledCount / course.capacity) * 100) : 0;
           return <tr key={course.id} className="border-b last:border-0"><td className="p-3"><strong>{course.title}</strong><span className="block text-xs text-on-surface-variant">{course.level}</span></td><td className="p-3">{course.teacher || "Sin asignar"}</td><td className="p-3"><GradeBadge value={course.average} /></td><td className="p-3">{course.graded}</td><td className="p-3"><span>{course.enrolledCount}/{course.capacity}</span><div className="mt-1 h-2 w-32 overflow-hidden rounded-full bg-surface-container-high"><div className="h-full bg-primary" style={{ width: `${percentage}%` }} /></div></td></tr>;
         })}</tbody></table></div> : <Empty text="No hay cursos disponibles." />}
       </Panel>
+
+      <SectionHeading eyebrow="Matrícula y operación" title="Estudiantes, capacidad y horarios" description="Distribución de expedientes, uso de cupos y organización de la jornada académica." />
+      <div className="grid gap-6 xl:grid-cols-2">
+        <Panel title="Estado de estudiantes" subtitle="Distribución de los expedientes visibles">
+          {students.length ? <><ChartFrame label="Gráfica de pastel del estado de estudiantes"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={studentStatusData} dataKey="value" nameKey="name" cx="50%" cy="45%" outerRadius={92} label={({ value }) => value}>{studentStatusData.map((entry) => <Cell key={entry.name} fill={entry.color} />)}</Pie><Tooltip formatter={(value, name) => [String(value) + " estudiantes", name]} /><Legend verticalAlign="bottom" /></PieChart></ResponsiveContainer></ChartFrame><p className="mt-3 text-sm text-on-surface-variant">{students.filter((student) => student.alert.trim()).length} estudiantes tienen una alerta o seguimiento registrado.</p></> : <Empty text="No hay estudiantes visibles para este usuario." />}
+        </Panel>
+
+        <Panel title="Ocupación por curso" subtitle="Estudiantes asignados frente a capacidad">
+          {courses.length ? <ChartFrame label="Gráfica de barras de ocupación por curso"><ResponsiveContainer width="100%" height="100%"><BarChart data={coursePerformance.slice(0, 8).map((course) => ({ name: course.title.length > 18 ? course.title.slice(0, 18) + "…" : course.title, estudiantes: course.enrolledCount, capacidad: course.capacity }))} margin={{ top: 10, right: 10, left: -15, bottom: 55 }}><CartesianGrid strokeDasharray="3 3" opacity={0.25} /><XAxis dataKey="name" angle={-35} textAnchor="end" interval={0} height={70} fontSize={11} /><YAxis allowDecimals={false} fontSize={12} /><Tooltip /><Legend verticalAlign="top" /><Bar dataKey="estudiantes" name="Matriculados" fill="#10b981" radius={[6, 6, 0, 0]} /><Bar dataKey="capacidad" name="Capacidad" fill="#bfdbfe" radius={[6, 6, 0, 0]} /></BarChart></ResponsiveContainer></ChartFrame> : <Empty text="No hay cursos para calcular ocupación." />}
+        </Panel>
+      </div>
 
       <div className="grid gap-6 xl:grid-cols-2">
         <Panel title="Horarios" subtitle="Espacios académicos registrados">
@@ -139,6 +165,14 @@ function Kpi({ icon, label, value, detail }: { icon: string; label: string; valu
 
 function Panel({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
   return <section className="rounded-2xl border bg-surface-container-lowest p-5 shadow-sm"><div className="mb-4"><h2 className="text-headline-sm font-semibold">{title}</h2><p className="text-sm text-on-surface-variant">{subtitle}</p></div>{children}</section>;
+}
+
+function SectionHeading({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
+  return <div className="border-l-4 border-primary pl-4"><p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">{eyebrow}</p><h2 className="text-2xl font-semibold">{title}</h2><p className="max-w-3xl text-sm text-on-surface-variant">{description}</p></div>;
+}
+
+function ChartFrame({ label, children }: { label: string; children: React.ReactNode }) {
+  return <div className="h-80 w-full" role="img" aria-label={label}>{children}</div>;
 }
 
 function MiniStat({ label, value }: { label: string; value: string }) {
