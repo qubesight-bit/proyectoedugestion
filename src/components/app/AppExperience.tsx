@@ -15,6 +15,7 @@ import { AdmissionsManager } from "./AdmissionsManager";
 import { APP_SECTION_KEY, savedView, type AppSection } from "@/lib/app-section";
 import { assignedCourses } from "@/lib/academic";
 import { pageItems, PaginationControls } from "./PaginationControls";
+import { AnalyticsDashboard } from "./AnalyticsDashboard";
 
 type View = AppSection;
 
@@ -68,7 +69,9 @@ export function AppExperience() {
   ];
   const go = (target: View) => { setAnnouncementRequest(0); setStudentRequest(0); setView(target); setMenuOpen(false); };
   const refresh = async () => {
-    await Promise.all(["courses", "students", "announcements", "teacher_profiles", "course_students", "admission_requests"].map((key) => qc.invalidateQueries({ queryKey: [key] })));
+    await Promise.all([
+      "courses", "students", "announcements", "teacher_profiles", "course_students", "admission_requests", "analytics",
+    ].map((key) => qc.invalidateQueries({ queryKey: [key] })));
     toast.success("Datos actualizados");
   };
   const logOut = async () => {
@@ -118,17 +121,29 @@ export function AppExperience() {
           <Button variant="secondary" className="h-16 gap-2 rounded-xl" onClick={() => go("assistant")}>{icon("smart_toy")}Asistente interno</Button>
         </div>
 
-        <div className="mb-6 grid gap-3 sm:grid-cols-3">
-          <Metric label="Cursos registrados" value={courses.data?.length} loading={courses.isLoading} onClick={() => go("courses")} />
-          <Metric label="Estudiantes activos" value={students.data?.filter((s) => s.status === "Activo").length} loading={students.isLoading} onClick={() => go("students")} />
-          <Metric label="Anuncios publicados" value={announcements.data?.length} loading={announcements.isLoading} onClick={() => go("announcements")} />
-        </div>
         {[courses, students, announcements].map((q, i) => q.error && <p role="alert" key={i} className="mb-3 text-destructive">Error al cargar {(["cursos", "estudiantes", "anuncios"] as const)[i]}: {q.error.message}</p>)}
-        <section aria-labelledby="recent-title" className="rounded-2xl bg-surface-container-lowest p-5 shadow-sm">
-          <div className="mb-3 flex items-center justify-between"><h2 id="recent-title" className="text-headline-sm font-semibold">Anuncios recientes</h2><Button variant="ghost" onClick={() => go("announcements")}>Ver todos</Button></div>
-          {announcements.isLoading ? <p>Cargando anuncios…</p> : announcements.data?.length ? <ul className="space-y-3">{announcements.data.slice(0, 3).map((a) => <li key={a.id} className="rounded-xl border p-3"><strong>{a.title}</strong><p className="whitespace-pre-wrap text-sm">{a.content}</p><span className="text-xs text-on-surface-variant">{new Date(a.created_at).toLocaleDateString("es-CR")}</span></li>)}</ul> : <p>Todavía no hay anuncios.</p>}
-        </section>
-      </> : <section className="space-y-5"><div><p className="text-sm font-semibold uppercase tracking-wider text-primary">Panel docente</p><h1 className="text-headline-md font-semibold">Hola{account.data?.fullName ? `, ${account.data.fullName}` : ""}</h1><p>Consultá tus cursos, alumnos asignados y anuncios recientes.</p></div><div className="grid gap-3 sm:grid-cols-3"><Metric label="Mis cursos" value={ownCourseCount} loading={courses.isLoading} onClick={() => go("courses")} /><Metric label="Estudiantes accesibles" value={students.data?.length} loading={students.isLoading} onClick={() => go("students")} /><Metric label="Anuncios" value={announcements.data?.length} loading={announcements.isLoading} onClick={() => go("announcements")} /></div><Button onClick={() => go("courses")}>Ver mis cursos y estudiantes</Button></section>)}
+        <AnalyticsDashboard
+          isAdmin
+          courses={courses.data ?? []}
+          students={students.data ?? []}
+          teachers={teacherProfiles.data ?? []}
+          announcements={announcements.data ?? []}
+          loading={courses.isLoading || students.isLoading || teacherProfiles.isLoading || announcements.isLoading}
+        />
+      </> : <section className="space-y-5">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div><p className="text-sm font-semibold uppercase tracking-wider text-primary">Panel docente</p><h1 className="text-headline-md font-semibold">Hola{account.data?.fullName ? `, ${account.data.fullName}` : ""}</h1><p>Analíticas de tus cursos, estudiantes y horarios autorizados.</p></div>
+          <Button onClick={() => go("courses")}>Ver mis cursos ({ownCourseCount ?? 0})</Button>
+        </div>
+        <AnalyticsDashboard
+          isAdmin={false}
+          courses={courses.data ?? []}
+          students={students.data ?? []}
+          teachers={teacherProfiles.data ?? []}
+          announcements={announcements.data ?? []}
+          loading={courses.isLoading || students.isLoading || teacherProfiles.isLoading || announcements.isLoading}
+        />
+      </section>)}
       {view === "courses" && <CoursesManager isAdmin={isAdmin} userId={account.data!.userId} />}
       {view === "students" && <StudentsManager key={studentRequest} isAdmin={isAdmin} openNew={studentRequest} />}
       {view === "announcements" && <AnnouncementsManager key={announcementRequest} isAdmin={isAdmin} openNew={announcementRequest} />}
@@ -142,10 +157,6 @@ export function AppExperience() {
       {(["home", "courses", "students", "announcements"] as const).map((target) => <Button key={target} type="button" variant="ghost" className="flex h-16 flex-col gap-0 text-xs" aria-label={({home:"Inicio", courses:"Cursos", students:"Alumnos", announcements:"Anuncios"})[target]} aria-current={view === target ? "page" : undefined} onClick={() => go(target)}>{icon(({home:"dashboard", courses:"school", students:"groups", announcements:"campaign"})[target])}{({home:"Inicio", courses:"Cursos", students:"Alumnos", announcements:"Anuncios"})[target]}</Button>)}
     </nav>
   </div>;
-}
-
-function Metric({ label, value, loading, onClick }: { label: string; value: number | undefined; loading: boolean; onClick: () => void }) {
-  return <Button variant="secondary" onClick={onClick} className="h-auto flex-col items-start rounded-2xl p-5 text-left"><span className="text-sm">{label}</span><strong className="text-3xl">{loading ? "…" : value ?? "—"}</strong></Button>;
 }
 
 function Supervision({ courses, announcements }: { courses: Array<{ id: string; title: string; teacher: string; updated_at: string }>; announcements: Array<{ id: string; title: string; created_at: string }> }) {
