@@ -168,6 +168,18 @@ function RootComponent() {
   const router = useRouter();
 
   useEffect(() => {
+    // Google Translate must be loaded during normal navigation, not only inside
+    // the error boundary. The floating language control uses this widget.
+    if (!document.getElementById("gt-script")) {
+      const script = document.createElement("script");
+      script.id = "gt-script";
+      script.src = "https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
+      script.async = true;
+      document.body.appendChild(script);
+    }
+  }, []);
+
+  useEffect(() => {
     if (shouldDropSession()) void supabase.auth.signOut();
     const { data } = supabase.auth.onAuthStateChange((event) => {
       if (event !== "SIGNED_IN" && event !== "SIGNED_OUT" && event !== "USER_UPDATED") return;

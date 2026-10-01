@@ -197,6 +197,21 @@
 /* DARK MODE OVERRIDES */
 html.dark {
   color-scheme: dark;
+  --color-background: #020617;
+  --color-surface: #020617;
+  --color-surface-container-lowest: #0f172a;
+  --color-surface-container-low: #1e293b;
+  --color-surface-container: #334155;
+  --color-surface-container-high: #475569;
+  --color-surface-container-highest: #64748b;
+  --color-on-surface: #f8fafc;
+  --color-on-surface-variant: #cbd5e1;
+  --color-outline: #64748b;
+  --color-outline-variant: #334155;
+  --color-primary: #93c5fd;
+  --color-primary-container: #1e3a8a;
+  --color-on-primary: #0f172a;
+  --color-border: #334155;
 }
 html.dark body {
   background-color: #020617;
@@ -255,4 +270,17 @@ html.dark .text-muted-foreground {
 html.dark .focus\:bg-accent:focus, html.dark .hover\:bg-accent:hover {
   background-color: #1e293b !important;
   color: #f8fafc !important;
+}
+html.dark [role="menu"] {
+  background-color: #0f172a !important;
+  border-color: #334155 !important;
+  color: #f8fafc !important;
+}
+html.dark [role="menuitem"] {
+  color: #f8fafc !important;
+}
+html.dark [role="menuitem"]:focus,
+html.dark [role="menuitem"]:hover {
+  background-color: #1e293b !important;
+  color: #bfdbfe !important;
 }

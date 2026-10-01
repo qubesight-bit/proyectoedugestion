@@ -44,6 +44,10 @@ npx supabase functions deploy admin-users
 
 La función exige una sesión válida y comprueba en el servidor que el solicitante tenga el rol `admin`; la clave de servicio nunca se envía al navegador.
 
+### Acceso con Google
+
+La configuración de Google Cloud y Supabase está documentada en [docs/CONFIGURAR_GOOGLE_OAUTH.md](docs/CONFIGURAR_GOOGLE_OAUTH.md). Los secretos OAuth se guardan únicamente en Supabase, nunca en el repositorio.
+
 ### Servicio externo real
 
 El panel analítico consume el clima actual del campus desde Open-Meteo mediante `src/services/external/weather.service.ts`, manteniendo las llamadas HTTP externas dentro de la carpeta `services`.

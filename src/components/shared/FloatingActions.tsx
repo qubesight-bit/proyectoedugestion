@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { MessageCircle, Moon, Sun, Languages, Bot, X, Send } from 'lucide-react';
+import { Moon, Sun, Bot, X, Send } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useSimpleChat } from '@/hooks/use-simple-chat';
 
@@ -43,15 +43,20 @@ export function FloatingActions() {
     const nextLang = lang === 'es' ? 'en' : 'es';
     setLang(nextLang);
     if (typeof document !== 'undefined') {
-      // Usar Google Translate estableciendo la cookie
       const domain = window.location.hostname;
       const cookieStr = nextLang === 'en' ? "googtrans=/es/en" : "googtrans=/es/es";
-      document.cookie = `${cookieStr}; path=/;`;
-      document.cookie = `${cookieStr}; domain=${domain}; path=/;`;
+      document.cookie = `${cookieStr}; path=/; SameSite=Lax`;
       if (domain.includes('.')) {
-        document.cookie = `${cookieStr}; domain=.${domain}; path=/;`;
+        document.cookie = `${cookieStr}; domain=.${domain}; path=/; SameSite=Lax`;
       }
-      window.location.reload();
+      document.documentElement.lang = nextLang;
+      const selector = document.querySelector<HTMLSelectElement>('.goog-te-combo');
+      if (selector) {
+        selector.value = nextLang;
+        selector.dispatchEvent(new Event('change', { bubbles: true }));
+      } else {
+        window.location.reload();
+      }
     }
   };
 
@@ -68,6 +73,7 @@ export function FloatingActions() {
             onClick={toggleTheme}
             className="w-10 h-10 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-full shadow-lg flex items-center justify-center hover:bg-slate-100 transition-transform hover:scale-110 border border-slate-200 dark:border-slate-700"
             title="Alternar Modo Oscuro"
+            aria-label={theme === 'light' ? 'Activar modo oscuro' : 'Activar modo claro'}
           >
             {theme === 'light' ? <Moon size={18} /> : <Sun size={18} />}
           </button>
@@ -76,6 +82,7 @@ export function FloatingActions() {
             onClick={toggleLanguage}
             className="w-10 h-10 bg-white dark:bg-slate-800 text-slate-700 dark:text-slate-200 rounded-full shadow-lg flex items-center justify-center hover:bg-slate-100 transition-transform hover:scale-110 border border-slate-200 dark:border-slate-700 font-bold text-xs"
             title="Translate / Traducir"
+            aria-label={lang === 'es' ? 'Translate website to English' : 'Traducir el sitio al español'}
           >
             {lang === 'es' ? 'EN' : 'ES'}
           </button>
