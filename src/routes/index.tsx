@@ -23,7 +23,7 @@ function Index() {
         {/* Fondo fotográfico */}
         <div
           className="absolute inset-0 z-0 bg-cover bg-[position:68%_center] bg-no-repeat sm:bg-[position:62%_center] lg:bg-center"
-          style={{ backgroundImage: "url('/hero-ceac.png')" }}
+          style={{ backgroundImage: "url('/hero-ceac-v2.webp')" }}
           role="img"
           aria-label="Estudiante del Centro Educativo Adventista explorando la naturaleza"
         />
