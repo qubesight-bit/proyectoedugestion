@@ -123,7 +123,7 @@ export function AuthScreen({ onLogin }: { onLogin: () => void }) {
           onSubmit={updatePassword}
         >
           <h2 className="text-headline-sm font-semibold">Crear contraseña nueva</h2>
-          <p className="text-body-sm text-on-surface-variant">Elegí una contraseña para tu usuario del panel EduGestión.</p>
+          <p className="text-body-sm text-on-surface-variant">Elegí una contraseña para tu usuario del Centro Educativo Adventista.</p>
           <label className="flex flex-col gap-2 text-label-md font-semibold">
             Contraseña nueva
             <input required minLength={8} type="password" className="form-input" value={newPassword} onChange={(event) => setNewPassword(event.target.value)} />

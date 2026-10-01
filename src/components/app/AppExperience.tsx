@@ -92,7 +92,7 @@ export function AppExperience() {
   return <div className="min-h-screen bg-surface text-on-surface md:pl-64">
     <aside className={`${menuOpen ? "flex" : "hidden"} fixed inset-y-0 left-0 z-50 w-64 flex-col gap-2 border-r bg-surface-container-lowest p-4 shadow-lg md:flex`}>
       <div className="flex items-center justify-between gap-2 px-2 py-4 font-bold text-primary">
-        <span>EduGestión</span>
+        <span>Centro Educativo Adventista</span>
         <Button className="md:hidden" variant="ghost" size="icon" aria-label="Cerrar menú" onClick={() => setMenuOpen(false)}>{icon("close")}</Button>
       </div>
       <nav aria-label="Secciones de la plataforma" className="flex flex-1 flex-col gap-1 overflow-y-auto">
