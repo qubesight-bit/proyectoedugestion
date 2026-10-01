@@ -1,4 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { handleChat } from "../../src/routes/api/chat";
 
 const request = (messages: unknown, origin = "https://ceac.example") =>
