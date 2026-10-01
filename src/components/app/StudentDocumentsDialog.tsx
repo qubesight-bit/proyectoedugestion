@@ -45,11 +45,11 @@ export function StudentDocumentsDialog({ student, isAdmin, onClose }: { student:
       const path = `${student.id}/${crypto.randomUUID()}-${safeFileName(file.name)}`;
       const fileOptions = file.type ? { contentType: file.type } : undefined;
       const { error: storageError } = await supabase.storage.from("student-records").upload(path, file, fileOptions);
-      if (storageError) throw storageError;
+      if (storageError) throw new Error(`Storage rechazó el archivo: ${storageError.message}`);
       const { error: metadataError } = await supabase.from("student_documents").insert({ student_id: student.id, file_name: file.name, storage_path: path, ...(file.type ? { mime_type: file.type } : {}), size_bytes: file.size, category, notes: notes.trim(), uploaded_by: auth.user.id });
       if (metadataError) {
         await supabase.storage.from("student-records").remove([path]);
-        throw metadataError;
+        throw new Error(`No se pudo registrar el expediente: ${metadataError.message}`);
       }
     },
     onSuccess: async () => { toast.success("Documento agregado al expediente"); await qc.invalidateQueries({ queryKey: ["student_documents", student.id] }); },
