@@ -43,9 +43,10 @@ export function StudentDocumentsDialog({ student, isAdmin, onClose }: { student:
       const { data: auth } = await supabase.auth.getUser();
       if (!auth.user) throw new Error("La sesión expiró. Inicie sesión nuevamente.");
       const path = `${student.id}/${crypto.randomUUID()}-${safeFileName(file.name)}`;
-      const { error: storageError } = await supabase.storage.from("student-records").upload(path, file, { contentType: file.type || undefined });
+      const fileOptions = file.type ? { contentType: file.type } : undefined;
+      const { error: storageError } = await supabase.storage.from("student-records").upload(path, file, fileOptions);
       if (storageError) throw storageError;
-      const { error: metadataError } = await supabase.from("student_documents").insert({ student_id: student.id, file_name: file.name, storage_path: path, mime_type: file.type || null, size_bytes: file.size, category, notes: notes.trim(), uploaded_by: auth.user.id });
+      const { error: metadataError } = await supabase.from("student_documents").insert({ student_id: student.id, file_name: file.name, storage_path: path, ...(file.type ? { mime_type: file.type } : {}), size_bytes: file.size, category, notes: notes.trim(), uploaded_by: auth.user.id });
       if (metadataError) {
         await supabase.storage.from("student-records").remove([path]);
         throw metadataError;
@@ -68,7 +69,10 @@ export function StudentDocumentsDialog({ student, isAdmin, onClose }: { student:
 
   async function download(document: Document) {
     const { data, error } = await supabase.storage.from("student-records").createSignedUrl(document.storage_path, 60);
-    if (error) return toast.error(error.message);
+    if (error) {
+      toast.error(error.message);
+      return;
+    }
     window.open(data.signedUrl, "_blank", "noopener,noreferrer");
   }
 
@@ -77,7 +81,10 @@ export function StudentDocumentsDialog({ student, isAdmin, onClose }: { student:
     const form = event.currentTarget;
     const values = new FormData(form);
     const file = values.get("document");
-    if (!(file instanceof File) || !file.size) return toast.error("Seleccione un archivo.");
+    if (!(file instanceof File) || !file.size) {
+      toast.error("Seleccione un archivo.");
+      return;
+    }
     upload.mutate({ file, category: String(values.get("category")), notes: String(values.get("notes") ?? "") }, { onSuccess: () => form.reset() });
   }
 

@@ -1,4 +1,4 @@
-# EduGestión · CEAC
+# Centro Educativo Adventista de Cartago
 
 Build this app using the HTML files referenced below. You can hotlink the images referenced in the HTML. The attached images are screenshots of the desired screens. Here are public links to the html of the screens which you should read and use to build the app:
 
@@ -9,7 +9,7 @@ Build this app using the HTML files referenced below. You can hotlink the images
 
 This project was built with [Lovable](https://lovable.dev).
 
-**Live app**: https://proyectoedugestion.lovable.app
+**Aplicación publicada**: https://ceaccr.lovable.app
 
 ## Build with Lovable
 
@@ -23,7 +23,30 @@ Continue developing this project in the [Lovable editor](https://lovable.dev/pro
 
 ### Guía para presentar el proyecto
 
-Abrí [docs/CRITERIOS_PRESENTACION.md](docs/CRITERIOS_PRESENTACION.md) y [docs/NUEVAS_FUNCIONES.md](docs/NUEVAS_FUNCIONES.md) en el IDE: contiene los criterios, rutas de los archivos y una demostración paso a paso. Ejecutá `npm test`, `npx tsc --noEmit` y `npm run build` para verificarlo.
+La evidencia completa está organizada para revisarla directamente desde el IDE:
+
+- [Matriz de cumplimiento de la rúbrica](docs/RUBRICA_CUMPLIMIENTO.md)
+- [Anteproyecto](docs/ANTEPROYECTO.md)
+- [Libro de marca](docs/LIBRO_DE_MARCA.md)
+- [Guía de presentación](docs/CRITERIOS_PRESENTACION.md)
+- [Funciones implementadas](docs/NUEVAS_FUNCIONES.md)
+- [Mockup de escritorio](docs/mockups/escritorio.svg) y [mockup móvil](docs/mockups/movil.svg)
+
+El backend solicitado originalmente como JSON Server se sustituyó, con autorización académica, por Supabase. Ejecutá `npm test`, `npx tsc --noEmit` y `npm run build` para verificar el proyecto.
+
+### Administración de usuarios
+
+El módulo **Usuarios** de `/app` permite a un administrador listar cuentas, registrar usuarios, asignar roles y eliminarlos. Su función segura se despliega una vez con:
+
+```sh
+npx supabase functions deploy admin-users
+```
+
+La función exige una sesión válida y comprueba en el servidor que el solicitante tenga el rol `admin`; la clave de servicio nunca se envía al navegador.
+
+### Servicio externo real
+
+El panel analítico consume el clima actual del campus desde Open-Meteo mediante `src/services/external/weather.service.ts`, manteniendo las llamadas HTTP externas dentro de la carpeta `services`.
 
 ### Chatbot público con n8n y Groq
 

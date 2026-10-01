@@ -16,6 +16,7 @@ import { APP_SECTION_KEY, savedView, type AppSection } from "@/lib/app-section";
 import { assignedCourses } from "@/lib/academic";
 import { pageItems, PaginationControls } from "./PaginationControls";
 import { AnalyticsDashboard } from "./AnalyticsDashboard";
+import { AdminUsersManager } from "./AdminUsersManager";
 
 type View = AppSection;
 
@@ -47,7 +48,7 @@ export function AppExperience() {
     return data;
   } });
   const teacherProfiles = useQuery({ queryKey: ["teacher_profiles"], queryFn: async () => {
-    const { data, error } = await supabase.from("teacher_profiles").select("id, user_id");
+    const { data, error } = await supabase.from("teacher_profiles").select("*");
     if (error) throw error;
     return data;
   } });
@@ -64,7 +65,7 @@ export function AppExperience() {
   const nav: Array<[View, string, string]> = [
     ["home", "dashboard", "Inicio"], ["courses", "school", "Cursos"],
     ["students", "groups", "Estudiantes"], ["announcements", "campaign", "Anuncios"],
-    ["teachers", "person", "Docentes"], ...(isAdmin ? [["admissions", "assignment", "Solicitudes"] as [View, string, string]] : []), ["supervision", "visibility", "Supervisión"],
+    ["teachers", "person", "Docentes"], ...(isAdmin ? [["users", "manage_accounts", "Usuarios"] as [View, string, string], ["admissions", "assignment", "Solicitudes"] as [View, string, string]] : []), ["supervision", "visibility", "Supervisión"],
     ["assistant", "search", "Consultas"], ["profile", "account_circle", "Perfil"],
   ];
   const go = (target: View) => { setAnnouncementRequest(0); setStudentRequest(0); setView(target); setMenuOpen(false); };
@@ -148,6 +149,7 @@ export function AppExperience() {
       {view === "students" && <StudentsManager key={studentRequest} isAdmin={isAdmin} openNew={studentRequest} />}
       {view === "announcements" && <AnnouncementsManager key={announcementRequest} isAdmin={isAdmin} openNew={announcementRequest} />}
       {view === "teachers" && <TeachersManager isAdmin={isAdmin} userId={account.data!.userId} courses={courses.data ?? []} />}
+      {view === "users" && isAdmin && <AdminUsersManager />}
       {view === "admissions" && isAdmin && <AdmissionsManager />}
       {view === "supervision" && <Supervision courses={courses.data ?? []} announcements={announcements.data ?? []} />}
       {view === "assistant" && <AssistantChat isAdmin={isAdmin} userId={account.data!.userId} />}

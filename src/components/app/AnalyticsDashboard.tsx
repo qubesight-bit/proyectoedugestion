@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Bar, BarChart, CartesianGrid, Cell, Legend, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from "recharts";
 import { supabase } from "@/integrations/supabase/client";
 import type { Database } from "@/integrations/supabase/types";
+import { getCampusWeather } from "@/services/external/weather.service";
 
 type Course = Database["public"]["Tables"]["courses"]["Row"];
 type Student = Database["public"]["Tables"]["students"]["Row"];
@@ -26,6 +27,7 @@ const gradeBands = [
 const chartColors = ["#2563eb", "#10b981", "#f59e0b", "#8b5cf6", "#f43f5e", "#06b6d4"];
 
 export function AnalyticsDashboard({ isAdmin, courses, students, teachers, announcements, loading }: Props) {
+  const weather = useQuery({ queryKey: ["external", "campus-weather"], queryFn: ({ signal }) => getCampusWeather(signal), staleTime: 15 * 60 * 1000, retry: 1 });
   const grades = useQuery({
     queryKey: ["analytics", "student_grades"],
     queryFn: async () => {
@@ -106,6 +108,11 @@ export function AnalyticsDashboard({ isAdmin, courses, students, teachers, annou
   return (
     <div className="space-y-6">
       {queryError && <p role="alert" className="rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-destructive">Algunas analíticas no pudieron cargarse: {queryError.message}</p>}
+
+      <aside className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-surface-container-lowest p-4" aria-label="Información externa del campus">
+        <div><p className="text-xs font-bold uppercase tracking-wider text-primary">Servicio externo · Open-Meteo</p><p className="font-semibold">Condiciones actuales en Cartago</p></div>
+        {weather.isLoading ? <p role="status">Consultando clima…</p> : weather.data ? <p><span aria-hidden="true" className="material-symbols-outlined align-middle">partly_cloudy_day</span> <strong>{weather.data.temperature.toFixed(1)} °C</strong> · {weather.data.description} · sensación {weather.data.apparentTemperature.toFixed(1)} °C</p> : <p className="text-sm text-on-surface-variant">El servicio externo no está disponible temporalmente.</p>}
+      </aside>
 
       <section aria-labelledby="kpi-title">
         <h2 id="kpi-title" className="sr-only">Indicadores principales</h2>
