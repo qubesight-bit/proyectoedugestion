@@ -1087,7 +1087,16 @@ function MobileDrawer({
     ["teacher_resources", "folder", "Recursos"],
     ["profile", "account_circle", "Perfil"],
   ];
-  const nav = role === "Administrador" ? adminNav : teacherNav;
+  const studentNav: Array<[View, string, string]> = [
+    ["student_home", "home", "Inicio"],
+    ["student_courses", "school", "Mis Cursos"],
+    ["student_grades", "grading", "Mis Notas"],
+    ["student_messages", "forum", "Mensajes"],
+    ["student_tasks", "task", "Tareas"],
+    ["student_chatbot", "smart_toy", "Chatbot"],
+    ["student_profile", "account_circle", "Mi Perfil"],
+  ];
+  const nav = role === "Administrador" ? adminNav : role === "Docente" ? teacherNav : studentNav;
 
   return (
     <div className="fixed inset-0 z-[70] lg:hidden" role="dialog" aria-modal="true" aria-label="Menú principal">
@@ -1145,13 +1154,20 @@ function BottomNav({ active, onNavigate, role }: { active: View; onNavigate: (vi
     ["profile", "account_circle", "Perfil"],
   ];
   const teacherNav: Array<[View, string, string]> = [
-    ["teacher_home", "home", "Inicio (Resumen)"],
-    ["teacher_courses", "school", "Mis Cursos"],
-    ["teacher_grades", "grading", "Calificaciones"],
+    ["teacher_home", "home", "Inicio"],
+    ["teacher_courses", "school", "Cursos"],
+    ["teacher_grades", "grading", "Notas"],
     ["teacher_attendance", "fact_check", "Asistencia"],
     ["teacher_resources", "folder", "Recursos"],
   ];
-  const nav = role === "Administrador" ? adminNav : teacherNav;
+  const studentNav: Array<[View, string, string]> = [
+    ["student_home", "home", "Inicio"],
+    ["student_courses", "school", "Cursos"],
+    ["student_grades", "grading", "Notas"],
+    ["student_messages", "forum", "Mensajes"],
+    ["student_chatbot", "smart_toy", "Chatbot"],
+  ];
+  const nav = role === "Administrador" ? adminNav : role === "Docente" ? teacherNav : studentNav;
   return (
     <nav className="fixed bottom-0 z-50 w-full bg-surface-container-lowest/95 shadow-lg backdrop-blur-xl pb-safe md:hidden">
       <div className="grid h-20 grid-cols-5 px-2 pt-2">
@@ -1182,7 +1198,16 @@ function Sidebar({ active, onNavigate, role }: { active: View; onNavigate: (view
     ["teacher_attendance", "fact_check", "Asistencia"],
     ["teacher_resources", "folder", "Recursos"],
   ];
-  const nav = role === "Administrador" ? adminNav : teacherNav;
+  const studentNav: Array<[View, string, string]> = [
+    ["student_home", "home", "Inicio"],
+    ["student_courses", "school", "Mis Cursos"],
+    ["student_grades", "grading", "Mis Notas"],
+    ["student_messages", "forum", "Mensajes"],
+    ["student_tasks", "task", "Tareas"],
+    ["student_chatbot", "smart_toy", "Chatbot"],
+    ["student_profile", "account_circle", "Mi Perfil"],
+  ];
+  const nav = role === "Administrador" ? adminNav : role === "Docente" ? teacherNav : studentNav;
   return (
     <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-64 flex-col bg-surface-container-lowest shadow-xl border-r">
       <div className="flex h-16 items-center gap-3 px-6 pt-4 mb-8">
@@ -1205,7 +1230,7 @@ function Sidebar({ active, onNavigate, role }: { active: View; onNavigate: (view
         ))}
       </nav>
       <div className="flex flex-col gap-2 p-4">
-        <Button variant="outline" className="w-full justify-start gap-3 h-14 rounded-xl" onClick={() => onNavigate("profile")}>
+        <Button variant="outline" className="w-full justify-start gap-3 h-14 rounded-xl" onClick={() => onNavigate(role === "Estudiante" ? "student_profile" : "profile")}>
           <img src={profileUrl} alt="Profile" className="h-8 w-8 rounded-full" />
           <span className="text-sm font-semibold">Mi Cuenta</span>
         </Button>
