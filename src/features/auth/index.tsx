@@ -27,8 +27,8 @@ export function LoginScreen({ onLogin }: { onLogin: (role: Role) => void }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-2 gap-2 rounded-xl bg-surface-container p-1">
-          {(["Administrador", "Docente"] as Role[]).map((roleOption) => (
+        <div className="grid grid-cols-3 gap-2 rounded-xl bg-surface-container p-1">
+          {(["Administrador", "Docente", "Estudiante"] as Role[]).map((roleOption) => (
             <Button
               key={roleOption}
               type="button"
@@ -50,7 +50,11 @@ export function LoginScreen({ onLogin }: { onLogin: (role: Role) => void }) {
         >
           <div className="flex gap-3 rounded-xl bg-primary-fixed p-3 text-on-primary-fixed">
             <Icon name="verified_user" className="text-[22px]" />
-            <p className="text-body-sm">Acceso a métricas globales, nómina y configuración institucional.</p>
+            <p className="text-body-sm">{selectedRole === "Administrador"
+              ? "Acceso a métricas globales y gestión institucional."
+              : selectedRole === "Docente"
+                ? "Acceso a cursos, calificaciones, asistencia y recursos."
+                : "Acceso a tus cursos, notas, tareas, mensajes y asistente académico."}</p>
           </div>
 
           <label className="flex flex-col gap-2 text-label-md font-semibold">
