@@ -77,39 +77,16 @@ export const courses: Course[] = [
 ];
 
 export const students: Student[] = [
-  {
-    name: "Camilo Andrés Morales",
-    id: "EST-2024-089",
-    status: "Activo",
-    grade: "4° Primaria 'A'",
-    score: "9.2",
-    trend: "star",
-    tutor: "M. Morales",
-    image: studentImages[0],
-    alert: "",
-  },
-  {
-    name: "Valentina Sofía Ríos",
-    id: "EST-2024-112",
-    status: "Activo",
-    grade: "2° Secundaria 'B'",
-    score: "8.4",
-    trend: "trending_up",
-    tutor: "E. Ríos G.",
-    image: studentImages[1],
-    alert: "",
-  },
-  {
-    name: "Matías Herrera Vera",
-    id: "EST-2024-045",
-    status: "Doc. Pendiente",
-    grade: "1° Secundaria 'C'",
-    score: "7.9",
-    trend: "remove",
-    tutor: "",
-    image: studentImages[2],
-    alert: "Falta Certificado Médico",
-  },
+  { name: "Camilo Andrés Morales", id: "EST-2024-089", status: "Activo", grade: "4° Primaria 'A'", score: "9.2", trend: "star", tutor: "M. Morales", image: studentImages[0], alert: "" },
+  { name: "Valentina Sofía Ríos", id: "EST-2024-112", status: "Activo", grade: "2° Secundaria 'B'", score: "8.4", trend: "trending_up", tutor: "E. Ríos G.", image: studentImages[1], alert: "" },
+  { name: "Matías Herrera Vera", id: "EST-2024-045", status: "Documento Pendiente", grade: "1° Secundaria 'C'", score: "7.9", trend: "remove", tutor: "L. Herrera", image: studentImages[2], alert: "Falta Certificado Médico" },
+  { name: "Sofía Rodríguez Chaves", id: "EST-2024-133", status: "Activo", grade: "5° Primaria 'B'", score: "9.6", trend: "trending_up", tutor: "A. Chaves", image: studentImages[1], alert: "" },
+  { name: "Daniel Vargas Solano", id: "EST-2024-146", status: "Activo", grade: "3° Secundaria 'A'", score: "8.8", trend: "star", tutor: "M. Solano", image: studentImages[0], alert: "" },
+  { name: "Lucía Fernández Mora", id: "EST-2024-158", status: "Documento Pendiente", grade: "6° Primaria 'A'", score: "8.1", trend: "trending_up", tutor: "J. Fernández", image: studentImages[2], alert: "Pendiente copia de identificación" },
+  { name: "Samuel Jiménez Brenes", id: "EST-2024-171", status: "Activo", grade: "2° Primaria 'A'", score: "9.0", trend: "star", tutor: "C. Brenes", image: studentImages[0], alert: "" },
+  { name: "Mariana López Quesada", id: "EST-2024-184", status: "Activo", grade: "4° Secundaria 'B'", score: "8.7", trend: "trending_up", tutor: "P. Quesada", image: studentImages[1], alert: "" },
+  { name: "Gabriel Soto Araya", id: "EST-2024-197", status: "En Observación", grade: "1° Primaria 'B'", score: "7.5", trend: "remove", tutor: "R. Araya", image: studentImages[2], alert: "Seguimiento académico" },
+  { name: "Isabella Méndez Castro", id: "EST-2024-205", status: "Activo", grade: "5° Secundaria 'A'", score: "9.4", trend: "star", tutor: "S. Castro", image: studentImages[1], alert: "" },
 ];
 
 export const teachersMock: Teacher[] = [
