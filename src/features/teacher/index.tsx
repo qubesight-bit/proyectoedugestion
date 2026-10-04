@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Icon } from "../../components/shared";
+import { GradebookView } from "../gradebook";
 
 const teacherCourses = [
   { id: "MAT-4A", name: "Matemáticas 4A", room: "Aula 102", students: 28, progress: 40 },
@@ -112,46 +113,11 @@ export function TeacherCoursesView() {
 }
 
 export function TeacherGradesView() {
-  const [grades, setGrades] = useState(initialGrades);
-  const average = useMemo(
-    () => Math.round(grades.reduce((sum, item) => sum + item.grade, 0) / grades.length),
-    [grades],
-  );
-
   return (
-    <section className="flex flex-col gap-5 px-4 py-4 animate-edu-rise">
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <h1 className="text-headline-md font-semibold">Calificaciones</h1>
-          <p className="text-body-sm text-on-surface-variant">Edición local para demostración Front End.</p>
-        </div>
-        <span className="rounded-full bg-primary-fixed px-3 py-1 text-label-sm font-semibold">Promedio {average}</span>
-      </div>
-
-      <div className="overflow-hidden rounded-2xl bg-surface-container-lowest shadow-sm">
-        {grades.map((item, index) => (
-          <div key={item.student} className="grid gap-3 border-b border-outline-variant/30 p-4 last:border-0 md:grid-cols-[1fr_1fr_120px] md:items-center">
-            <div>
-              <p className="font-semibold">{item.student}</p>
-              <p className="text-body-sm text-on-surface-variant">{item.course}</p>
-            </div>
-            <span className="text-body-sm text-on-surface-variant">Nota final</span>
-            <input
-              aria-label={`Nota de ${item.student}`}
-              className="h-10 rounded-xl bg-surface-container px-3 outline-none ring-primary focus:ring-2"
-              min="0"
-              max="100"
-              type="number"
-              value={item.grade}
-              onChange={(event) => {
-                const grade = Number(event.target.value);
-                setGrades((current) => current.map((row, rowIndex) => rowIndex === index ? { ...row, grade } : row));
-              }}
-            />
-          </div>
-        ))}
-      </div>
-    </section>
+    <GradebookView
+      title="Calificaciones del Docente"
+      subtitle="Asigná notas específicas a cada estudiante según materia y evaluación."
+    />
   );
 }
 
