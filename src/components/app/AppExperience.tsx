@@ -18,6 +18,7 @@ import { pageItems, PaginationControls } from "./PaginationControls";
 import { AnalyticsDashboard } from "./AnalyticsDashboard";
 import { AdminUsersManager } from "./AdminUsersManager";
 import { StudentRecordsManager } from "./StudentRecordsManager";
+import { StudentPortal } from "./StudentPortal";
 
 type View = AppSection;
 
@@ -37,6 +38,7 @@ export function AppExperience() {
   const qc = useQueryClient();
   const navigate = useNavigate();
   const isAdmin = account.isAdmin;
+  const isStudent = account.roles.includes("estudiante");
 
   const courses = useQuery({ queryKey: ["courses"], queryFn: async () => {
     const { data, error } = await supabase.from("courses").select("*").order("created_at", { ascending: false });
@@ -84,12 +86,23 @@ export function AppExperience() {
   };
 
   if (account.isLoading) return <p role="status" className="p-8">Cargando cuenta…</p>;
-  if (account.error || !account.label || account.label === "Estudiante") return (
+  if (account.error || !account.label) return (
     <div className="mx-auto max-w-lg p-8" role="alert">
-      <p>No se pudo verificar el acceso: {account.error?.message ?? "Esta cuenta no tiene el rol de administrador o docente."}</p>
+      <p>No se pudo verificar el acceso: {account.error?.message ?? "Esta cuenta no tiene un rol válido."}</p>
       <Button className="mt-4" onClick={logOut}>Volver al inicio de sesión</Button>
     </div>
   );
+
+  if (isStudent) {
+    return (
+      <StudentPortal
+        userId={account.data!.userId}
+        email={account.data!.email}
+        fullName={account.data!.fullName}
+        onLogout={logOut}
+      />
+    );
+  }
 
   return <div className="min-h-screen bg-surface text-on-surface md:pl-64">
     <aside className={`${menuOpen ? "flex" : "hidden"} fixed inset-y-0 left-0 z-50 w-64 flex-col gap-2 border-r bg-surface-container-lowest p-4 shadow-lg md:flex`}>
