@@ -15,9 +15,16 @@ export type View =
   | "teacher_grades"
   | "teacher_attendance"
   | "teacher_resources"
-  | "admin_supervision";
+  | "admin_supervision"
+  | "student_home"
+  | "student_courses"
+  | "student_grades"
+  | "student_messages"
+  | "student_tasks"
+  | "student_chatbot"
+  | "student_profile";
 
-export type Role = "Administrador" | "Docente";
+export type Role = "Administrador" | "Docente" | "Estudiante";
 
 export type CourseCategory = "all" | "ciencias" | "humanidades" | "artes" | "idiomas";
 
