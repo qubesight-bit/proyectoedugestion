@@ -8,6 +8,7 @@ import { CoursesView as CoursesFeature } from "@/features/courses";
 import { StudentsView as StudentsFeature } from "@/features/students";
 import { TeachersView as TeachersFeature } from "@/features/teachers";
 import { AdminSupervisionView as AdminSupervisionFeature } from "@/features/admin";
+import { GradebookView } from "@/features/gradebook";
 import {
   TeacherDashboardView as TeacherDashboardFeature,
   TeacherCoursesView,
@@ -47,7 +48,7 @@ export const Route = createFileRoute("/app")({
   component: Index,
 });
 
-type View = "login" | "home" | "courses" | "students" | "teachers" | "assistant" | "profile" | "teacher_home" | "teacher_courses" | "teacher_grades" | "teacher_attendance" | "teacher_resources" | "admin_supervision" | "student_home" | "student_courses" | "student_grades" | "student_messages" | "student_tasks" | "student_chatbot" | "student_profile";
+type View = "login" | "home" | "courses" | "students" | "teachers" | "assistant" | "profile" | "teacher_home" | "teacher_courses" | "teacher_grades" | "teacher_attendance" | "teacher_resources" | "admin_supervision" | "admin_grades" | "student_home" | "student_courses" | "student_grades" | "student_messages" | "student_tasks" | "student_chatbot" | "student_profile";
 type Role = "Administrador" | "Docente" | "Estudiante";
 type CourseCategory = "all" | "ciencias" | "humanidades" | "artes" | "idiomas";
 
@@ -253,6 +254,12 @@ function Index() {
           {view === "teacher_attendance" && <TeacherAttendanceView />}
           {view === "teacher_resources" && <TeacherResourcesView />}
           {view === "admin_supervision" && <AdminSupervisionFeature />}
+          {view === "admin_grades" && (
+            <GradebookView
+              title="Calificaciones Institucionales"
+              subtitle="Administrador: crear y modificar notas específicas por estudiante."
+            />
+          )}
           {view === "student_home" && (
             <StudentHomeView onNavigate={(target) => setView(target)} />
           )}
@@ -1077,6 +1084,7 @@ function MobileDrawer({
     ["students", "groups", "Estudiantes"],
     ["teachers", "group", "Profesores"],
     ["admin_supervision", "visibility", "Supervisión"],
+    ["admin_grades", "grading", "Calificaciones"],
     ["profile", "account_circle", "Perfil"],
   ];
   const teacherNav: Array<[View, string, string]> = [
@@ -1151,6 +1159,7 @@ function BottomNav({ active, onNavigate, role }: { active: View; onNavigate: (vi
     ["courses", "school", "Cursos"],
     ["teachers", "group", "Profesores"],
     ["admin_supervision", "visibility", "Supervisión"],
+    ["admin_grades", "grading", "Calificaciones"],
     ["profile", "account_circle", "Perfil"],
   ];
   const teacherNav: Array<[View, string, string]> = [
