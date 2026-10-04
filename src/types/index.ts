@@ -16,6 +16,7 @@ export type View =
   | "teacher_attendance"
   | "teacher_resources"
   | "admin_supervision"
+  | "admin_grades"
   | "student_home"
   | "student_courses"
   | "student_grades"
