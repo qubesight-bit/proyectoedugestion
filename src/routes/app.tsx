@@ -180,6 +180,7 @@ function Index() {
   const [role, setRole] = useState<Role>("Administrador");
   const [view, setView] = useState<View>("login");
   const [roleOpen, setRoleOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
   const [courseFilter, setCourseFilter] = useState<CourseCategory>("all");
   const [courseModal, setCourseModal] = useState(false);
   const [studentModal, setStudentModal] = useState(false);
@@ -212,9 +213,21 @@ function Index() {
           roleOpen={roleOpen}
           onToggleRole={() => setRoleOpen((open) => !open)}
           onCloseRole={() => setRoleOpen(false)}
+          onOpenMenu={() => setMenuOpen(true)}
         />
 
-        <main className="flex-1 bg-surface pt-16 pb-24 md:pt-20 md:pb-8 md:ml-64 w-full h-screen overflow-y-auto px-4 md:px-8 tv:px-24">
+        <MobileDrawer
+          open={menuOpen}
+          active={view}
+          role={role}
+          onClose={() => setMenuOpen(false)}
+          onNavigate={(target) => {
+            setView(target);
+            setMenuOpen(false);
+          }}
+        />
+
+        <main className="flex-1 bg-surface pt-16 pb-24 lg:pt-20 lg:pb-8 lg:ml-64 w-full h-screen overflow-y-auto px-4 md:px-8 tv:px-24">
           {view === "home" && (
             <DashboardFeature
               onCourses={() => setView("courses")}
@@ -390,16 +403,18 @@ function AppHeader({
   roleOpen,
   onToggleRole,
   onCloseRole,
+  onOpenMenu,
 }: {
   title: string;
   roleOpen: boolean;
   onToggleRole: () => void;
   onCloseRole: () => void;
+  onOpenMenu: () => void;
 }) {
   return (
-    <header className="fixed top-0 z-50 w-full bg-inverse-surface/95 text-inverse-on-surface shadow-sm backdrop-blur-xl pt-safe md:w-[calc(100%-16rem)] md:ml-64">
+    <header className="fixed top-0 z-50 w-full bg-inverse-surface/95 text-inverse-on-surface shadow-sm backdrop-blur-xl pt-safe lg:w-[calc(100%-16rem)] lg:ml-64">
       <div className="flex h-16 items-center justify-between px-4">
-        <Button aria-label="Abrir menú principal" variant="ghost" size="icon" className="h-11 w-11 rounded-xl text-inverse-on-surface hover:bg-on-surface-variant">
+        <Button aria-label="Abrir menú principal" variant="ghost" size="icon" className="h-11 w-11 rounded-xl text-inverse-on-surface hover:bg-on-surface-variant lg:hidden" onClick={onOpenMenu}>
           <Icon name="menu" />
         </Button>
         <div className="flex min-w-0 items-center gap-2">
@@ -1022,6 +1037,86 @@ function Field({ label, children }: { label: string; children: ReactNode }) {
   );
 }
 
+function MobileDrawer({
+  open,
+  active,
+  role,
+  onNavigate,
+  onClose,
+}: {
+  open: boolean;
+  active: View;
+  role: Role;
+  onNavigate: (view: View) => void;
+  onClose: () => void;
+}) {
+  if (!open) return null;
+
+  const adminNav: Array<[View, string, string]> = [
+    ["home", "dashboard", "Inicio"],
+    ["courses", "school", "Cursos"],
+    ["students", "groups", "Estudiantes"],
+    ["teachers", "group", "Profesores"],
+    ["admin_supervision", "visibility", "Supervisión"],
+    ["profile", "account_circle", "Perfil"],
+  ];
+  const teacherNav: Array<[View, string, string]> = [
+    ["teacher_home", "home", "Inicio"],
+    ["teacher_courses", "school", "Mis Cursos"],
+    ["teacher_grades", "grading", "Calificaciones"],
+    ["teacher_attendance", "fact_check", "Asistencia"],
+    ["teacher_resources", "folder", "Recursos"],
+    ["profile", "account_circle", "Perfil"],
+  ];
+  const nav = role === "Administrador" ? adminNav : teacherNav;
+
+  return (
+    <div className="fixed inset-0 z-[70] lg:hidden" role="dialog" aria-modal="true" aria-label="Menú principal">
+      <button
+        type="button"
+        aria-label="Cerrar menú"
+        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
+        onClick={onClose}
+      />
+      <aside className="absolute left-0 top-0 flex h-full w-[86%] max-w-sm flex-col bg-surface-container-lowest shadow-2xl animate-edu-rise">
+        <div className="flex items-center justify-between border-b border-outline-variant/30 px-4 py-4">
+          <div className="flex min-w-0 items-center gap-3">
+            <img src={logoUrl} alt="" className="h-10 w-10 shrink-0 object-contain" />
+            <div className="min-w-0">
+              <p className="truncate text-sm font-bold text-primary">Centro Educativo Adventista</p>
+              <p className="text-xs text-on-surface-variant">{role}</p>
+            </div>
+          </div>
+          <Button aria-label="Cerrar menú" variant="ghost" size="icon" className="rounded-xl" onClick={onClose}>
+            <Icon name="close" />
+          </Button>
+        </div>
+
+        <nav className="flex flex-1 flex-col gap-2 overflow-y-auto p-4">
+          {nav.map(([target, icon, label]) => (
+            <Button
+              key={target}
+              variant="ghost"
+              className={`h-12 justify-start gap-3 rounded-xl px-4 ${active === target ? "bg-primary/10 text-primary" : "text-on-surface-variant"}`}
+              onClick={() => onNavigate(target)}
+            >
+              <Icon name={icon} className="text-[22px]" />
+              <span className="font-semibold">{label}</span>
+            </Button>
+          ))}
+        </nav>
+
+        <div className="border-t border-outline-variant/30 p-4">
+          <a href="/" className="flex h-12 items-center gap-3 rounded-xl px-4 text-destructive hover:bg-surface-container-high">
+            <Icon name="logout" className="text-[22px]" />
+            <span className="font-semibold">Salir al Inicio</span>
+          </a>
+        </div>
+      </aside>
+    </div>
+  );
+}
+
 function BottomNav({ active, onNavigate, role }: { active: View; onNavigate: (view: View) => void, role: Role }) {
   const adminNav: Array<[View, string, string]> = [
     ["home", "dashboard", "Inicio"],
@@ -1070,7 +1165,7 @@ function Sidebar({ active, onNavigate, role }: { active: View; onNavigate: (view
   ];
   const nav = role === "Administrador" ? adminNav : teacherNav;
   return (
-    <aside className="hidden md:flex fixed left-0 top-0 z-40 h-screen w-64 flex-col bg-surface-container-lowest shadow-xl border-r">
+    <aside className="hidden lg:flex fixed left-0 top-0 z-40 h-screen w-64 flex-col bg-surface-container-lowest shadow-xl border-r">
       <div className="flex h-16 items-center gap-3 px-6 pt-4 mb-8">
         <div className="flex min-w-0 items-center gap-2">
           <Icon name="school" className="text-[28px] text-primary" />
