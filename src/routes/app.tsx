@@ -15,6 +15,15 @@ import {
   TeacherAttendanceView,
   TeacherResourcesView,
 } from "@/features/teacher";
+import {
+  StudentHomeView,
+  StudentCoursesView,
+  StudentGradesView,
+  StudentMessagesView,
+  StudentTasksView,
+  StudentChatbotView,
+  StudentProfileView,
+} from "@/features/student-dashboard";
 
 export const Route = createFileRoute("/app")({
   head: () => ({
@@ -38,8 +47,8 @@ export const Route = createFileRoute("/app")({
   component: Index,
 });
 
-type View = "login" | "home" | "courses" | "students" | "teachers" | "assistant" | "profile" | "teacher_home" | "teacher_courses" | "teacher_grades" | "teacher_attendance" | "teacher_resources" | "admin_supervision";
-type Role = "Administrador" | "Docente";
+type View = "login" | "home" | "courses" | "students" | "teachers" | "assistant" | "profile" | "teacher_home" | "teacher_courses" | "teacher_grades" | "teacher_attendance" | "teacher_resources" | "admin_supervision" | "student_home" | "student_courses" | "student_grades" | "student_messages" | "student_tasks" | "student_chatbot" | "student_profile";
+type Role = "Administrador" | "Docente" | "Estudiante";
 type CourseCategory = "all" | "ciencias" | "humanidades" | "artes" | "idiomas";
 
 const logoUrl = "/logo_cartago.png";
@@ -68,6 +77,7 @@ const announcementImages = [
 const roleOptions: Array<[string, string, string]> = [
   ["admin_panel_settings", "Administrador", "Acceso total institucional"],
   ["school", "Docente", "Gestión de cursos y notas"],
+  ["person", "Estudiante", "Cursos, notas, tareas y mensajes"],
 ];
 
 const courses = [
@@ -199,7 +209,7 @@ function Index() {
   if (view === "login") {
     return <LoginFeature onLogin={(r) => {
       setRole(r);
-      setView(r === "Administrador" ? "home" : "teacher_home");
+      setView(r === "Administrador" ? "home" : r === "Docente" ? "teacher_home" : "student_home");
     }} />;
   }
 
@@ -243,6 +253,15 @@ function Index() {
           {view === "teacher_attendance" && <TeacherAttendanceView />}
           {view === "teacher_resources" && <TeacherResourcesView />}
           {view === "admin_supervision" && <AdminSupervisionFeature />}
+          {view === "student_home" && (
+            <StudentHomeView onNavigate={(target) => setView(target)} />
+          )}
+          {view === "student_courses" && <StudentCoursesView />}
+          {view === "student_grades" && <StudentGradesView />}
+          {view === "student_messages" && <StudentMessagesView />}
+          {view === "student_tasks" && <StudentTasksView />}
+          {view === "student_chatbot" && <StudentChatbotView />}
+          {view === "student_profile" && <StudentProfileView />}
           {view === "assistant" && <SimplePanel icon="auto_awesome" title="Asistente IA" />}
           {view === "profile" && <SimplePanel icon="account_circle" title="Perfil institucional" />}
         </main>
