@@ -35,9 +35,9 @@ export function AuthScreen({ onLogin }: { onLogin: () => void }) {
         .select("role")
         .eq("user_id", data.user.id);
       if (roleError) throw roleError;
-      if (!roles?.some(({ role }) => role === "admin" || role === "docente")) {
+      if (!roles?.some(({ role }) => role === "admin" || role === "docente" || role === "estudiante")) {
         await supabase.auth.signOut();
-        throw new Error("Tu cuenta todavía no tiene un rol de administrador o docente.");
+        throw new Error("Tu cuenta todavía no tiene un rol de administrador, docente o estudiante.");
       }
       onLogin();
     } catch (error) {
@@ -140,7 +140,7 @@ export function AuthScreen({ onLogin }: { onLogin: () => void }) {
           <div className="flex gap-3 rounded-xl bg-primary-fixed p-3 text-on-primary-fixed mb-4">
             <Icon name="verified_user" className="text-[22px]" />
             <p className="text-body-sm">
-              Acceso seguro a métricas globales, nómina y configuración institucional.
+              Acceso seguro para administradores, docentes y estudiantes.
             </p>
           </div>
 
