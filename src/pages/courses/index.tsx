@@ -7,6 +7,11 @@ import { Course } from "../../types";
 export function CoursesView() {
   const [modalOpen, setModalOpen] = useState(false);
   const [toastOpen, setToastOpen] = useState(false);
+  const [filter, setFilter] = useState<"all" | "ciencias" | "humanidades">("all");
+
+  const filteredCourses = courses.filter(
+    (course) => filter === "all" || course.category === filter,
+  );
 
   return (
     <section className="flex flex-col gap-4 px-4 py-4 animate-edu-rise">
@@ -26,15 +31,24 @@ export function CoursesView() {
       </div>
 
       <div className="-mx-4 flex gap-2 overflow-x-auto px-4 no-scrollbar">
-        {["Todos los niveles", "Ciencias", "Humanidades", "Artes", "Laboratorios"].map((chip, index) => (
-          <Button key={chip} variant={index === 0 ? "default" : "secondary"} className="h-8 flex-shrink-0 rounded-full px-4 text-label-sm">
-            {chip}
+        {[
+          ["Todos", "all"],
+          ["Ciencias", "ciencias"],
+          ["Humanidades", "humanidades"],
+        ].map(([label, value]) => (
+          <Button
+            key={label}
+            variant={filter === value ? "default" : "secondary"}
+            className="h-8 flex-shrink-0 rounded-full px-4 text-label-sm"
+            onClick={() => setFilter(value as "all" | "ciencias" | "humanidades")}
+          >
+            {label}
           </Button>
         ))}
       </div>
 
       <div className="flex flex-col md:grid md:grid-cols-2 tv:grid-cols-3 gap-3 tv:gap-8 mt-2">
-        {courses.map((course, index) => (
+        {filteredCourses.map((course, index) => (
           <CourseCard key={index} course={course} onEdit={() => setModalOpen(true)} />
         ))}
       </div>
