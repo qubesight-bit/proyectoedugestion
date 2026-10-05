@@ -13,7 +13,7 @@ type Ann = Database["public"]["Tables"]["announcements"]["Row"];
 export function AnnouncementsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; openNew?: number }) {
   const qc = useQueryClient();
   const { data = [], isLoading, error } = useQuery({ queryKey: ["announcements"], queryFn: async () => {
-    const { data, error } = await supabase.from("announcements").select("*").order("created_at", { ascending: false });
+    const { data, error } = await supabase.from("announcements").select("*").or("source.is.null,source.neq.newsletter").order("created_at", { ascending: false });
     if (error) throw error;
     return data;
   } });
