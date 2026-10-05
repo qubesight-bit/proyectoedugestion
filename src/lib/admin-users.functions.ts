@@ -50,6 +50,26 @@ export const adminUsers = createServerFn({ method: "POST" })
         await db.auth.admin.deleteUser(id);
         throw new Error((p.error ?? r.error)!.message);
       }
+
+      if (role === "estudiante") {
+        const existing = await db.from("students").select("id").eq("email", email).maybeSingle();
+        if (existing.error) {
+          await db.auth.admin.deleteUser(id);
+          throw new Error(existing.error.message);
+        }
+        if (!existing.data) {
+          const s = await db.from("students").insert({
+            name: fullName,
+            email,
+            created_by: context.userId,
+          });
+          if (s.error) {
+            await db.auth.admin.deleteUser(id);
+            throw new Error(s.error.message);
+          }
+        }
+      }
+
       return { created: true, id };
     }
 
