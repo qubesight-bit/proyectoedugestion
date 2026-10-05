@@ -139,7 +139,7 @@ export function StudentPortal({
       <Button variant="ghost" size="icon" onClick={() => go("profile")} aria-label="Perfil">{icon("account_circle")}</Button>
     </header>
 
-    <nav aria-label="Navegación móvil y tablet" className="sticky top-[60px] z-20 flex gap-2 overflow-x-auto border-b bg-surface-container-lowest px-3 py-2 shadow-sm no-scrollbar lg:hidden">
+    <nav aria-label="Navegación móvil y tablet" className="sticky top-[60px] z-20 flex gap-2 overflow-x-auto border-b bg-surface-container-lowest px-3 py-2 shadow-sm no-scrollbar">
       {nav.map(([target, symbol, label]) => <Button
         key={target}
         type="button"
