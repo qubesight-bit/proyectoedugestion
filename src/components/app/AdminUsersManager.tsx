@@ -2,17 +2,14 @@ import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/integrations/supabase/client";
+import { adminUsers } from "@/lib/admin-users.functions";
 import { CrudDialog, FormField } from "./CrudDialog";
 
 type Role = "admin" | "docente" | "estudiante";
 type Account = { id: string; email: string; fullName: string; role: Role; createdAt: string; lastSignInAt: string | null };
 
-async function invoke(body: Record<string, unknown>) {
-  const { data, error } = await supabase.functions.invoke("admin-users", { body });
-  if (error) throw error;
-  if (data?.error) throw new Error(data.error);
-  return data;
+async function invoke(body: Record<string, unknown>): Promise<any> {
+  return adminUsers({ data: body });
 }
 
 export function AdminUsersManager() {
