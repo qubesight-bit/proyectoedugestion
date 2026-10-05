@@ -9,6 +9,49 @@ import { pageItems, PaginationControls } from "./PaginationControls";
 
 type Ann = Database["public"]["Tables"]["announcements"]["Row"];
 
+const MOCK_NEWSLETTER: Ann[] = [
+  {
+    id: "mock-news-1",
+    title: "Inicio del III trimestre académico",
+    content: "La Dirección informa a estudiantes y familias que el III trimestre académico inicia el lunes 12 de octubre. Se solicita puntualidad y portar los materiales correspondientes desde el primer día.",
+    author_name: "Dirección Académica",
+    source: "newsletter",
+    created_at: "2026-10-04T14:00:00.000Z",
+    updated_at: "2026-10-04T14:00:00.000Z",
+    created_by: null,
+  },
+  {
+    id: "mock-news-2",
+    title: "Jornada institucional de salud y bienestar",
+    content: "El próximo viernes se realizará una jornada institucional de salud y bienestar con actividades de prevención, nutrición y hábitos saludables. Los horarios específicos serán comunicados por cada docente.",
+    author_name: "Coordinación Institucional",
+    source: "newsletter",
+    created_at: "2026-10-02T16:30:00.000Z",
+    updated_at: "2026-10-02T16:30:00.000Z",
+    created_by: null,
+  },
+  {
+    id: "mock-news-3",
+    title: "Recordatorio sobre actualización de datos",
+    content: "Solicitamos a las familias verificar que los números telefónicos, correos electrónicos y datos de contacto de emergencia estén actualizados en la plataforma institucional.",
+    author_name: "Secretaría",
+    source: "newsletter",
+    created_at: "2026-09-29T13:15:00.000Z",
+    updated_at: "2026-09-29T13:15:00.000Z",
+    created_by: null,
+  },
+  {
+    id: "mock-news-4",
+    title: "Feria de proyectos estudiantiles",
+    content: "Se invita a toda la comunidad educativa a la Feria de Proyectos Estudiantiles. Los grupos presentarán trabajos de ciencias, tecnología, arte y emprendimiento desarrollados durante el trimestre.",
+    author_name: "Dirección",
+    source: "newsletter",
+    created_at: "2026-09-25T15:45:00.000Z",
+    updated_at: "2026-09-25T15:45:00.000Z",
+    created_by: null,
+  },
+];
+
 export function NewsletterManager({ isAdmin }: { isAdmin: boolean }) {
   const qc = useQueryClient();
   const [editing, setEditing] = useState<Ann | "new" | null>(null);
@@ -74,7 +117,7 @@ export function NewsletterManager({ isAdmin }: { isAdmin: boolean }) {
     }
   }
 
-  const data = newsletters.data ?? [];
+  const data = newsletters.data?.length ? newsletters.data : MOCK_NEWSLETTER;
   const current = editing && editing !== "new" ? editing : null;
   const visible = pageItems(data, page);
 
@@ -103,10 +146,13 @@ export function NewsletterManager({ isAdmin }: { isAdmin: boolean }) {
       {visible.map((item) => <article key={item.id} className="overflow-hidden rounded-2xl bg-surface-container-lowest shadow-sm">
         <div className="border-b bg-surface-container px-5 py-3">
           <div className="flex flex-wrap items-center justify-between gap-3">
-            <span className="inline-flex items-center gap-2 rounded-full bg-primary-fixed px-3 py-1 text-xs font-semibold text-on-primary-fixed">
-              <span aria-hidden="true" className="material-symbols-outlined text-[16px]">verified</span>
-              Comunicado oficial
-            </span>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-2 rounded-full bg-primary-fixed px-3 py-1 text-xs font-semibold text-on-primary-fixed">
+                <span aria-hidden="true" className="material-symbols-outlined text-[16px]">verified</span>
+                Comunicado oficial
+              </span>
+              {item.id.startsWith("mock-news-") && <span className="rounded-full bg-surface-container-high px-2 py-1 text-xs font-semibold text-on-surface-variant">Demo</span>}
+            </div>
             <time className="text-sm text-on-surface-variant">{new Date(item.created_at).toLocaleDateString("es-CR", { dateStyle: "long" })}</time>
           </div>
         </div>
@@ -116,7 +162,7 @@ export function NewsletterManager({ isAdmin }: { isAdmin: boolean }) {
               <h2 className="text-xl font-bold">{item.title}</h2>
               <p className="mt-1 text-sm text-on-surface-variant">Emitido por {item.author_name || "Dirección"}</p>
             </div>
-            {isAdmin && <div className="flex shrink-0 gap-1">
+            {isAdmin && !item.id.startsWith("mock-news-") && <div className="flex shrink-0 gap-1">
               <Button size="icon" variant="ghost" aria-label={`Editar ${item.title}`} onClick={() => setEditing(item)}>
                 <span aria-hidden="true" className="material-symbols-outlined">edit</span>
               </Button>
