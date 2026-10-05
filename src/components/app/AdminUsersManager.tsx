@@ -2,14 +2,28 @@ import { useState, type FormEvent } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
-import { adminUsers } from "@/lib/admin-users.functions";
+import { supabase } from "@/integrations/supabase/client";
 import { CrudDialog, FormField } from "./CrudDialog";
 
 type Role = "admin" | "docente" | "estudiante";
 type Account = { id: string; email: string; fullName: string; role: Role; createdAt: string; lastSignInAt: string | null };
 
 async function invoke(body: Record<string, unknown>): Promise<any> {
-  return adminUsers({ data: body });
+  const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+  if (sessionError) throw sessionError;
+  const token = sessionData.session?.access_token;
+  if (!token) throw new Error("Sesión inválida. Cerrá sesión e ingresá nuevamente.");
+
+  const { data, error } = await supabase.functions.invoke("admin-users", {
+    body,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (error) throw error;
+  if (data?.error) throw new Error(data.error);
+  return data;
 }
 
 export function AdminUsersManager() {
