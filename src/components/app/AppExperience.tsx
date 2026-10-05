@@ -104,44 +104,66 @@ export function AppExperience() {
     );
   }
 
-  return <div className="min-h-screen min-w-0 overflow-x-hidden bg-surface text-on-surface lg:pl-64">
-    <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col gap-2 border-r bg-surface-container-lowest p-4 shadow-lg lg:flex">
-      <div className="px-2 py-4 font-bold text-primary">Centro Educativo Adventista</div>
+  return <div className="min-h-screen min-w-0 overflow-x-hidden bg-[#f3f7f8] text-[#243746] lg:pl-64">
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col gap-2 border-r border-white/10 bg-[#567b88] p-4 text-white shadow-xl lg:flex">
+      <div className="mb-2 flex items-center gap-3 px-2 py-4">
+        <div className="grid h-10 w-14 grid-cols-3 overflow-hidden rounded-md border border-white/15">
+          <span className="bg-[#6f8f99]" />
+          <span className="bg-[#64779a]" />
+          <span className="bg-[#f4b51f]" />
+        </div>
+        <div>
+          <p className="text-sm font-semibold leading-tight text-white">Educación</p>
+          <p className="text-sm font-semibold leading-tight text-white">Adventista</p>
+        </div>
+      </div>
       <nav aria-label="Secciones de la plataforma" className="flex flex-1 flex-col gap-1 overflow-y-auto">
-        {nav.map(([target, symbol, label]) => <Button key={target} type="button" variant={view === target ? "secondary" : "ghost"} className="justify-start gap-3 rounded-xl" aria-current={view === target ? "page" : undefined} onClick={() => go(target)}>{icon(symbol)}{label}</Button>)}
+        {nav.map(([target, symbol, label]) => <Button key={target} type="button" variant="ghost" className={`justify-start gap-3 rounded-xl text-white hover:bg-white/12 hover:text-white ${view === target ? "bg-white/16 shadow-sm" : ""}`} aria-current={view === target ? "page" : undefined} onClick={() => go(target)}>{icon(symbol)}{label}</Button>)}
       </nav>
-      <Button variant="outline" className="justify-start gap-3" onClick={logOut}>{icon("logout")}Cerrar sesión</Button>
+      <Button variant="ghost" className="justify-start gap-3 border border-white/20 text-white hover:bg-white/12 hover:text-white" onClick={logOut}>{icon("logout")}Cerrar sesión</Button>
     </aside>
 
 
-    <header className="sticky top-0 z-30 flex min-w-0 items-center gap-2 border-b bg-surface-container-lowest px-3 py-3 shadow-sm sm:px-4">
-      <button type="button" className="mr-auto min-w-0 truncate text-left text-sm font-semibold sm:text-base" onClick={() => go("home")}>Centro Educativo Adventista de Cartago</button>
+    <header className="sticky top-0 z-30 flex min-w-0 items-center gap-2 border-b border-[#dbe5e8] bg-white/95 px-3 py-3 shadow-sm backdrop-blur sm:px-5">
+      <button type="button" className="mr-auto min-w-0 text-left" onClick={() => go("home")}>
+        <span className="block truncate text-sm font-semibold text-[#315b69] sm:text-base">Centro Educativo Adventista de Cartago</span>
+        <span className="hidden text-xs text-[#7a8c93] sm:block">{isAdmin ? "Panel administrativo" : "Panel docente"}</span>
+      </button>
       <Button variant="ghost" size="icon" aria-label="Actualizar datos" onClick={refresh}>{icon("refresh")}</Button>
       <Button variant="ghost" size="icon" aria-label="Ver anuncios" onClick={() => go("announcements")}>{icon("notifications")}</Button>
       <Button variant="ghost" size="icon" aria-label="Ver perfil" onClick={() => go("profile")}>{icon("account_circle")}</Button>
     </header>
-    <nav aria-label="Navegación móvil y tablet" className="sticky top-[60px] z-20 flex gap-2 overflow-x-auto border-b bg-surface-container-lowest px-3 py-2 shadow-sm no-scrollbar">
+    <nav aria-label="Navegación móvil y tablet" className="sticky top-[60px] z-20 flex gap-2 overflow-x-auto border-b border-[#dbe5e8] bg-white px-3 py-2 shadow-sm no-scrollbar lg:hidden">
       {nav.map(([target, symbol, label]) => <Button
         key={target}
         type="button"
-        variant={view === target ? "secondary" : "ghost"}
-        className="h-10 shrink-0 gap-2 rounded-full px-3"
+        variant="ghost"
+        className={`h-10 shrink-0 gap-2 rounded-full px-3 text-[#486d79] ${view === target ? "bg-[#e7f2f5] text-[#315b69]" : ""}`}
         aria-current={view === target ? "page" : undefined}
         onClick={() => go(target)}
       >{icon(symbol)}<span className="text-xs sm:text-sm">{label}</span></Button>)}
       <Button type="button" variant="outline" className="h-10 shrink-0 gap-2 rounded-full px-3" onClick={logOut}>{icon("logout")}<span className="text-xs sm:text-sm">Salir</span></Button>
     </nav>
-    <main id="app-contenido" className="mx-auto min-w-0 max-w-6xl px-3 py-4 pb-24 sm:px-5 sm:py-6 lg:px-8 lg:pb-8">
+    <main id="app-contenido" className="mx-auto min-w-0 max-w-7xl px-3 py-5 pb-24 sm:px-5 sm:py-7 lg:px-8 lg:pb-8">
       {view === "home" && (isAdmin ? <>
-        <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
-          <div><h1 className="text-headline-md font-semibold">Hola{account.data?.fullName ? `, ${account.data.fullName}` : ""}</h1><p className="text-on-surface-variant">Resumen institucional · {new Date().toLocaleDateString("es-CR", { dateStyle: "long" })}</p></div>
-          <Button variant="secondary" onClick={() => go("courses")}>Gestionar cursos</Button>
-        </div>
-        <div className="mb-6 grid gap-3 sm:grid-cols-4">
-          {isAdmin && <Button className="h-16 gap-2 rounded-xl" onClick={() => { go("students"); setStudentRequest((n) => n + 1); }}>{icon("person_add")}Nuevo estudiante</Button>}
-          <Button className="h-16 gap-2 rounded-xl" onClick={() => go("courses")}>{icon("school")}Gestionar cursos</Button>
-          {isAdmin && <Button className="h-16 gap-2 rounded-xl" onClick={() => { go("announcements"); setAnnouncementRequest((n) => n + 1); }}>{icon("campaign")}Nuevo anuncio</Button>}
-          <Button variant="secondary" className="h-16 gap-2 rounded-xl" onClick={() => go("assistant")}>{icon("smart_toy")}Asistente interno</Button>
+        <section className="mb-6 overflow-hidden rounded-[28px] border border-[#dce7ea] bg-white shadow-[0_12px_35px_rgba(49,91,105,0.08)]">
+          <div className="flex flex-col gap-5 p-6 sm:p-8 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+              <p className="mb-2 text-xs font-bold uppercase tracking-[0.2em] text-[#18a9e2]">Bienvenida</p>
+              <h1 className="text-2xl font-bold tracking-tight text-[#243746] sm:text-3xl">Hola{account.data?.fullName ? `, ${account.data.fullName}` : ""}</h1>
+              <p className="mt-2 text-sm text-[#73868e]">Aquí tenés un resumen de lo más importante en tu institución · {new Date().toLocaleDateString("es-CR", { dateStyle: "long" })}</p>
+            </div>
+            <div className="rounded-2xl border border-[#f3ddb0] bg-[#fff9ec] px-5 py-4 lg:max-w-sm">
+              <p className="text-sm italic leading-6 text-[#64779a]">“Formando mente, carácter y un propósito eterno.”</p>
+              <div className="mt-3 h-1 w-12 rounded-full bg-[#f4b51f]" />
+            </div>
+          </div>
+        </section>
+        <div className="mb-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+          {isAdmin && <Button className="h-14 gap-2 rounded-2xl bg-[#315b69] text-white shadow-sm hover:bg-[#294e5a]" onClick={() => { go("students"); setStudentRequest((n) => n + 1); }}>{icon("person_add")}Nuevo estudiante</Button>}
+          <Button className="h-14 gap-2 rounded-2xl bg-[#18a9e2] text-white shadow-sm hover:bg-[#128fc0]" onClick={() => go("courses")}>{icon("school")}Gestionar cursos</Button>
+          {isAdmin && <Button className="h-14 gap-2 rounded-2xl bg-[#f4b51f] text-[#243746] shadow-sm hover:bg-[#e5a716]" onClick={() => { go("announcements"); setAnnouncementRequest((n) => n + 1); }}>{icon("campaign")}Nuevo anuncio</Button>}
+          <Button variant="outline" className="h-14 gap-2 rounded-2xl border-[#cbdbe0] bg-white text-[#64779a] shadow-sm hover:bg-[#f4f8f9]" onClick={() => go("assistant")}>{icon("smart_toy")}Asistente interno</Button>
         </div>
 
         {[courses, students, announcements].map((q, i) => q.error && <p role="alert" key={i} className="mb-3 text-destructive">Error al cargar {(["cursos", "estudiantes", "anuncios"] as const)[i]}: {q.error.message}</p>)}
