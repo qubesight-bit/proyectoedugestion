@@ -44,7 +44,6 @@ export function StudentPortal({
   onLogout: () => void | Promise<void>;
 }) {
   const [tab, setTab] = useState<PortalTab>("home");
-  const [menuOpen, setMenuOpen] = useState(false);
   const [messages, setMessages] = useState(fallbackMessages);
   const [tasks, setTasks] = useState(fallbackTasks);
   const [chat, setChat] = useState([{ id: 1, from: "bot", text: "Hola. Soy el asistente académico de CEAC. Podés preguntarme por notas, cursos, tareas u horarios." }]);
@@ -105,7 +104,7 @@ export function StudentPortal({
     ["profile", "account_circle", "Mi perfil"],
   ];
 
-  const go = (target: PortalTab) => { setTab(target); setMenuOpen(false); };
+  const go = (target: PortalTab) => { setTab(target); };
 
   const sendChat = () => {
     const value = input.trim();
@@ -132,26 +131,25 @@ export function StudentPortal({
       <Button variant="outline" className="justify-start gap-3" onClick={() => void onLogout()}>{icon("logout")}Cerrar sesión</Button>
     </aside>
 
-    {menuOpen && <div className="fixed inset-0 z-[100] lg:hidden">
-      <button type="button" className="absolute inset-0 bg-black/50" aria-label="Cerrar menú" onClick={() => setMenuOpen(false)} />
-      <aside role="dialog" aria-modal="true" aria-label="Menú del estudiante" className="absolute inset-y-0 left-0 flex w-[min(20rem,86vw)] flex-col border-r bg-surface-container-lowest p-4 shadow-2xl">
-        <div className="flex items-center justify-between gap-2 px-2 py-4">
-          <div><p className="font-bold text-primary">Portal del Estudiante</p><p className="text-xs text-on-surface-variant">CEAC</p></div>
-          <Button type="button" variant="ghost" size="icon" aria-label="Cerrar menú" onClick={() => setMenuOpen(false)}>{icon("close")}</Button>
-        </div>
-        <nav className="flex flex-1 flex-col gap-1 overflow-y-auto">
-          {nav.map(([target, symbol, label]) => <Button key={target} variant={tab === target ? "secondary" : "ghost"} className="justify-start gap-3 rounded-xl" onClick={() => go(target)}>{icon(symbol)}{label}</Button>)}
-        </nav>
-        <Button variant="outline" className="justify-start gap-3" onClick={() => void onLogout()}>{icon("logout")}Cerrar sesión</Button>
-      </aside>
-    </div>}
+
 
     <header className="sticky top-0 z-30 flex min-w-0 items-center gap-2 border-b bg-surface-container-lowest px-3 py-3 shadow-sm sm:px-4">
-      <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Abrir menú" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}>{icon("menu")}</Button>
       <div className="mr-auto min-w-0"><p className="truncate text-sm font-semibold sm:text-base">{displayName}</p><p className="truncate text-xs text-on-surface-variant">{gradeLevel}</p></div>
       <Button variant="ghost" size="icon" onClick={() => go("messages")} aria-label="Mensajes">{icon("notifications")}</Button>
       <Button variant="ghost" size="icon" onClick={() => go("profile")} aria-label="Perfil">{icon("account_circle")}</Button>
     </header>
+
+    <nav aria-label="Navegación móvil y tablet" className="sticky top-[60px] z-20 flex gap-2 overflow-x-auto border-b bg-surface-container-lowest px-3 py-2 shadow-sm no-scrollbar lg:hidden">
+      {nav.map(([target, symbol, label]) => <Button
+        key={target}
+        type="button"
+        variant={tab === target ? "secondary" : "ghost"}
+        className="h-10 shrink-0 gap-2 rounded-full px-3"
+        aria-current={tab === target ? "page" : undefined}
+        onClick={() => go(target)}
+      >{icon(symbol)}<span className="text-xs sm:text-sm">{label}</span></Button>)}
+      <Button type="button" variant="outline" className="h-10 shrink-0 gap-2 rounded-full px-3" onClick={() => void onLogout()}>{icon("logout")}<span className="text-xs sm:text-sm">Salir</span></Button>
+    </nav>
 
     <main className="mx-auto min-w-0 max-w-6xl px-3 py-4 pb-24 sm:px-5 sm:py-6 lg:px-8 lg:pb-8">
       {tab === "home" && <section className="space-y-5">
@@ -183,9 +181,7 @@ export function StudentPortal({
       {tab === "profile" && <section><h1 className="text-headline-md font-semibold">Mi perfil</h1><div className="mt-5 rounded-2xl bg-surface-container-lowest p-5 shadow-sm"><h2 className="text-xl font-bold">{displayName}</h2><p className="text-on-surface-variant">{studentCode}</p><div className="mt-5 grid gap-3 md:grid-cols-2"><Profile label="Correo" value={email} /><Profile label="Grado" value={gradeLevel} /><Profile label="Estado" value={student.data?.status || "Activo"} /><Profile label="Tutor" value={student.data?.tutor || "Tutor de demostración"} /></div></div></section>}
     </main>
 
-    <nav className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-5 border-t bg-surface-container-lowest p-1 lg:hidden">
-      {([["home","home","Inicio"],["courses","school","Cursos"],["grades","grading","Notas"],["messages","forum","Mensajes"],["chat","smart_toy","Chat"]] as Array<[PortalTab,string,string]>).map(([target, symbol, label]) => <Button key={target} variant="ghost" className="flex h-16 flex-col gap-0 text-xs" onClick={() => go(target)}>{icon(symbol)}{label}</Button>)}
-    </nav>
+
   </div>;
 }
 
