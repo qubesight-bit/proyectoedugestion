@@ -217,6 +217,53 @@ export type Database = {
         }
         Relationships: []
       }
+      student_documents: {
+        Row: {
+          category: string
+          created_at: string
+          file_name: string
+          id: string
+          mime_type: string
+          notes: string
+          size_bytes: number
+          storage_path: string
+          student_id: string
+          uploaded_by: string | null
+        }
+        Insert: {
+          category?: string
+          created_at?: string
+          file_name: string
+          id?: string
+          mime_type?: string
+          notes?: string
+          size_bytes?: number
+          storage_path: string
+          student_id: string
+          uploaded_by?: string | null
+        }
+        Update: {
+          category?: string
+          created_at?: string
+          file_name?: string
+          id?: string
+          mime_type?: string
+          notes?: string
+          size_bytes?: number
+          storage_path?: string
+          student_id?: string
+          uploaded_by?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "student_documents_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       student_grades: {
         Row: {
           course_id: string
@@ -271,6 +318,10 @@ export type Database = {
       students: {
         Row: {
           alert: string
+          archive_reason: string
+          archived_at: string | null
+          archived_by: string | null
+          archived_previous_status: string | null
           code: string
           created_at: string
           created_by: string | null
@@ -287,6 +338,10 @@ export type Database = {
         }
         Insert: {
           alert?: string
+          archive_reason?: string
+          archived_at?: string | null
+          archived_by?: string | null
+          archived_previous_status?: string | null
           code?: string
           created_at?: string
           created_by?: string | null
@@ -303,6 +358,10 @@ export type Database = {
         }
         Update: {
           alert?: string
+          archive_reason?: string
+          archived_at?: string | null
+          archived_by?: string | null
+          archived_previous_status?: string | null
           code?: string
           created_at?: string
           created_by?: string | null
