@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,6 +11,7 @@ import { ChevronDown, MapPin, Mail, Phone, Facebook, Instagram } from "lucide-re
 
 export function PublicLayout({ children }: { children: React.ReactNode }) {
   const currentYear = new Date().getFullYear();
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   return (
     <div className="min-h-screen flex flex-col font-sans bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100">
@@ -131,11 +133,46 @@ export function PublicLayout({ children }: { children: React.ReactNode }) {
             <Button asChild className="bg-blue-600 hover:bg-blue-700 dark:bg-blue-600 dark:hover:bg-blue-700 text-white rounded-full px-6 shadow-md hover:shadow-lg transition-all hidden md:flex">
               <Link to="/admision">ADMISIÓN</Link>
             </Button>
-            <Button variant="ghost" size="icon" className="lg:hidden text-slate-700 dark:text-slate-300">
-              <ChevronDown className="w-6 h-6" />
+            <Button
+              type="button"
+              variant="ghost"
+              size="icon"
+              className="lg:hidden text-slate-700 dark:text-slate-300"
+              aria-label={mobileMenuOpen ? "Cerrar menú" : "Abrir menú"}
+              aria-expanded={mobileMenuOpen}
+              onClick={() => setMobileMenuOpen((open) => !open)}
+            >
+              <ChevronDown className={`w-6 h-6 transition-transform ${mobileMenuOpen ? "rotate-180" : ""}`} />
             </Button>
           </div>
         </div>
+
+        {mobileMenuOpen && (
+          <div className="border-t border-slate-200 bg-white px-4 py-4 shadow-lg dark:border-slate-800 dark:bg-slate-900 lg:hidden">
+            <nav aria-label="Menú principal móvil" className="mx-auto flex max-w-screen-md flex-col gap-1">
+              <Link to="/" onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-4 py-3 font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Inicio</Link>
+              <Link to="/nosotros" onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-4 py-3 font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Nosotros</Link>
+              <Link to="/oferta" onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-4 py-3 font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Oferta educativa</Link>
+              <Link to="/niveles" search={{}} onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-4 py-3 font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Niveles académicos</Link>
+              <Link to="/admision" onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-4 py-3 font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Admisión</Link>
+              <Link to="/espiritualidad" onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-4 py-3 font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Espiritualidad</Link>
+              <Link to="/estudiantes" onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-4 py-3 font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Estudiantes</Link>
+              <Link to="/pagos" onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-4 py-3 font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Pagos</Link>
+              <Link to="/anuncios" onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-4 py-3 font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Anuncios</Link>
+              <Link to="/blog" search={{}} onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-4 py-3 font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Blog / Actividades</Link>
+              <Link to="/contacto" onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-4 py-3 font-medium hover:bg-slate-100 dark:hover:bg-slate-800">Contacto</Link>
+
+              <div className="mt-3 grid grid-cols-2 gap-2 border-t border-slate-200 pt-4 dark:border-slate-800">
+                <Button asChild variant="outline" className="rounded-full">
+                  <Link to="/auth" onClick={() => setMobileMenuOpen(false)}>Iniciar sesión</Link>
+                </Button>
+                <Button asChild className="rounded-full bg-blue-600 text-white hover:bg-blue-700">
+                  <Link to="/admision" onClick={() => setMobileMenuOpen(false)}>Admisión</Link>
+                </Button>
+              </div>
+            </nav>
+          </div>
+        )}
       </header>
 
       {/* Main Content */}
