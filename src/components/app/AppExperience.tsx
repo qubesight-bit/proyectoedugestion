@@ -106,17 +106,27 @@ export function AppExperience() {
   }
 
   return <div className="min-h-screen min-w-0 overflow-x-hidden bg-surface text-on-surface lg:pl-64">
-    <aside className={`fixed inset-y-0 left-0 z-[60] flex w-[min(20rem,86vw)] flex-col gap-2 border-r bg-surface-container-lowest p-4 shadow-xl transition-transform duration-200 ease-out lg:w-64 lg:translate-x-0 lg:shadow-lg ${menuOpen ? "translate-x-0" : "-translate-x-full"}`}>
-      <div className="flex items-center justify-between gap-2 px-2 py-4 font-bold text-primary">
-        <span>Centro Educativo Adventista</span>
-        <Button className="lg:hidden" variant="ghost" size="icon" aria-label="Cerrar menú" onClick={() => setMenuOpen(false)}>{icon("close")}</Button>
-      </div>
+    <aside className="fixed inset-y-0 left-0 z-40 hidden w-64 flex-col gap-2 border-r bg-surface-container-lowest p-4 shadow-lg lg:flex">
+      <div className="px-2 py-4 font-bold text-primary">Centro Educativo Adventista</div>
       <nav aria-label="Secciones de la plataforma" className="flex flex-1 flex-col gap-1 overflow-y-auto">
         {nav.map(([target, symbol, label]) => <Button key={target} type="button" variant={view === target ? "secondary" : "ghost"} className="justify-start gap-3 rounded-xl" aria-current={view === target ? "page" : undefined} onClick={() => go(target)}>{icon(symbol)}{label}</Button>)}
       </nav>
       <Button variant="outline" className="justify-start gap-3" onClick={logOut}>{icon("logout")}Cerrar sesión</Button>
     </aside>
-    {menuOpen && <button type="button" className="fixed inset-0 z-50 bg-black/50 lg:hidden" aria-label="Cerrar menú" onClick={() => setMenuOpen(false)} />}
+
+    {menuOpen && <div className="fixed inset-0 z-[100] lg:hidden">
+      <button type="button" className="absolute inset-0 bg-black/50" aria-label="Cerrar menú" onClick={() => setMenuOpen(false)} />
+      <aside role="dialog" aria-modal="true" aria-label="Menú principal" className="absolute inset-y-0 left-0 flex w-[min(20rem,86vw)] flex-col gap-2 border-r bg-surface-container-lowest p-4 shadow-2xl">
+        <div className="flex items-center justify-between gap-2 px-2 py-4 font-bold text-primary">
+          <span>Centro Educativo Adventista</span>
+          <Button type="button" variant="ghost" size="icon" aria-label="Cerrar menú" onClick={() => setMenuOpen(false)}>{icon("close")}</Button>
+        </div>
+        <nav aria-label="Secciones de la plataforma" className="flex flex-1 flex-col gap-1 overflow-y-auto">
+          {nav.map(([target, symbol, label]) => <Button key={target} type="button" variant={view === target ? "secondary" : "ghost"} className="justify-start gap-3 rounded-xl" aria-current={view === target ? "page" : undefined} onClick={() => go(target)}>{icon(symbol)}{label}</Button>)}
+        </nav>
+        <Button variant="outline" className="justify-start gap-3" onClick={logOut}>{icon("logout")}Cerrar sesión</Button>
+      </aside>
+    </div>}
     <header className="sticky top-0 z-30 flex min-w-0 items-center gap-2 border-b bg-surface-container-lowest px-3 py-3 shadow-sm sm:px-4">
       <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Abrir menú" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}>{icon("menu")}</Button>
       <button type="button" className="mr-auto min-w-0 truncate text-left text-sm font-semibold sm:text-base" onClick={() => go("home")}>Centro Educativo Adventista de Cartago</button>
