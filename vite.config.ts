@@ -6,7 +6,30 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
+// Public client identifiers for the EduGestion Supabase project.
+// Keep these paired so external Lovable previews work even when preview env aliases are absent.
+const cloudUrl = "https://zwyccbuegzomgtsclcxh.supabase.co";
+const cloudPublishableKey = "sb_publishable_rkasH3qneDyLCi7ixdKFVA_Qd2rNM0S";
+
+const cloudClientEnvPlugin = {
+  name: "cloud-client-env",
+  enforce: "pre" as const,
+  transform(code: string, id: string) {
+    if (!id.includes("/src/integrations/supabase/client.ts")) return null;
+
+    return code
+      .replace("import.meta.env['VITE_SUPABASE_URL']", JSON.stringify(cloudUrl))
+      .replace(
+        "import.meta.env['VITE_SUPABASE_PUBLISHABLE_KEY']",
+        JSON.stringify(cloudPublishableKey),
+      );
+  },
+};
+
 export default defineConfig({
+  vite: {
+    plugins: [cloudClientEnvPlugin],
+  },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
