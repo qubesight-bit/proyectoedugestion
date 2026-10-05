@@ -43,6 +43,19 @@ Deno.serve(async (request) => {
         await db.auth.admin.deleteUser(created.user.id);
         throw profileResult.error ?? roleResult.error;
       }
+
+      if (role === "estudiante") {
+        const { error: studentError } = await db.from("students").insert({
+          name: fullName,
+          email,
+          created_by: identity.user.id,
+        });
+        if (studentError) {
+          await db.auth.admin.deleteUser(created.user.id);
+          throw studentError;
+        }
+      }
+
       return json({ created: true, id: created.user.id });
     }
     const userId = String(body.userId ?? "");
