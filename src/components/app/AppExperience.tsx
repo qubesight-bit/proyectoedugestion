@@ -120,7 +120,7 @@ export function AppExperience() {
       <Button variant="ghost" size="icon" aria-label="Ver anuncios" onClick={() => go("announcements")}>{icon("notifications")}</Button>
       <Button variant="ghost" size="icon" aria-label="Ver perfil" onClick={() => go("profile")}>{icon("account_circle")}</Button>
     </header>
-    <nav aria-label="Navegación móvil y tablet" className="sticky top-[60px] z-20 flex gap-2 overflow-x-auto border-b bg-surface-container-lowest px-3 py-2 shadow-sm no-scrollbar lg:hidden">
+    <nav aria-label="Navegación móvil y tablet" className="sticky top-[60px] z-20 flex gap-2 overflow-x-auto border-b bg-surface-container-lowest px-3 py-2 shadow-sm no-scrollbar">
       {nav.map(([target, symbol, label]) => <Button
         key={target}
         type="button"
