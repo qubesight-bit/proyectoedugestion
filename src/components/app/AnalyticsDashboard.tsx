@@ -19,12 +19,12 @@ type Props = {
 };
 
 const gradeBands = [
-  { label: "Excelente", min: 9, max: 10.01, color: "#10b981" },
-  { label: "Bueno", min: 8, max: 9, color: "#3b82f6" },
-  { label: "Satisfactorio", min: 7, max: 8, color: "#f59e0b" },
-  { label: "Requiere apoyo", min: 0, max: 7, color: "#f43f5e" },
+  { label: "Excelente", min: 9, max: 10.01, color: "#567b88" },
+  { label: "Bueno", min: 8, max: 9, color: "#18a9e2" },
+  { label: "Satisfactorio", min: 7, max: 8, color: "#f4b51f" },
+  { label: "Requiere apoyo", min: 0, max: 7, color: "#64779a" },
 ];
-const chartColors = ["#2563eb", "#10b981", "#f59e0b", "#8b5cf6", "#f43f5e", "#06b6d4"];
+const chartColors = ["#18a9e2", "#567b88", "#f4b51f", "#64779a", "#8aa6af", "#315b69"];
 
 export function AnalyticsDashboard({ isAdmin, courses, students, teachers, announcements, loading }: Props) {
   const weather = useQuery({ queryKey: ["external", "campus-weather"], queryFn: ({ signal }) => getCampusWeather(signal), staleTime: 15 * 60 * 1000, retry: 1 });
@@ -109,8 +109,8 @@ export function AnalyticsDashboard({ isAdmin, courses, students, teachers, annou
     <div className="space-y-6">
       {queryError && <p role="alert" className="rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-destructive">Algunas analíticas no pudieron cargarse: {queryError.message}</p>}
 
-      <aside className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border bg-surface-container-lowest p-4" aria-label="Información externa del campus">
-        <div><p className="text-xs font-bold uppercase tracking-wider text-primary">Servicio externo · Open-Meteo</p><p className="font-semibold">Condiciones actuales en Cartago</p></div>
+      <aside className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-[#dce7ea] bg-white p-4 shadow-[0_8px_24px_rgba(49,91,105,0.06)]" aria-label="Información externa del campus">
+        <div><p className="text-xs font-bold uppercase tracking-wider text-[#18a9e2]">Servicio externo · Open-Meteo</p><p className="font-semibold text-[#315b69]">Condiciones actuales en Cartago</p></div>
         {weather.isLoading ? <p role="status">Consultando clima…</p> : weather.data ? <p><span aria-hidden="true" className="material-symbols-outlined align-middle">partly_cloudy_day</span> <strong>{weather.data.temperature.toFixed(1)} °C</strong> · {weather.data.description} · sensación {weather.data.apparentTemperature.toFixed(1)} °C</p> : <p className="text-sm text-on-surface-variant">El servicio externo no está disponible temporalmente.</p>}
       </aside>
 
@@ -150,7 +150,7 @@ export function AnalyticsDashboard({ isAdmin, courses, students, teachers, annou
         </Panel>
 
         <Panel title="Ocupación por curso" subtitle="Estudiantes asignados frente a capacidad">
-          {courses.length ? <ChartFrame label="Gráfica de barras de ocupación por curso"><ResponsiveContainer width="100%" height="100%"><BarChart data={coursePerformance.slice(0, 8).map((course) => ({ name: course.title.length > 18 ? course.title.slice(0, 18) + "…" : course.title, estudiantes: course.enrolledCount, capacidad: course.capacity }))} margin={{ top: 10, right: 10, left: -15, bottom: 55 }}><CartesianGrid strokeDasharray="3 3" opacity={0.25} /><XAxis dataKey="name" angle={-35} textAnchor="end" interval={0} height={70} fontSize={11} /><YAxis allowDecimals={false} fontSize={12} /><Tooltip /><Legend verticalAlign="top" /><Bar dataKey="estudiantes" name="Matriculados" fill="#10b981" radius={[6, 6, 0, 0]} /><Bar dataKey="capacidad" name="Capacidad" fill="#bfdbfe" radius={[6, 6, 0, 0]} /></BarChart></ResponsiveContainer></ChartFrame> : <Empty text="No hay cursos para calcular ocupación." />}
+          {courses.length ? <ChartFrame label="Gráfica de barras de ocupación por curso"><ResponsiveContainer width="100%" height="100%"><BarChart data={coursePerformance.slice(0, 8).map((course) => ({ name: course.title.length > 18 ? course.title.slice(0, 18) + "…" : course.title, estudiantes: course.enrolledCount, capacidad: course.capacity }))} margin={{ top: 10, right: 10, left: -15, bottom: 55 }}><CartesianGrid strokeDasharray="3 3" opacity={0.25} /><XAxis dataKey="name" angle={-35} textAnchor="end" interval={0} height={70} fontSize={11} /><YAxis allowDecimals={false} fontSize={12} /><Tooltip /><Legend verticalAlign="top" /><Bar dataKey="estudiantes" name="Matriculados" fill="#567b88" radius={[6, 6, 0, 0]} /><Bar dataKey="capacidad" name="Capacidad" fill="#d8e7eb" radius={[6, 6, 0, 0]} /></BarChart></ResponsiveContainer></ChartFrame> : <Empty text="No hay cursos para calcular ocupación." />}
         </Panel>
       </div>
 
@@ -169,15 +169,15 @@ export function AnalyticsDashboard({ isAdmin, courses, students, teachers, annou
 }
 
 function Kpi({ icon, label, value, detail }: { icon: string; label: string; value: string | number; detail: string }) {
-  return <article className="rounded-2xl border bg-surface-container-lowest p-5 shadow-sm"><span aria-hidden="true" className="material-symbols-outlined rounded-xl bg-primary-fixed p-2 text-primary">{icon}</span><p className="mt-4 text-sm text-on-surface-variant">{label}</p><strong className="text-3xl">{value}</strong><p className="mt-1 text-xs text-on-surface-variant">{detail}</p></article>;
+  return <article className="rounded-[22px] border border-[#dce7ea] bg-white p-5 shadow-[0_10px_28px_rgba(49,91,105,0.07)]"><span aria-hidden="true" className="material-symbols-outlined rounded-2xl bg-[#e8f4f7] p-2.5 text-[#315b69]">{icon}</span><p className="mt-4 text-sm text-[#73868e]">{label}</p><strong className="text-3xl text-[#243746]">{value}</strong><p className="mt-1 text-xs text-[#8b9aa0]">{detail}</p></article>;
 }
 
 function Panel({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
-  return <section className="rounded-2xl border bg-surface-container-lowest p-5 shadow-sm"><div className="mb-4"><h2 className="text-headline-sm font-semibold">{title}</h2><p className="text-sm text-on-surface-variant">{subtitle}</p></div>{children}</section>;
+  return <section className="rounded-[24px] border border-[#dce7ea] bg-white p-5 shadow-[0_10px_28px_rgba(49,91,105,0.06)]"><div className="mb-4"><h2 className="text-headline-sm font-semibold text-[#315b69]">{title}</h2><p className="text-sm text-[#7b8d94]">{subtitle}</p></div>{children}</section>;
 }
 
 function SectionHeading({ eyebrow, title, description }: { eyebrow: string; title: string; description: string }) {
-  return <div className="border-l-4 border-primary pl-4"><p className="text-xs font-bold uppercase tracking-[0.16em] text-primary">{eyebrow}</p><h2 className="text-2xl font-semibold">{title}</h2><p className="max-w-3xl text-sm text-on-surface-variant">{description}</p></div>;
+  return <div className="border-l-4 border-[#f4b51f] pl-4"><p className="text-xs font-bold uppercase tracking-[0.16em] text-[#18a9e2]">{eyebrow}</p><h2 className="text-2xl font-semibold text-[#315b69]">{title}</h2><p className="max-w-3xl text-sm text-[#7b8d94]">{description}</p></div>;
 }
 
 function ChartFrame({ label, children }: { label: string; children: React.ReactNode }) {
@@ -185,7 +185,7 @@ function ChartFrame({ label, children }: { label: string; children: React.ReactN
 }
 
 function MiniStat({ label, value }: { label: string; value: string }) {
-  return <div className="rounded-xl bg-surface-container-low p-3"><strong className="block text-2xl">{value}</strong><span className="text-xs text-on-surface-variant">{label}</span></div>;
+  return <div className="rounded-2xl bg-[#f3f7f8] p-3"><strong className="block text-2xl text-[#315b69]">{value}</strong><span className="text-xs text-[#7b8d94]">{label}</span></div>;
 }
 
 function GradeBadge({ value }: { value: number | null }) {
