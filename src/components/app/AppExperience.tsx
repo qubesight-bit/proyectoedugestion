@@ -32,7 +32,6 @@ export function AppExperience() {
   useEffect(() => {
     try { window.localStorage.setItem(APP_SECTION_KEY, view); } catch { /* Private browsing may block storage. */ }
   }, [view]);
-  const [menuOpen, setMenuOpen] = useState(false);
   const [announcementRequest, setAnnouncementRequest] = useState(0);
   const [studentRequest, setStudentRequest] = useState(0);
   const account = useAccount();
@@ -72,7 +71,7 @@ export function AppExperience() {
     ["teachers", "person", "Docentes"], ...(isAdmin ? [["users", "manage_accounts", "Usuarios"] as [View, string, string], ["admissions", "assignment", "Solicitudes"] as [View, string, string]] : []), ["supervision", "visibility", "Supervisión"],
     ["assistant", "search", "Consultas"], ["profile", "account_circle", "Perfil"],
   ];
-  const go = (target: View) => { setAnnouncementRequest(0); setStudentRequest(0); setView(target); setMenuOpen(false); };
+  const go = (target: View) => { setAnnouncementRequest(0); setStudentRequest(0); setView(target); };
   const refresh = async () => {
     await Promise.all([
       "courses", "students", "student_documents", "announcements", "newsletter", "teacher_profiles", "course_students", "admission_requests", "analytics",
@@ -114,26 +113,24 @@ export function AppExperience() {
       <Button variant="outline" className="justify-start gap-3" onClick={logOut}>{icon("logout")}Cerrar sesión</Button>
     </aside>
 
-    {menuOpen && <div className="fixed inset-0 z-[100] lg:hidden">
-      <button type="button" className="absolute inset-0 bg-black/50" aria-label="Cerrar menú" onClick={() => setMenuOpen(false)} />
-      <aside role="dialog" aria-modal="true" aria-label="Menú principal" className="absolute inset-y-0 left-0 flex w-[min(20rem,86vw)] flex-col gap-2 border-r bg-surface-container-lowest p-4 shadow-2xl">
-        <div className="flex items-center justify-between gap-2 px-2 py-4 font-bold text-primary">
-          <span>Centro Educativo Adventista</span>
-          <Button type="button" variant="ghost" size="icon" aria-label="Cerrar menú" onClick={() => setMenuOpen(false)}>{icon("close")}</Button>
-        </div>
-        <nav aria-label="Secciones de la plataforma" className="flex flex-1 flex-col gap-1 overflow-y-auto">
-          {nav.map(([target, symbol, label]) => <Button key={target} type="button" variant={view === target ? "secondary" : "ghost"} className="justify-start gap-3 rounded-xl" aria-current={view === target ? "page" : undefined} onClick={() => go(target)}>{icon(symbol)}{label}</Button>)}
-        </nav>
-        <Button variant="outline" className="justify-start gap-3" onClick={logOut}>{icon("logout")}Cerrar sesión</Button>
-      </aside>
-    </div>}
+
     <header className="sticky top-0 z-30 flex min-w-0 items-center gap-2 border-b bg-surface-container-lowest px-3 py-3 shadow-sm sm:px-4">
-      <Button variant="ghost" size="icon" className="lg:hidden" aria-label="Abrir menú" aria-expanded={menuOpen} onClick={() => setMenuOpen((open) => !open)}>{icon("menu")}</Button>
       <button type="button" className="mr-auto min-w-0 truncate text-left text-sm font-semibold sm:text-base" onClick={() => go("home")}>Centro Educativo Adventista de Cartago</button>
       <Button variant="ghost" size="icon" aria-label="Actualizar datos" onClick={refresh}>{icon("refresh")}</Button>
       <Button variant="ghost" size="icon" aria-label="Ver anuncios" onClick={() => go("announcements")}>{icon("notifications")}</Button>
       <Button variant="ghost" size="icon" aria-label="Ver perfil" onClick={() => go("profile")}>{icon("account_circle")}</Button>
     </header>
+    <nav aria-label="Navegación móvil y tablet" className="sticky top-[60px] z-20 flex gap-2 overflow-x-auto border-b bg-surface-container-lowest px-3 py-2 shadow-sm no-scrollbar lg:hidden">
+      {nav.map(([target, symbol, label]) => <Button
+        key={target}
+        type="button"
+        variant={view === target ? "secondary" : "ghost"}
+        className="h-10 shrink-0 gap-2 rounded-full px-3"
+        aria-current={view === target ? "page" : undefined}
+        onClick={() => go(target)}
+      >{icon(symbol)}<span className="text-xs sm:text-sm">{label}</span></Button>)}
+      <Button type="button" variant="outline" className="h-10 shrink-0 gap-2 rounded-full px-3" onClick={logOut}>{icon("logout")}<span className="text-xs sm:text-sm">Salir</span></Button>
+    </nav>
     <main id="app-contenido" className="mx-auto min-w-0 max-w-6xl px-3 py-4 pb-24 sm:px-5 sm:py-6 lg:px-8 lg:pb-8">
       {view === "home" && (isAdmin ? <>
         <div className="mb-5 flex flex-wrap items-center justify-between gap-3">
@@ -182,9 +179,7 @@ export function AppExperience() {
       {view === "assistant" && <AssistantChat isAdmin={isAdmin} userId={account.data!.userId} />}
       {view === "profile" && <ProfilePanel />}
     </main>
-    <nav aria-label="Navegación rápida" className="fixed inset-x-0 bottom-0 z-30 grid grid-cols-4 border-t bg-surface-container-lowest p-1.5 lg:hidden">
-      {(["home", "courses", "students", "announcements"] as const).map((target) => <Button key={target} type="button" variant="ghost" className="flex h-16 flex-col gap-0 text-xs" aria-label={({home:"Inicio", courses:"Cursos", students:"Alumnos", announcements:"Anuncios"})[target]} aria-current={view === target ? "page" : undefined} onClick={() => go(target)}>{icon(({home:"dashboard", courses:"school", students:"groups", announcements:"campaign"})[target])}{({home:"Inicio", courses:"Cursos", students:"Alumnos", announcements:"Anuncios"})[target]}</Button>)}
-    </nav>
+
   </div>;
 }
 
