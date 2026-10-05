@@ -2,8 +2,9 @@ import { useMemo, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { NewsletterManager } from "./NewsletterManager";
 
-type PortalTab = "home" | "courses" | "grades" | "messages" | "tasks" | "chat" | "profile";
+type PortalTab = "home" | "courses" | "grades" | "messages" | "tasks" | "newsletter" | "chat" | "profile";
 
 const fallbackCourses = [
   { id: "mock-mat", title: "Matemáticas", teacher: "Prof. Carlos Menéndez", schedule: "Lun y Mié · 08:00", room: "Aula 204" },
@@ -99,6 +100,7 @@ export function StudentPortal({
     ["grades", "grading", "Mis notas"],
     ["messages", "forum", "Mensajes"],
     ["tasks", "task", "Tareas"],
+    ["newsletter", "newspaper", "Newsletter"],
     ["chat", "smart_toy", "Chatbot"],
     ["profile", "account_circle", "Mi perfil"],
   ];
@@ -164,6 +166,8 @@ export function StudentPortal({
       {tab === "messages" && <section><h1 className="text-headline-md font-semibold">Mensajes de profesores</h1><p className="mb-5 text-on-surface-variant">Avisos y recordatorios académicos.</p><div className="space-y-3">{messages.map((message) => <button key={message.id} className="w-full rounded-2xl bg-surface-container-lowest p-4 text-left shadow-sm" onClick={() => setMessages((current) => current.map((item) => item.id === message.id ? { ...item, unread: false } : item))}><div className="flex justify-between gap-3"><strong>{message.from}</strong>{message.unread && <span className="rounded-full bg-primary px-2 py-0.5 text-xs text-primary-foreground">Nuevo</span>}</div><p className="text-sm font-semibold text-primary">{message.subject}</p><p className="mt-2 text-sm text-on-surface-variant">{message.text}</p></button>)}</div></section>}
 
       {tab === "tasks" && <section><h1 className="text-headline-md font-semibold">Tareas y entregas</h1><p className="mb-5 text-on-surface-variant">Pendientes académicos de demostración.</p><div className="space-y-3">{tasks.map((task) => <div key={task.id} className="flex items-center gap-3 rounded-2xl bg-surface-container-lowest p-4 shadow-sm"><button className={`flex h-9 w-9 items-center justify-center rounded-full ${task.done ? "bg-primary text-primary-foreground" : "bg-surface-container-high"}`} onClick={() => setTasks((current) => current.map((item) => item.id === task.id ? { ...item, done: !item.done } : item))}>{icon(task.done ? "check" : "radio_button_unchecked")}</button><div><strong className={task.done ? "line-through opacity-60" : ""}>{task.title}</strong><p className="text-sm text-on-surface-variant">{task.course} · {task.due}</p></div></div>)}</div></section>}
+
+      {tab === "newsletter" && <NewsletterManager isAdmin={false} />}
 
       {tab === "chat" && <section className="flex min-h-[70vh] flex-col"><h1 className="text-headline-md font-semibold">Chatbot académico</h1><p className="mb-4 text-on-surface-variant">Consultas rápidas del estudiante.</p><div className="flex flex-1 flex-col gap-3 rounded-2xl bg-surface-container-lowest p-4 shadow-sm">{chat.map((message) => <div key={message.id} className={`max-w-[85%] rounded-2xl px-4 py-3 text-sm ${message.from === "student" ? "ml-auto bg-primary text-primary-foreground" : "bg-surface-container"}`}>{message.text}</div>)}</div><form className="mt-3 flex gap-2" onSubmit={(event) => { event.preventDefault(); sendChat(); }}><input className="form-input flex-1" value={input} onChange={(event) => setInput(event.target.value)} placeholder="Preguntá por notas, tareas o cursos…" /><Button type="submit">{icon("send")}</Button></form></section>}
 
