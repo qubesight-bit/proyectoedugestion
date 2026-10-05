@@ -19,6 +19,7 @@ import { AnalyticsDashboard } from "./AnalyticsDashboard";
 import { AdminUsersManager } from "./AdminUsersManager";
 import { StudentRecordsManager } from "./StudentRecordsManager";
 import { StudentPortal } from "./StudentPortal";
+import { NewsletterManager } from "./NewsletterManager";
 
 type View = AppSection;
 
@@ -67,14 +68,14 @@ export function AppExperience() {
 
   const nav: Array<[View, string, string]> = [
     ["home", "dashboard", "Inicio"], ["courses", "school", "Cursos"],
-    ["students", "groups", "Estudiantes"], ["records", "folder_open", "Expedientes"], ["announcements", "campaign", "Anuncios"],
+    ["students", "groups", "Estudiantes"], ["records", "folder_open", "Expedientes"], ["announcements", "campaign", "Anuncios"], ["newsletter", "newspaper", "Newsletter"],
     ["teachers", "person", "Docentes"], ...(isAdmin ? [["users", "manage_accounts", "Usuarios"] as [View, string, string], ["admissions", "assignment", "Solicitudes"] as [View, string, string]] : []), ["supervision", "visibility", "Supervisión"],
     ["assistant", "search", "Consultas"], ["profile", "account_circle", "Perfil"],
   ];
   const go = (target: View) => { setAnnouncementRequest(0); setStudentRequest(0); setView(target); setMenuOpen(false); };
   const refresh = async () => {
     await Promise.all([
-      "courses", "students", "student_documents", "announcements", "teacher_profiles", "course_students", "admission_requests", "analytics",
+      "courses", "students", "student_documents", "announcements", "newsletter", "teacher_profiles", "course_students", "admission_requests", "analytics",
     ].map((key) => qc.invalidateQueries({ queryKey: [key] })));
     toast.success("Datos actualizados");
   };
@@ -163,6 +164,7 @@ export function AppExperience() {
       {view === "students" && <StudentsManager key={studentRequest} isAdmin={isAdmin} openNew={studentRequest} />}
       {view === "records" && <StudentRecordsManager />}
       {view === "announcements" && <AnnouncementsManager key={announcementRequest} isAdmin={isAdmin} openNew={announcementRequest} />}
+      {view === "newsletter" && <NewsletterManager isAdmin={isAdmin} />}
       {view === "teachers" && <TeachersManager isAdmin={isAdmin} userId={account.data!.userId} courses={courses.data ?? []} />}
       {view === "users" && isAdmin && <AdminUsersManager />}
       {view === "admissions" && isAdmin && <AdmissionsManager />}
