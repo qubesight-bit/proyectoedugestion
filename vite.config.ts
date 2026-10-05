@@ -10,8 +10,8 @@ import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 // Keep the pre-build transform because the generated client uses bracket syntax.
 // This is the Supabase project that contains the CEAC accounts and app data.
 // Both values are public client identifiers and must stay paired.
-const cloudUrl = "https://zwyccbuegzomgtsclcxh.supabase.co";
-const cloudPublishableKey = "sb_publishable_rkasH3qneDyLCi7ixdKFVA_Qd2rNM0S";
+const cloudUrl = "https://hedufqqiqpxywcsvkytj.supabase.co";
+const cloudPublishableKey = "sb_publishable_wZsh3a4N4U61Tc5J3fg-fQ_haCzhl3g";
 
 const cloudClientEnvPlugin = {
   name: "cloud-client-env",

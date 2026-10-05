@@ -217,69 +217,6 @@ export type Database = {
         }
         Relationships: []
       }
-      students: {
-        Row: {
-          alert: string
-          archive_reason: string
-          archived_previous_status: string | null
-          archived_at: string | null
-          archived_by: string | null
-          code: string
-          created_at: string
-          created_by: string | null
-          email: string
-          grade: string
-          id: string
-          image: string
-          name: string
-          phone: string
-          score: number | null
-          status: string
-          tutor: string
-          updated_at: string
-        }
-        Insert: {
-          alert?: string
-          archive_reason?: string
-          archived_previous_status?: string | null
-          archived_at?: string | null
-          archived_by?: string | null
-          code?: string
-          created_at?: string
-          created_by?: string | null
-          email?: string
-          grade?: string
-          id?: string
-          image?: string
-          name: string
-          phone?: string
-          score?: number | null
-          status?: string
-          tutor?: string
-          updated_at?: string
-        }
-        Update: {
-          alert?: string
-          archive_reason?: string
-          archived_previous_status?: string | null
-          archived_at?: string | null
-          archived_by?: string | null
-          code?: string
-          created_at?: string
-          created_by?: string | null
-          email?: string
-          grade?: string
-          id?: string
-          image?: string
-          name?: string
-          phone?: string
-          score?: number | null
-          status?: string
-          tutor?: string
-          updated_at?: string
-        }
-        Relationships: []
-      }
       student_documents: {
         Row: {
           category: string
@@ -345,7 +282,7 @@ export type Database = {
           grade: number
           id?: string
           notes?: string
-          period?: string
+          period: string
           recorded_by?: string | null
           student_id: string
           updated_at?: string
@@ -377,6 +314,69 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      students: {
+        Row: {
+          alert: string
+          archive_reason: string
+          archived_at: string | null
+          archived_by: string | null
+          archived_previous_status: string | null
+          code: string
+          created_at: string
+          created_by: string | null
+          email: string
+          grade: string
+          id: string
+          image: string
+          name: string
+          phone: string
+          score: number | null
+          status: string
+          tutor: string
+          updated_at: string
+        }
+        Insert: {
+          alert?: string
+          archive_reason?: string
+          archived_at?: string | null
+          archived_by?: string | null
+          archived_previous_status?: string | null
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          grade?: string
+          id?: string
+          image?: string
+          name: string
+          phone?: string
+          score?: number | null
+          status?: string
+          tutor?: string
+          updated_at?: string
+        }
+        Update: {
+          alert?: string
+          archive_reason?: string
+          archived_at?: string | null
+          archived_by?: string | null
+          archived_previous_status?: string | null
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          email?: string
+          grade?: string
+          id?: string
+          image?: string
+          name?: string
+          phone?: string
+          score?: number | null
+          status?: string
+          tutor?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       teacher_profiles: {
         Row: {
@@ -449,7 +449,7 @@ export type Database = {
         Args: {
           p_birth_date: string
           p_desired_level: string
-          p_entry_type: string
+          p_entry_type?: string
           p_guardian_document: string
           p_guardian_email: string
           p_guardian_name: string
