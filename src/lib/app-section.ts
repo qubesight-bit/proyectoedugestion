@@ -4,6 +4,7 @@ export const APP_SECTIONS = [
   "students",
   "records",
   "announcements",
+  "newsletter",
   "admissions",
   "teachers",
   "users",
