@@ -35,8 +35,8 @@ export const requireSupabaseAuth = createMiddleware({ type: 'function' }).server
   async ({ next }) => {
     
     // Keep server token validation on the same project used by the browser client.
-    const SUPABASE_URL = 'https://hedufqqiqpxywcsvkytj.supabase.co';
-    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_wZsh3a4N4U61Tc5J3fg-fQ_haCzhl3g';
+    const SUPABASE_URL = 'https://zwyccbuegzomgtsclcxh.supabase.co';
+    const SUPABASE_PUBLISHABLE_KEY = 'sb_publishable_rkasH3qneDyLCi7ixdKFVA_Qd2rNM0S';
 
     if (!SUPABASE_URL || !SUPABASE_PUBLISHABLE_KEY) {
       const missing = [
