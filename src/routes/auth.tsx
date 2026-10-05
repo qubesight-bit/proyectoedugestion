@@ -25,7 +25,7 @@ function AuthPage() {
     supabase.auth.getUser().then(async ({ data }) => {
       if (!data.user) return;
       const { data: roles } = await supabase.from("user_roles").select("role").eq("user_id", data.user.id);
-      if (roles?.some(({ role }) => role === "admin" || role === "docente")) {
+      if (roles?.some(({ role }) => role === "admin" || role === "docente" || role === "estudiante")) {
         navigate({ to: "/app", replace: true });
       }
     });
