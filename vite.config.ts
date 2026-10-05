@@ -6,34 +6,7 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
-// These values are public client identifiers for the selected EduGestion project.
-// Keep the pre-build transform because the generated client uses bracket syntax.
-// This is the Supabase project that contains the CEAC accounts and app data.
-// Both values are public client identifiers and must stay paired.
-const cloudUrl = "https://hedufqqiqpxywcsvkytj.supabase.co";
-const cloudPublishableKey = "sb_publishable_wZsh3a4N4U61Tc5J3fg-fQ_haCzhl3g";
-
-const cloudClientEnvPlugin = {
-  name: "cloud-client-env",
-  enforce: "pre" as const,
-  transform(code: string, id: string) {
-    if (!id.includes("/src/integrations/supabase/client.ts")) return null;
-
-    return code
-      .replace("import.meta.env['VITE_SUPABASE_URL']", JSON.stringify(cloudUrl))
-      .replace(
-        "import.meta.env['VITE_SUPABASE_PUBLISHABLE_KEY']",
-        JSON.stringify(cloudPublishableKey),
-      );
-  },
-};
-
 export default defineConfig({
-  vite: {
-    // The generated client uses bracket access, which Vite's define option
-    // does not replace. Substitute only its two public values before compile.
-    plugins: [cloudClientEnvPlugin],
-  },
   tanstackStart: {
     // Redirect TanStack Start's bundled server entry to src/server.ts (our SSR error wrapper).
     // nitro/vite builds from this
