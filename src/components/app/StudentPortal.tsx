@@ -162,6 +162,15 @@ export function StudentPortal({
           <Metric iconName="task_alt" label="Tareas pendientes" value={String(tasks.filter((task) => !task.done).length)} />
           <Metric iconName="mark_email_unread" label="Mensajes nuevos" value={String(messages.filter((message) => message.unread).length)} />
         </div>
+        <button type="button" onClick={() => go("rewards")} className="flex w-full flex-col gap-4 rounded-[24px] border border-[#f0dfb9] bg-gradient-to-r from-[#fff9e8] to-[#eaf5f7] p-5 text-left shadow-sm sm:flex-row sm:items-center">
+          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-[38%_62%_55%_45%/45%_40%_60%_55%] bg-[#567b88] text-4xl shadow-md ring-4 ring-white">😊</div>
+          <div className="min-w-0 flex-1">
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-[#18a9e2]">Nuevo · Mi mundo CEAC</p>
+            <h2 className="mt-1 text-lg font-bold text-[#315b69]">Lumi quiere verte</h2>
+            <p className="mt-1 text-sm text-[#748890]">Interactuá con tu avatar, mantené tu racha, ganá Monedas CEAC y canjeá premios.</p>
+          </div>
+          <span className="material-symbols-outlined text-[#b47e00]">arrow_forward</span>
+        </button>
         <div className="grid gap-4 lg:grid-cols-2">
           <Card title="Próximos cursos">{shownCourses.slice(0, 3).map((course: any) => <div key={course.id} className="rounded-xl bg-surface-container p-3"><strong>{course.title}</strong><p className="text-sm text-on-surface-variant">{course.teacher} · {course.schedule}</p></div>)}</Card>
           <Card title="Mensajes recientes">{messages.slice(0, 3).map((message) => <button key={message.id} className="w-full rounded-xl bg-surface-container p-3 text-left" onClick={() => { setMessages((current) => current.map((item) => item.id === message.id ? { ...item, unread: false } : item)); go("messages"); }}><strong>{message.from}</strong><p className="text-sm text-primary">{message.subject}</p><p className="text-sm text-on-surface-variant">{message.text}</p></button>)}</Card>
