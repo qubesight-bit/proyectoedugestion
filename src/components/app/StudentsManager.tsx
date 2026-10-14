@@ -70,6 +70,22 @@ export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; op
     },
     onError: (e: Error) => toast.error(e.message),
   });
+  const awardCoins = useMutation({
+    mutationFn: async ({ studentId, amount }: { studentId: string; amount: number }) => {
+      const { data, error } = await (supabase as any).rpc("award_student_coins", {
+        p_student_id: studentId,
+        p_amount: amount,
+      });
+      if (error) throw error;
+      return Number(data);
+    },
+    onSuccess: (balance) => {
+      toast.success(`Monedas actualizadas. Nuevo saldo: ${balance}`);
+      qc.invalidateQueries({ queryKey: ["student_gamification"] });
+    },
+    onError: (e: Error) => toast.error(e.message),
+  });
+
 
   const term = q.trim().toLowerCase();
   const activeCount = data.filter((student) => !student.archived_at).length;
@@ -140,6 +156,24 @@ export function StudentsManager({ isAdmin, openNew = 0 }: { isAdmin: boolean; op
             <div className="mt-auto flex flex-wrap gap-2">
               <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setGrading(s)}>Notas por curso</Button>
               <Button variant="outline" className="flex-1 rounded-xl" onClick={() => setRecords(s)}>Expediente</Button>
+              {!s.archived_at && <Button
+                variant="outline"
+                className="flex-1 rounded-xl border-[#f0d48e] bg-[#fff9e8] text-[#8a6500] hover:bg-[#fff3c9]"
+                disabled={awardCoins.isPending}
+                onClick={() => {
+                  const raw = prompt(`¿Cuántas Monedas CEAC querés otorgar a ${s.name}?\nUsá un número negativo para descontar.`, "10");
+                  if (raw === null) return;
+                  const amount = Number.parseInt(raw, 10);
+                  if (!Number.isInteger(amount) || amount === 0 || Math.abs(amount) > 500) {
+                    toast.error("Ingresá un número entero entre -500 y 500, distinto de 0.");
+                    return;
+                  }
+                  awardCoins.mutate({ studentId: s.id, amount });
+                }}
+              >
+                <span aria-hidden="true" className="material-symbols-outlined text-[18px]">monetization_on</span>
+                Monedas
+              </Button>}
             {isAdmin && (
               <div className="mt-auto flex gap-2">
                 <Button variant="secondary" className="flex-1 rounded-xl" aria-label={`Editar ${s.name}`} onClick={() => setEditing(s)}>Editar</Button>
