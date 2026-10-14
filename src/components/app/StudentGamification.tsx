@@ -23,7 +23,7 @@ export function StudentGamification({ studentId, studentName }: { studentId: str
   const gamification = useQuery({
     queryKey: ["student_gamification", studentId],
     queryFn: async () => {
-      const { data, error } = await supabase
+      const { data, error } = await (supabase as any)
         .from("student_gamification")
         .select("*")
         .eq("student_id", studentId)
@@ -35,7 +35,7 @@ export function StudentGamification({ studentId, studentName }: { studentId: str
 
   const interact = useMutation({
     mutationFn: async (mood: string) => {
-      const { data, error } = await supabase.rpc("student_avatar_interact", {
+      const { data, error } = await (supabase as any).rpc("student_avatar_interact", {
         p_student_id: studentId,
         p_mood: mood,
       });
@@ -51,7 +51,7 @@ export function StudentGamification({ studentId, studentName }: { studentId: str
 
   const redeem = useMutation({
     mutationFn: async ({ name, cost }: { name: string; cost: number }) => {
-      const { data, error } = await supabase.rpc("redeem_student_reward", {
+      const { data, error } = await (supabase as any).rpc("redeem_student_reward", {
         p_student_id: studentId,
         p_cost: cost,
       });
