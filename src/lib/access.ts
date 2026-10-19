@@ -8,6 +8,6 @@ export async function requireStaffAccount() {
     .from("user_roles")
     .select("role")
     .eq("user_id", data.user.id);
-  if (roleError || !roles?.some(({ role }) => role === "admin" || role === "docente" || role === "estudiante")) return null;
+  if (roleError || !roles?.some(({ role }) => role === "admin" || role === "docente" || role === "estudiante" || role === "padre")) return null;
   return data.user;
 }
