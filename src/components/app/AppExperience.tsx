@@ -20,6 +20,7 @@ import { AdminUsersManager } from "./AdminUsersManager";
 import { StudentRecordsManager } from "./StudentRecordsManager";
 import { StudentPortal } from "./StudentPortal";
 import { NewsletterManager } from "./NewsletterManager";
+import { ParentPortal } from "./ParentPortal";
 
 type View = AppSection;
 
@@ -39,6 +40,7 @@ export function AppExperience() {
   const navigate = useNavigate();
   const isAdmin = account.isAdmin;
   const isStudent = account.roles.includes("estudiante");
+  const isParent = account.roles.includes("padre");
 
   const courses = useQuery({ queryKey: ["courses"], queryFn: async () => {
     const { data, error } = await supabase.from("courses").select("*").order("created_at", { ascending: false });
@@ -96,6 +98,17 @@ export function AppExperience() {
   if (isStudent) {
     return (
       <StudentPortal
+        userId={account.data!.userId}
+        email={account.data!.email}
+        fullName={account.data!.fullName}
+        onLogout={logOut}
+      />
+    );
+  }
+
+  if (isParent) {
+    return (
+      <ParentPortal
         userId={account.data!.userId}
         email={account.data!.email}
         fullName={account.data!.fullName}
