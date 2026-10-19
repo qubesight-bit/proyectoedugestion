@@ -1,7 +1,7 @@
 import { createClient } from "npm:@supabase/supabase-js@2";
 
 const corsHeaders = { "Access-Control-Allow-Origin": "*", "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type" };
-type Role = "admin" | "docente" | "estudiante";
+type Role = "admin" | "docente" | "estudiante" | "padre";
 
 Deno.serve(async (request) => {
   if (request.method === "OPTIONS") return new Response("ok", { headers: corsHeaders });
@@ -27,7 +27,7 @@ Deno.serve(async (request) => {
     }
 
     const role = String(body.role ?? "") as Role;
-    if (!["admin", "docente", "estudiante"].includes(role)) return json({ error: "Rol inválido" }, 400);
+    if (!["admin", "docente", "estudiante", "padre"].includes(role)) return json({ error: "Rol inválido" }, 400);
     if (action === "create") {
       const email = String(body.email ?? "").trim().toLowerCase();
       const password = String(body.password ?? "");
@@ -53,6 +53,26 @@ Deno.serve(async (request) => {
         if (studentError) {
           await db.auth.admin.deleteUser(created.user.id);
           throw studentError;
+        }
+      }
+
+      if (role === "padre") {
+        const studentId = String(body.studentId ?? "").trim();
+        const relationship = String(body.relationship ?? "Encargado").trim() || "Encargado";
+        if (studentId) {
+          if (!/^[0-9a-f-]{36}$/i.test(studentId)) {
+            await db.auth.admin.deleteUser(created.user.id);
+            return json({ error: "Estudiante inválido" }, 400);
+          }
+          const { error: guardianError } = await db.from("guardian_students").insert({
+            guardian_user_id: created.user.id,
+            student_id: studentId,
+            relationship,
+          });
+          if (guardianError) {
+            await db.auth.admin.deleteUser(created.user.id);
+            throw guardianError;
+          }
         }
       }
 
