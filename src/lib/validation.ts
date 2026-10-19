@@ -59,11 +59,12 @@ export function occupancyPercent(enrolled: number, capacity: number) {
   return Math.min(100, Math.round((enrolled / capacity) * 100));
 }
 
-export type AppRole = "admin" | "docente" | "estudiante";
-export function roleLabel(roles: AppRole[]): "Administrador" | "Docente" | "Estudiante" | null {
+export type AppRole = "admin" | "docente" | "estudiante" | "padre";
+export function roleLabel(roles: AppRole[]): "Administrador" | "Docente" | "Estudiante" | "Padre / Encargado" | null {
   if (roles.includes("admin")) return "Administrador";
   if (roles.includes("docente")) return "Docente";
   if (roles.includes("estudiante")) return "Estudiante";
+  if (roles.includes("padre")) return "Padre / Encargado";
   return null;
 }
 export function canManage(roles: AppRole[]) {
